@@ -9,7 +9,6 @@ import 'package:app17000ft_new/constants/color_const.dart';
 import 'package:app17000ft_new/helper/database_helper.dart';
 import 'package:app17000ft_new/services/network_manager.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -97,101 +96,99 @@ class _CabTracingSyncState extends State<CabTracingSync> {
                       final item = cabMeterTracingController.cabMeterTracingList[index];
                       return ListTile(
                         title: Text(
-                          "${index + 1}. Tour ID: ${item.tour_id}\n    Vehicle No. ${item.vehicle_num}\n    Driver Name: ${item.driver_name}",
+                          "${index + 1}. Tour ID: ${item.tour_id}\n"
+                              "Vehicle No.: ${item.vehicle_num}\n"
+                              "Driver Name: ${item.driver_name}",
                           style: const TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,  // Adjust text alignment if needed
+                          maxLines: 3,  // Limit the lines, or remove this if you don't want a limit
+                          overflow: TextOverflow.ellipsis,  // Handles overflow gracefully
                         ),
-                        trailing: Row(
+                        trailing: Obx(() => Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              color: AppColors.primary,
+                              color: _networkManager.connectionType.value == 0
+                                  ? Colors.grey  // Grey out the button when offline
+                                  : AppColors.primary,  // Regular color when online
                               icon: const Icon(Icons.sync),
-                              onPressed: () async {
-                                // Check if the user is offline
-                                if (_networkManager.connectionType.value == 0) {
-                                  customSnackbar(
-                                    'Warning',
-                                    'You are offline, please connect to the internet',
-                                    AppColors.secondary,
-                                    AppColors.onSecondary,
-                                    Icons.warning,
-                                  );
-                                } else {
-                                  // Proceed if the user is online
-                                  IconData icon = Icons.check_circle;
-                                  showDialog(
-                                    context: context,
-                                    builder: (_) => Confirmation(
-                                      iconname: icon,
-                                      title: 'Confirm',
-                                      yes: 'Confirm',
-                                      no: 'Cancel',
-                                      desc: 'Are you sure you want to Sync?',
-                                      onPressed: () async {
-                                        setState(() {
-                                          isLoading.value = true; // Show loading spinner
-                                          syncProgress.value = 0.0; // Reset progress
-                                          hasError.value = false; // Reset error state
-                                        });
+                              onPressed: _networkManager.connectionType.value == 0
+                                  ? null  // Disable the button when offline
+                                  : () async {
+                                // Proceed with sync logic when online
+                                IconData icon = Icons.check_circle;
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => Confirmation(
+                                    iconname: icon,
+                                    title: 'Confirm',
+                                    yes: 'Confirm',
+                                    no: 'Cancel',
+                                    desc: 'Are you sure you want to Sync?',
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoading.value = true; // Show loading spinner
+                                        syncProgress.value = 0.0; // Reset progress
+                                        hasError.value = false; // Reset error state
+                                      });
 
-                                        if (_networkManager.connectionType.value == 1 ||
-                                            _networkManager.connectionType.value == 2) {
-                                          for (int i = 0; i <= 100; i++) {
-                                            await Future.delayed(const Duration(milliseconds: 50));
-                                            syncProgress.value = i / 100; // Update progress
-                                          }
-
-                                          // Call the insert function
-                                          var rsp = await insertCabMeterTracing(
-                                            item.id,
-                                            item.status,
-                                            item.vehicle_num,
-                                            item.driver_name,
-                                            item.meter_reading,
-                                            item.image,
-                                            item.user_id,
-                                            item.place_visit,
-                                            item.remarks,
-                                            item.created_at,
-                                            item.office,
-                                            item.version,
-                                            item.uniqueId,
-                                            item.tour_id,
-                                                (progress) {
-                                              syncProgress.value = progress; // Update sync progress
-                                            },
-                                          );
-
-                                          if (rsp['status'] == 1) {
-                                            customSnackbar(
-                                              'Successfully',
-                                              "${rsp['message']}",
-                                              AppColors.secondary,
-                                              AppColors.onSecondary,
-                                              Icons.check,
-                                            );
-                                          } else {
-                                            hasError.value = true; // Set error state if sync fails
-                                            customSnackbar(
-                                              "Error",
-                                              "${rsp['message']}",
-                                              AppColors.error,
-                                              AppColors.onError,
-                                              Icons.warning,
-                                            );
-                                          }
-                                          setState(() {
-                                            isLoading.value = false; // Hide loading spinner
-                                          });
+                                      if (_networkManager.connectionType.value == 1 ||
+                                          _networkManager.connectionType.value == 2) {
+                                        for (int i = 0; i <= 100; i++) {
+                                          await Future.delayed(const Duration(milliseconds: 50));
+                                          syncProgress.value = i / 100; // Update progress
                                         }
-                                      },
-                                    ),
-                                  );
-                                }
+
+                                        // Call the insert function
+                                        var rsp = await insertCabMeterTracing(
+                                          item.id,
+                                          item.status,
+                                          item.vehicle_num,
+                                          item.driver_name,
+                                          item.meter_reading,
+                                          item.image,
+                                          item.user_id,
+                                          item.place_visit,
+                                          item.remarks,
+                                          item.created_at,
+                                          item.office,
+                                          item.version,
+                                          item.uniqueId,
+                                          item.tour_id,
+                                              (progress) {
+                                            syncProgress.value = progress; // Update sync progress
+                                          },
+                                        );
+
+                                        if (rsp['status'] == 1) {
+                                          customSnackbar(
+                                            'Successfully',
+                                            "${rsp['message']}",
+                                            AppColors.secondary,
+                                            AppColors.onSecondary,
+                                            Icons.check,
+                                          );
+                                        } else {
+                                          hasError.value = true; // Set error state if sync fails
+                                          customSnackbar(
+                                            "Error",
+                                            "${rsp['message']}",
+                                            AppColors.error,
+                                            AppColors.onError,
+                                            Icons.warning,
+                                          );
+                                        }
+                                        setState(() {
+                                          isLoading.value = false; // Hide loading spinner
+                                        });
+                                      }
+                                    },
+                                  ),
+                                );
                               },
                             ),
                           ],
-                        ),
+                        )),
                         onTap: () {
                           cabMeterTracingController.cabMeterTracingList[index].tour_id;
                         },
@@ -278,12 +275,11 @@ Future<Map<String, dynamic>> insertCabMeterTracing(
 
     if (parsedResponse['status'] == 1) {
       await SqfliteDatabaseHelper().queryDelete(arg: id.toString(), table: 'cabMeter_tracing', field: 'id');
-      await Get.find<CabMeterTracingController>().fetchData();
+      return parsedResponse;
+    } else {
+      return {"status": 0, "message": "Error in API response"};
     }
-
-    return parsedResponse;
-  } catch (responseBody) {
-    print("Error: $responseBody");
-    return {"status": 0, "message": "Something went wrong, Please contact Admin $responseBody"};
+  } catch (e) {
+    return {"status": 0, "message": e.toString()};
   }
 }

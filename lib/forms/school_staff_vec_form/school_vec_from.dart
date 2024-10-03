@@ -93,6 +93,7 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
       // Populate the controllers with existing data
       schoolStaffVecController.correctUdiseCodeController.text =
           existingRecord.correctUdise ?? '';
+      widget.userid = existingRecord.createdBy;
       schoolStaffVecController.nameOfHoiController.text =
           existingRecord.headName ?? '';
       schoolStaffVecController.staffPhoneNumberController.text =
@@ -180,10 +181,14 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                         builder: (schoolStaffVecController) {
                           return Form(
                               key: _formKey,
-                              child: GetBuilder<TourController>(
+                              child:GetBuilder<TourController>(
                                   init: TourController(),
                                   builder: (tourController) {
-                                    tourController.fetchTourDetails();
+                                    // Fetch tour details once, not on every rebuild.
+                                    if (tourController.getLocalTourList.isEmpty) {
+                                      tourController.fetchTourDetails();
+                                    }
+
                                     return Column(children: [
                                       if (showBasicDetails) ...[
                                         LabelText(
@@ -202,29 +207,24 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                                           side: 'height',
                                         ),
                                         CustomDropdownFormField(
-                                          focusNode: schoolStaffVecController
-                                              .tourIdFocusNode,
-                                          options: tourController
-                                              .getLocalTourList
-                                              .map((e) => e.tourId!)
+                                          focusNode: schoolStaffVecController.tourIdFocusNode,
+                                          options: tourController.getLocalTourList
+                                              .map((e) => e.tourId!) // Ensure tourId is non-nullable
                                               .toList(),
-                                          selectedOption:
-                                          schoolStaffVecController
-                                              .tourValue,
+                                          selectedOption: schoolStaffVecController.tourValue,
                                           onChanged: (value) {
+                                            // Safely handle the school list splitting by commas
                                             splitSchoolLists = tourController
                                                 .getLocalTourList
                                                 .where((e) => e.tourId == value)
-                                                .map((e) => e.allSchool!
-                                                .split('|')
-                                                .toList())
+                                                .map((e) => e.allSchool!.split(',').map((s) => s.trim()).toList())
                                                 .expand((x) => x)
                                                 .toList();
+
+                                            // Single setState call for efficiency
                                             setState(() {
-                                              schoolStaffVecController
-                                                  .setSchool(null);
-                                              schoolStaffVecController
-                                                  .setTour(value);
+                                              schoolStaffVecController.setSchool(null);
+                                              schoolStaffVecController.setTour(value);
                                             });
                                           },
                                           labelText: "Select Tour ID",
@@ -241,10 +241,10 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                                           value: 20,
                                           side: 'height',
                                         ),
+                                        // DropdownSearch for selecting a single school
                                         DropdownSearch<String>(
                                           validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
+                                            if (value == null || value.isEmpty) {
                                               return "Please Select School";
                                             }
                                             return null;
@@ -252,26 +252,22 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                                           popupProps: PopupProps.menu(
                                             showSelectedItems: true,
                                             showSearchBox: true,
-                                            disabledItemFn: (String s) =>
-                                                s.startsWith('I'),
+                                            disabledItemFn: (String s) => s.startsWith('I'), // Disable based on condition
                                           ),
-                                          items: splitSchoolLists,
-                                          dropdownDecoratorProps:
-                                          const DropDownDecoratorProps(
-                                            dropdownSearchDecoration:
-                                            InputDecoration(
+                                          items: splitSchoolLists, // Split school list as strings
+                                          dropdownDecoratorProps: const DropDownDecoratorProps(
+                                            dropdownSearchDecoration: InputDecoration(
                                               labelText: "Select School",
-                                              hintText: "Select School ",
+                                              hintText: "Select School",
                                             ),
                                           ),
                                           onChanged: (value) {
+                                            // Set the selected school
                                             setState(() {
-                                              schoolStaffVecController
-                                                  .setSchool(value);
+                                              schoolStaffVecController.setSchool(value);
                                             });
                                           },
-                                          selectedItem: schoolStaffVecController
-                                              .schoolValue,
+                                          selectedItem: schoolStaffVecController.schoolValue,
                                         ),
                                         CustomSizedBox(
                                           value: 20,
@@ -608,13 +604,13 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                                           value: _selectedDesignation,
                                           items: [
                                             DropdownMenuItem(
-                                                value: 'head_master_head_mistress',
+                                                value: 'HeadMaster/HeadMistress',
                                                 child: Text('HeadMaster/HeadMistress')),
                                             DropdownMenuItem(
-                                                value: 'principal',
+                                                value: 'Principal',
                                                 child: Text('Principal')),
                                             DropdownMenuItem(
-                                                value: 'incharge',
+                                                value: 'Incharge',
                                                 child: Text('Incharge')),
                                           ],
                                           onChanged: (value) {
@@ -924,16 +920,16 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                                           value: selected2Designation,
                                           items: [
                                             DropdownMenuItem(
-                                                value: 'non_graduate',
+                                                value: 'Non Graduate',
                                                 child: Text('Non Graduate')),
                                             DropdownMenuItem(
-                                                value: 'graduate',
+                                                value: 'Graduate',
                                                 child: Text('Graduate')),
                                             DropdownMenuItem(
-                                                value: 'post_graduate',
+                                                value: 'Post Graduate',
                                                 child: Text('Post Graduate')),
                                             DropdownMenuItem(
-                                                value: 'others_qualification',
+                                                value: 'Others',
                                                 child: Text('Others')),
                                           ],
                                           onChanged: (value) {
@@ -952,7 +948,7 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                                             value: 20, side: 'height'),
 
                                     if (selected2Designation ==
-                                    'others_qualification') ...[
+                                    'Others') ...[
                                     LabelText(
                                     label: 'Please Specify Other',
                                     astrick: true,
@@ -1018,19 +1014,19 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                                           value: _selected3Designation,
                                           items: [
                                             DropdownMenuItem(
-                                                value: 'once_a_month',
+                                                value: 'Once a month',
                                                 child: Text('Once a month')),
                                             DropdownMenuItem(
-                                                value: 'once_a_quarter',
+                                                value: 'Once a quarter',
                                                 child: Text('Once a quarter')),
                                             DropdownMenuItem(
-                                                value: 'once_in_6_months',
+                                                value: 'Once in 6 months',
                                                 child: Text('Once in 6 months')),
                                             DropdownMenuItem(
-                                                value: 'once_a_year',
+                                                value: 'Once a year',
                                                 child: Text('Once a year')),
                                             DropdownMenuItem(
-                                                value: 'others_frequency',
+                                                value: 'Other',
                                                 child: Text('Others')),
                                           ],
                                           onChanged: (value) {
@@ -1050,7 +1046,7 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                                         CustomSizedBox(
                                             value: 20, side: 'height'),
                                         if (_selected3Designation ==
-                                            'others_frequency') ...[
+                                            'Other') ...[
                                           LabelText(
                                             label: 'Please Specify Other',
                                             astrick: true,
@@ -1163,6 +1159,7 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                                                         _selectedValue = '';
                                                         _selectedValue2 = '';
                                                         _selectedValue3 = '';
+                                                        schoolStaffVecController.clearFields();
                                                       });
 
                                                       await saveDataToFile(enrolmentCollectionObj).then((_) {

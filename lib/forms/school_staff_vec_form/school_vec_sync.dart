@@ -75,7 +75,7 @@ class _SchoolStaffVecSyncState extends State<SchoolStaffVecSync> {
                   Text(
                     'Syncing: ${(syncProgress.value * 100).toStringAsFixed(0)}%',
                     style: const TextStyle(
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -107,10 +107,11 @@ class _SchoolStaffVecSyncState extends State<SchoolStaffVecSync> {
                     itemBuilder: (context, index) {
                       final item = schoolStaffVecController.schoolStaffVecList[index];
                       return ListTile(
-                        title: Text(
-                          "${index + 1}. Tour ID: ${item.tourId!}\n    School ${item.school}",
-                          style: const TextStyle(
+                        title:  Text(
+                          "${index + 1}. Tour ID: ${item.tourId!}\nSchool: ${item.school!}",
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size based on screen width
                           ),
                         ),
                         trailing: Row(
@@ -152,101 +153,94 @@ class _SchoolStaffVecSyncState extends State<SchoolStaffVecSync> {
                             //   },
                             // ),
                             IconButton(
-                              color: AppColors.primary,
+                              color: _networkManager.connectionType.value == 0
+                                  ? Colors.grey  // Grey out the button when offline
+                                  : AppColors.primary,  // Regular color when online
                               icon: const Icon(Icons.sync),
-                              onPressed: () async {
-                                // Check if the user is offline
-                                if (_networkManager.connectionType.value == 0) {
-                                  customSnackbar(
-                                    'Warning',
-                                    'You are offline, please connect to the internet',
-                                    AppColors.secondary,
-                                    AppColors.onSecondary,
-                                    Icons.warning,
-                                  );
-                                } else {
-                                  // Proceed if the user is online
-                                  IconData icon = Icons.check_circle;
-                                  showDialog(
-                                    context: context,
-                                    builder: (_) => Confirmation(
-                                      iconname: icon,
-                                      title: 'Confirm',
-                                      yes: 'Confirm',
-                                      no: 'Cancel',
-                                      desc: 'Are you sure you want to Sync?',
-                                      onPressed: () async {
-                                        setState(() {
-                                          isLoading.value = true; // Show loading spinner
-                                          syncProgress.value = 0.0; // Reset progress
-                                          hasError.value = false; // Reset error state
-                                        });
+                              onPressed: _networkManager.connectionType.value == 0
+                                  ? null  // Disable the button when offline
+                                  : () async {
+                                // Proceed with sync logic when online
+                                IconData icon = Icons.check_circle;
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => Confirmation(
+                                    iconname: icon,
+                                    title: 'Confirm',
+                                    yes: 'Confirm',
+                                    no: 'Cancel',
+                                    desc: 'Are you sure you want to Sync?',
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoading.value = true; // Show loading spinner
+                                        syncProgress.value = 0.0; // Reset progress
+                                        hasError.value = false; // Reset error state
+                                      });
 
-                                        if (_networkManager.connectionType.value == 1 ||
-                                            _networkManager.connectionType.value == 2) {
-                                          for (int i = 0; i <= 100; i++) {
-                                            await Future.delayed(const Duration(milliseconds: 50));
-                                            syncProgress.value = i / 100; // Update progress
-                                          }
-
-                                          // Call the insert function
-                                          var rsp = await insertSchoolStaffVec(
-                                            item.school,
-                                            item.tourId,
-                                            item.udiseValue,
-                                            item.correctUdise,
-                                            item.headName,
-                                            item.headGender,
-                                            item.headMobile,
-                                            item.headEmail,
-                                            item.headDesignation,
-                                            item.totalTeachingStaff,
-                                            item.totalNonTeachingStaff,
-                                            item.totalStaff,
-                                            item.SmcVecName,
-                                            item.genderVec,
-                                            item.vecMobile,
-                                            item.vecEmail,
-                                            item.vecQualification,
-                                            item.vecTotal,
-                                            item.meetingDuration,
-                                            item.createdBy,
-                                            item.createdAt,
-                                            item.other,
-                                            item.otherQual,
-                                            item.id,
-
-                                            (progress) {
-                                              syncProgress.value = progress; // Update sync progress
-                                            },
-                                          );
-
-                                          if (rsp['status'] == 1) {
-                                            customSnackbar(
-                                              'Successfully',
-                                              "${rsp['message']}",
-                                              AppColors.secondary,
-                                              AppColors.onSecondary,
-                                              Icons.check,
-                                            );
-                                          } else {
-                                            hasError.value = true; // Set error state if sync fails
-                                            customSnackbar(
-                                              "Error",
-                                              "${rsp['message']}",
-                                              AppColors.error,
-                                              AppColors.onError,
-                                              Icons.warning,
-                                            );
-                                          }
-                                          setState(() {
-                                            isLoading.value = false; // Hide loading spinner
-                                          });
+                                      if (_networkManager.connectionType.value == 1 ||
+                                          _networkManager.connectionType.value == 2) {
+                                        for (int i = 0; i <= 100; i++) {
+                                          await Future.delayed(const Duration(milliseconds: 50));
+                                          syncProgress.value = i / 100; // Update progress
                                         }
-                                      },
-                                    ),
-                                  );
-                                }
+
+                                        // Call the insert function
+                                        var rsp = await insertSchoolStaffVec(
+                                          item.school,
+                                          item.tourId,
+                                          item.udiseValue,
+                                          item.correctUdise,
+                                          item.headName,
+                                          item.headGender,
+                                          item.headMobile,
+                                          item.headEmail,
+                                          item.headDesignation,
+                                          item.totalTeachingStaff,
+                                          item.totalNonTeachingStaff,
+                                          item.totalStaff,
+                                          item.SmcVecName,
+                                          item.genderVec,
+                                          item.vecMobile,
+                                          item.vecEmail,
+                                          item.vecQualification,
+                                          item.vecTotal,
+                                          item.meetingDuration,
+                                          item.createdBy,
+                                          item.createdAt,
+                                          item.other,
+                                          item.otherQual,
+                                          item.id,
+
+                                          (progress) {
+                                            syncProgress.value = progress; // Update sync progress
+                                          },
+                                        );
+
+                                        if (rsp['status'] == 1) {
+                                          customSnackbar(
+                                            'Successfully',
+                                            "${rsp['message']}",
+                                            AppColors.secondary,
+                                            AppColors.onSecondary,
+                                            Icons.check,
+                                          );
+                                        } else {
+                                          hasError.value = true; // Set error state if sync fails
+                                          customSnackbar(
+                                            "Error",
+                                            "${rsp['message']}",
+                                            AppColors.error,
+                                            AppColors.onError,
+                                            Icons.warning,
+                                          );
+                                        }
+                                        setState(() {
+                                          isLoading.value = false; // Hide loading spinner
+                                        });
+                                      }
+                                    },
+                                  ),
+                                );
                               },
                             ),
                           ],

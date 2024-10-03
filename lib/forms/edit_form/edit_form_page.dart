@@ -15,12 +15,14 @@ import '../school_facilities_&_mapping_form/school_facilities_modals.dart';
 import '../school_staff_vec_form/school_vec_from.dart';
 import '../school_staff_vec_form/school_vec_modals.dart';
 import 'edit controller.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';  // For checking network status
+
 import 'package:dropdown_search/dropdown_search.dart';
 
-import '../../base_client/base_client.dart';
+
 import '../../helper/responsive_helper.dart';
 
-import 'local_db.dart';
+
 
 
 class EditFormPage extends StatefulWidget {
@@ -34,70 +36,81 @@ class _EditFormPageState extends State<EditFormPage> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<String> splitSchoolLists = [];
-  String selectedFormLabel = 'enrollment'; // Default form label
+
+  String selectedFormLabel = '';  // Empty string for the default state
   Map<String, dynamic> formData = {}; // Store fetched form data
   String selectedSchool = '';
 
   // Instance of EditController
   late EditController editController;
 
+  Future<bool> _isConnected() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult != ConnectivityResult.none;
+  }
+
   @override
   void initState() {
     super.initState();
-    editController = Get.put(EditController()); // Initialize editController
-    loadLocalData(); // Load previously stored data when initializing
+    editController = Get.put(EditController());
+
+
+    // Reset selected form label every time the page is loaded
+    setState(() {
+      selectedFormLabel = '';  // Set to empty so that "Select Form" shows up
+    });
   }
 
   Future<void> fetchData(String tourId, String school) async {
-    final url = 'https://mis.17000ft.org/apis/fast_apis/pre-fill-data.php?id=$tourId';
-    final response = await http.get(Uri.parse(url));
+    bool isConnected = await _isConnected();
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      setState(() {
-        formData = data[school] ?? {};
-      });
-      // Store fetched data locally
-      await LocalDatabaseHelper().insertFormData(
-          tourId, school, selectedFormLabel, formData);
-    } else {
-      print('Failed to fetch data');
+    if (isConnected) {
+      // Online: fetch data from the API
+      final url = 'https://mis.17000ft.org/apis/fast_apis/pre-fill-data.php?id=$tourId';
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          formData = data[school] ?? {};
+        });
+
+        print("Fetched data from API for school $school: $formData");
+      }
     }
   }
 
-  Future<void> loadLocalData() async {
-    List<Map<String, dynamic>> storedData = await LocalDatabaseHelper()
-        .getAllFormData();
-    if (storedData.isNotEmpty) {
-      // Optionally, you can display the last stored data
-      final lastData = storedData.last;
-      setState(() {
-        editController.setTour(lastData['tourId']);
-        editController.setSchool(lastData['school']);
-        formData = jsonDecode(lastData['data']);
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
     return WillPopScope(
-      onWillPop:  () async {
-        IconData icon = Icons.check_circle;
+      onWillPop: () async {
         bool shouldExit = await showDialog(
-            context: context,
-            builder: (_) => Confirmation(
-                iconname: icon,
-                title: 'Exit Confirmation',
-                yes: 'Yes',
-                no: 'no',
-                desc: 'Are you sure you want to leave this screen?',
-                onPressed: () async {
-                  Navigator.of(context).pop(true);
-                }));
+          context: context,
+          builder: (_) => Confirmation(
+            iconname: Icons.warning, // Provide the appropriate icon here
+            title: 'Exit Confirmation',
+            desc: 'Are you sure you want to leave this screen?',
+            yes: 'Yes',
+            no: 'No',
+            onPressed: () {
+              setState(() {
+                formData = {};  // Reset form data
+                selectedSchool = '';  // Reset school selection
+                selectedFormLabel = '';  // Reset form label to empty or null
+                editController.setSchool(null);  // Reset school
+                editController.setTour(null);    // Reset tour
+              });
+              Navigator.of(context).pop(true);
+            },
+          ),
+        );
         return shouldExit;
-      },
+      }
+      ,
+
+
       child: Scaffold(
         appBar: const CustomAppbar(
           title: 'Edit Form',
@@ -111,29 +124,29 @@ class _EditFormPageState extends State<EditFormPage> {
                 GetBuilder<TourController>(
                   init: TourController(),
                   builder: (tourController) {
-                    tourController.fetchTourDetails();
+                    tourController.fetchTourDetails();  // Fetch tour details initially
                     return Form(
                       key: _formKey,
                       child: Column(
                         children: [
-                          LabelText(
-                            label: 'Select Tour ID',
-                          ),
-                          CustomSizedBox(
-                            value: 20,
-                            side: 'height',
-                          ),
+                          LabelText(label: 'Select Tour ID'),
+                          CustomSizedBox(value: 20, side: 'height'),
                           CustomDropdownFormField(
                             focusNode: editController.tourIdFocusNode,
-                            options: tourController.getLocalTourList.map((
-                                e) => e.tourId!).toList(),
+                            options: tourController.getLocalTourList
+                                .map((e) => e.tourId!) // Ensure tourId is non-nullable
+                                .toList(),
                             selectedOption: editController.tourValue,
                             onChanged: (value) {
-                              splitSchoolLists = tourController.getLocalTourList
+                              // Safely handle the school list splitting by commas
+                              splitSchoolLists = tourController
+                                  .getLocalTourList
                                   .where((e) => e.tourId == value)
-                                  .map((e) => e.allSchool!.split('|').toList())
+                                  .map((e) => e.allSchool!.split(',').map((s) => s.trim()).toList())
                                   .expand((x) => x)
                                   .toList();
+
+                              // Single setState call for efficiency
                               setState(() {
                                 editController.setSchool(null);
                                 editController.setTour(value);
@@ -141,18 +154,11 @@ class _EditFormPageState extends State<EditFormPage> {
                             },
                             labelText: "Select Tour ID",
                           ),
-                          CustomSizedBox(
-                            value: 20,
-                            side: 'height',
-                          ),
-                          LabelText(
-                            label: 'School',
-                            astrick: true,
-                          ),
-                          CustomSizedBox(
-                            value: 20,
-                            side: 'height',
-                          ),
+                          CustomSizedBox(value: 20, side: 'height'),
+
+                          // School Selection
+                          LabelText(label: 'School', astrick: true),
+                          CustomSizedBox(value: 20, side: 'height'),
                           DropdownSearch<String>(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -163,63 +169,88 @@ class _EditFormPageState extends State<EditFormPage> {
                             popupProps: PopupProps.menu(
                               showSelectedItems: true,
                               showSearchBox: true,
-                              disabledItemFn: (String s) => s.startsWith('I'),
-                            ),
-                            items: splitSchoolLists,
-                            dropdownDecoratorProps: const DropDownDecoratorProps(
-                              dropdownSearchDecoration: InputDecoration(
-                                labelText: "Select School",
-                                hintText: "Select School ",
+                              scrollbarProps: ScrollbarProps(
+                                thickness: 2,  // Thickness of the scrollbar
+                                radius: Radius.circular(10),  // Rounded scrollbar corners
+                                thumbColor: Colors.black87,  // Correct type
+                                thumbVisibility: true,  // Make the scrollbar visible while scrolling
+                              ),
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  hintText: 'Search School',
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
                               ),
                             ),
+                            items: splitSchoolLists,  // List of schools
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                labelText: "Select School",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            dropdownBuilder: (context, selectedItem) {
+                              return Text(
+                                selectedItem ?? "Select School",
+                              );
+                            },
                             onChanged: (value) {
                               if (value != null) {
                                 setState(() {
                                   selectedSchool = value;
                                   editController.setSchool(value);
-                                  fetchData(editController.tourValue!,
-                                      value); // Ensure tourValue is non-null
+                                  fetchData(editController.tourValue!, value);  // Ensure tourValue is non-null
                                 });
                               }
                             },
                             selectedItem: editController.schoolValue,
                           ),
-                          CustomSizedBox(
-                            value: 20,
-                            side: 'height',
-                          ),
+
+                          CustomSizedBox(value: 20, side: 'height'),
+
                           // Dropdown for form labels
                           LabelText(label: 'Select Form'),
-                          CustomSizedBox(
-                            value: 20,
-                            side: 'height',
-                          ),
+                          CustomSizedBox(value: 20, side: 'height'),
                           DropdownButtonFormField<String>(
-                            value: selectedFormLabel,
-                            items: ['School Enrollment Form', 'School Staff & SMC/VEC Details', 'School Facilities Mapping Form']
-                                .map((label) =>
-                                DropdownMenuItem(
-                                  value: label,
-                                  child: Text(label.toUpperCase()),
-                                ))
+                            value: selectedFormLabel.isEmpty ? null : selectedFormLabel,  // Show "Select Form" when empty
+                            items: ['enrollment', 'vec', 'facilities']
+                                .map((label) => DropdownMenuItem(
+                              value: label,
+                              child: Text(label.toUpperCase()),
+                            ))
                                 .toList(),
                             onChanged: (value) {
                               setState(() {
-                                selectedFormLabel = value!;
+                                selectedFormLabel = value ?? '';  // Update selected form label
                               });
                             },
                             decoration: InputDecoration(
-                              labelText: 'Select Form',
+                              labelText: 'Select Form',  // Set placeholder as "Select Form"
                               border: OutlineInputBorder(),
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please select a form";  // Add validation to ensure selection
+                              }
+                              return null;
+                            },
                           ),
-                          CustomSizedBox(
-                            value: 20,
-                            side: 'height',
-                          ),
-                          // Display the fetched form data
-                          if (formData.isNotEmpty)
+
+
+                          CustomSizedBox(value: 20, side: 'height'),
+
+                          // Display fetched form data if available
+                          // Display fetched form data only if both tour, school, and form label are selected
+                          if (formData.isNotEmpty && selectedSchool.isNotEmpty)
                             buildFormDataWidget(selectedFormLabel),
+
+                          // if (formData.isEmpty)
+                          //   Text("No form data available for the selected tour and school."),
                         ],
                       ),
                     );
@@ -233,44 +264,54 @@ class _EditFormPageState extends State<EditFormPage> {
     );
   }
 
+
+
 // Function to build widget to display form data in a single card horizontally
   Widget buildFormDataWidget(String label) {
+    print("Rendering form data for label: $label, formData: $formData");
+
+    // Check for offline mode as well as presence of formData before trying to render the widget
+    if (formData.isEmpty && selectedSchool.isNotEmpty) {
+      return const Text('No data available for the selected school and form.');
+    }
     switch (label) {
       case 'enrollment':
         if (formData.containsKey('enrollment')) {
           final enrollmentFetch = formData['enrollment'];
 
           if (enrollmentFetch is Map) {
-            List<Widget> classWidgets = [];
+            List<Widget> classRows = [];
 
-            // Creating a horizontal layout for class data
+            // Add headers row
+            classRows.add(
+              Row(
+                children: const [
+                  Expanded(child: Text('Class', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+                  Expanded(child: Text('Boys', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+                  Expanded(child: Text('Girls', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+                ],
+              ),
+            );
+
+            // Adding class data rows
             enrollmentFetch.forEach((className, data) {
               if (data is Map && data.containsKey('boys') && data.containsKey('girls')) {
-                final boys = int.tryParse(data['boys'] ?? '0') ?? 0; // Convert to int, default to 0 if parsing fails
-                final girls = int.tryParse(data['girls'] ?? '0') ?? 0; // Convert to int, default to 0 if parsing fails
-                classWidgets.add(
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                final boys = int.tryParse(data['boys'] ?? '0') ?? 0;
+                final girls = int.tryParse(data['girls'] ?? '0') ?? 0;
+
+                classRows.add(
+                  Row(
                     children: [
-                      Text(
-                        className,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 4),
-                      Text('Boys: $boys'),
-                      Text('Girls: $girls'),
-                      SizedBox(height: 16), // Spacing between classes
+                      Expanded(child: Text(className, style: const TextStyle(fontSize: 14))),
+                      Expanded(child: Text('$boys', style: const TextStyle(fontSize: 14))),
+                      Expanded(child: Text('$girls', style: const TextStyle(fontSize: 14))),
                     ],
                   ),
                 );
               }
             });
 
-            // If there are no classes to display, show a message
-            if (classWidgets.isEmpty) {
-              return const Text('No enrollment data available');
-            }
-
+            // Display the enrollment data in a card with headers
             return Card(
               elevation: 4,
               margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -279,19 +320,12 @@ class _EditFormPageState extends State<EditFormPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: classWidgets.map((classWidget) {
-                        return Expanded(child: classWidget);
-                      }).toList(),
-                    ),
+                    Column(children: classRows), // Displaying the rows with class data
                     SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
-                        // Prepare the data in the correct format for SchoolEnrollmentForm
                         final enrolmentDataMap = <String, Map<String, String>>{};
 
-                        // Mapping the data to match the structure expected by SchoolEnrollmentForm
                         enrollmentFetch.forEach((className, data) {
                           if (data is Map && data.containsKey('boys') && data.containsKey('girls')) {
                             enrolmentDataMap[className] = {
@@ -301,19 +335,16 @@ class _EditFormPageState extends State<EditFormPage> {
                           }
                         });
 
-                        // Navigate to SchoolEnrollmentForm with the mapped data
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => SchoolEnrollmentForm(
                               userid: 'userid',
                               existingRecord: EnrolmentCollectionModel(
-                                enrolmentData: jsonEncode(enrolmentDataMap), // Pass the enrollment data as JSON
+                                enrolmentData: jsonEncode(enrolmentDataMap),
                                 remarks: enrollmentFetch['remarks'] ?? '',
-                                tourId: enrollmentFetch['tourId'] ?? '',
+                                // tourId: enrollmentFetch['tourId'] ?? '',
                                 school: enrollmentFetch['school'] ?? '',
-
-                                submittedBy: enrollmentFetch['submittedBy'] ?? '',
                               ),
                             ),
                           ),
@@ -329,9 +360,32 @@ class _EditFormPageState extends State<EditFormPage> {
             return const Text('Enrollment data format is incorrect');
           }
         } else {
-          return const Text('No enrollment data available');
+          return Card(
+            elevation: 4,
+            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('No enrollment data available'),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SchoolEnrollmentForm(),
+                        ),
+                      );
+                    },
+                    child: const Text('Add New Enrollment Data'),
+                  ),
+                ],
+              ),
+            ),
+          );
         }
-
 
       case 'vec':
         if (formData.containsKey('vec') && formData['vec'] != null && formData['vec'].isNotEmpty) {
@@ -341,49 +395,54 @@ class _EditFormPageState extends State<EditFormPage> {
           // Build a widget for each VEC record
           vecData.forEach((vec) {
             vecWidgets.add(
-              ListTile(
-                title: Text('VEC Name: ${vec['SmcVecName']}'),
-                subtitle: Text('Head Name: ${vec['headName']}'),
-                trailing: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    // Navigate to the SchoolStaffVecForm and pass the selected VEC record
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SchoolStaffVecForm(
-                          userid: 'userid', // Pass the actual userId here
-                          existingRecord: SchoolStaffVecRecords(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Tour Id: ${vec['tourId']}'),
+                  Text('School: ${vec['school']}'),
+                  // Add other facility fields as necessary...
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Navigate to the SchoolFacilitiesForm and pass the selected facility record
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SchoolStaffVecForm(
 
-                            tourId: vec['tourId'],
-                            headName: vec['headName'],
-                            headGender: vec['headGender'],
-                            udiseValue: vec['udiseValue'],
-                            correctUdise: vec['correctUdise'],
-                            headMobile: vec['headMobile'],
-                            headEmail: vec['headEmail'],
-                            headDesignation: vec['headDesignation'],
-                            totalTeachingStaff: vec['totalTeachingStaff'],
-                            totalNonTeachingStaff: vec['totalNonTeachingStaff'],
-                            totalStaff: vec['totalStaff'],
-                            SmcVecName: vec['SmcVecName'],
-                            genderVec: vec['genderVec'],
-                            vecMobile: vec['vecMobile'],
-                            vecEmail: vec['vecEmail'],
-                            vecQualification: vec['vecQualification'],
-                            vecTotal: vec['vecTotal'],
-                            meetingDuration: vec['meetingDuration'],
-                            createdBy: vec['createdBy'],
-                            createdAt: vec['createdAt'],
-                            other: vec['other'],
-                            otherQual: vec['otherQual'],
-                            // Map more fields here if needed
+                            existingRecord: SchoolStaffVecRecords(
+                              headName: vec['headName'],
+                              tourId: vec['tourId'],
+                              school: vec['school'],
+                              headGender: vec['headGender'],
+                              udiseValue: vec['udiseValue'],
+                              correctUdise: vec['correctUdise'],
+                              headMobile: vec['headMobile'],
+                              headEmail: vec['headEmail'],
+                              headDesignation: vec['headDesignation'],
+                              totalTeachingStaff: vec['totalTeachingStaff'],
+                              totalNonTeachingStaff: vec['totalNonTeachingStaff'],
+                              totalStaff: vec['totalStaff'],
+                              SmcVecName: vec['SmcVecName'],
+                              genderVec: vec['genderVec'],
+                              vecMobile: vec['vecMobile'],
+                              vecEmail: vec['vecEmail'],
+                              vecQualification: vec['vecQualification'],
+                              vecTotal: vec['vecTotal'],
+                              meetingDuration: vec['meetingDuration'],
+                              createdBy: vec['createdBy'],
+                              createdAt: vec['createdAt'],
+                              other: vec['other'],
+                              otherQual: vec['otherQual'],
+                            ),
+
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                    child: const Text('Edit VEC Data'),
+                  ),
+                ],
               ),
             );
           });
@@ -398,14 +457,41 @@ class _EditFormPageState extends State<EditFormPage> {
             ),
           );
         } else {
-          return const Text('No VEC data available');
+          return Card(
+            elevation: 4,
+            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('No VEC data available'),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Navigate to the form for adding new VEC data
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SchoolStaffVecForm(
+
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text('Add New VEC Data'),
+                  ),
+                ],
+              ),
+            ),
+          );
         }
+
 
       case 'facilities':
         if (formData.containsKey('facilities') &&
             formData['facilities'] != null &&
             formData['facilities'].isNotEmpty) {
-
           final facilitiesData = formData['facilities']; // Assuming facilitiesData is a list of facility records
           List<Widget> facilityWidgets = [];
 
@@ -415,8 +501,8 @@ class _EditFormPageState extends State<EditFormPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Facility: ${facility['school']}'),
-                  Text('Residential Value: ${facility['residentialValue']}'),
+                  Text('Tour Id: ${facility['tourId']}'),
+                  Text('School: ${facility['school']}'),
                   // Add other facility fields as necessary...
                   SizedBox(height: 16),
                   ElevatedButton(
@@ -426,9 +512,8 @@ class _EditFormPageState extends State<EditFormPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => SchoolFacilitiesForm(
-                            userid: 'userid', // Pass the actual userId here
-                            existingRecord: SchoolFacilitiesRecords(
 
+                            existingRecord: SchoolFacilitiesRecords(
                               residentialValue: facility['residentialValue'],
                               tourId: facility['tourId'],
                               electricityValue: facility['electricityValue'],
@@ -447,7 +532,6 @@ class _EditFormPageState extends State<EditFormPage> {
                               libRegisterValue: facility['libRegisterValue'],
                               created_by: facility['created_by'],
                               created_at: facility['created_at'],
-                              // Map more fields here if needed
                             ),
                           ),
                         ),
@@ -470,8 +554,37 @@ class _EditFormPageState extends State<EditFormPage> {
             ),
           );
         } else {
-          return const Text('No facilities data available');
+          return Card(
+            elevation: 4,
+            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('No facilities data available'),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Navigate to the form for adding new facilities data
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SchoolFacilitiesForm(
+
+
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text('Add New Facilities Data'),
+                  ),
+                ],
+              ),
+            ),
+          );
         }
+
 
       default:
         return const Text('No data available'); // Ensure a default return case

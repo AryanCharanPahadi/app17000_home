@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Home',
+              'Home',
               style: AppStyles.appBarTitle(context, AppColors.onPrimary)
           ),
           backgroundColor: AppColors.primary,
@@ -147,25 +147,25 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisSpacing: responsive.responsiveValue(small: 10.0, medium: 20.0, large: 30.0),
                             ),
                             itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: AppColors.background,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.1),
-                                      spreadRadius: 5,
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: InkWell(
-                                    onTap: () {
-                                      // Navigate to the correct form based on the offlineTaskList item
-                                      _navigateToForm(homeController.offlineTaskList[index], homeController);
-                                    },
+                              return InkWell(
+                                onTap: () {
+                                  // Navigate to the correct form based on the offlineTaskList item
+                                  _navigateToForm(homeController.offlineTaskList[index], homeController);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: AppColors.background,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.1),
+                                        spreadRadius: 5,
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
                                     child: Padding(
                                       padding: EdgeInsets.all(responsive.responsiveValue(small: 8.0, medium: 10.0, large: 12.0)),
                                       child: Text(
@@ -183,6 +183,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             },
                           ),
+
+
                         ],
                       ),
                     ),
@@ -249,3 +251,4 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 }
+

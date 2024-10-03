@@ -16,7 +16,7 @@ class TourController extends GetxController {
 
 
     localTourList = await LocalDbController().fetchLocalTourDetails();
-    print('this is localtour list $localTourList');
+    // print('this is localtour list $localTourList');
 
 
     update();

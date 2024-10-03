@@ -16,6 +16,7 @@ import 'package:app17000ft_new/services/network_manager.dart';
 import 'package:app17000ft_new/tourDetails/tour_model.dart';
 import 'package:app17000ft_new/forms/school_enrolment/school_enrolment_model.dart';
 import '../forms/cab_meter_tracking_form/cab_meter_tracing_modal.dart';
+import '../forms/edit_form/edit_modal.dart';
 import '../forms/inPerson_qualitative_form/inPerson_qualitative_modal.dart';
 import '../forms/issue_tracker/alexa_issue.dart';
 import '../forms/issue_tracker/digilab_issue.dart';
@@ -35,6 +36,7 @@ class SqfliteDatabaseHelper {
 
   // Name of the tables
   static const tourDetails = 'tour_details';
+
   static const schoolEnrolment = 'schoolEnrolment';
   static const cabMeter_tracing = 'cabMeter_tracing';
   static const inPerson_quantitative = 'inPerson_quantitative';
@@ -51,7 +53,7 @@ class SqfliteDatabaseHelper {
   static const inPerson_qualitative = 'inPerson_qualitative';
   static const schoolRecce = 'schoolRecce';
   static const _dbName = "app17000ft_new.db";
-  static const _dbVersion = 54; // Increment this when you make schema changes
+  static const _dbVersion = 55; // Increment this when you make schema changes
 
   static Database? _db;
 
@@ -94,7 +96,7 @@ class SqfliteDatabaseHelper {
   void _onUpgrade(Database db, int oldVersion, int newVersion) async {
     print('onUpgrade is called from $oldVersion to $newVersion');
     if (oldVersion < newVersion) {
-      if (oldVersion == 53 && newVersion == 54) {
+      if (oldVersion == 54 && newVersion == 55) {
         print("upgrade");
         await _createTables(db);
       }
@@ -561,6 +563,8 @@ otherQual TEXT
      
     );
   ''');
+
+
   }
 
   // Function to reset the database
@@ -658,6 +662,9 @@ class LocalDbController {
           tourDetails.toJson(),
         );
       }
+
+
+
 
       // Insert EnrolmentCollectionModel
       if (enrolmentCollectionModel != null) {
@@ -838,6 +845,9 @@ class LocalDbController {
     }
     return tourList;
   }
+
+
+
 
   //fetch Local Enrolment DATa
 

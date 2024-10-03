@@ -83,7 +83,7 @@ class _SchoolRecceSyncState extends State<SchoolRecceSync> {
                   Text(
                     'Syncing: ${(syncProgress.value * 100).toStringAsFixed(0)}%',
                     style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold),
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   if (hasError.value)
                     const Text(
@@ -104,137 +104,132 @@ class _SchoolRecceSyncState extends State<SchoolRecceSync> {
                       final item = schoolRecceController.schoolRecceList[index];
                       return ListTile(
                         title: Text(
-                          "${index + 1}. Tour ID: ${item.academicYear!}\n    First: ${item.gradeReportYear1!}\n    Second: ${item.gradeReportYear2!}\n    3rd: ${item.gradeReportYear3!}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold),
+                          "${index + 1}. Tour ID: ${item.tourId!}\nSchool: ${item.school!}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size based on screen width
+                          ),
                         ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              color: AppColors.primary,
+                              color: _networkManager.connectionType.value == 0
+                                  ? Colors.grey  // Grey out the button when offline
+                                  : AppColors.primary,  // Regular color when online
                               icon: const Icon(Icons.sync),
-                              onPressed: () async {
-                                // Check if the user is offline
-                                if (_networkManager.connectionType.value == 0) {
-                                  customSnackbar(
-                                    'Warning',
-                                    'You are offline, please connect to the internet',
-                                    AppColors.secondary,
-                                    AppColors.onSecondary,
-                                    Icons.warning,
-                                  );
-                                } else {
-                                  // Proceed if the user is online
-                                  IconData icon = Icons.check_circle;
-                                  showDialog(
-                                    context: context,
-                                    builder: (_) => Confirmation(
-                                      iconname: icon,
-                                      title: 'Confirm',
-                                      yes: 'Confirm',
-                                      no: 'Cancel',
-                                      desc: 'Are you sure you want to Sync?',
-                                      onPressed: () async {
-                                        setState(() {
-                                          isLoading.value = true; // Show loading spinner
-                                          syncProgress.value = 0.0; // Reset progress
-                                          hasError.value = false; // Reset error state
-                                        });
+                              onPressed: _networkManager.connectionType.value == 0
+                                  ? null  // Disable the button when offline
+                                  : () async {
+                                // Proceed with sync logic when online
+                                IconData icon = Icons.check_circle;
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => Confirmation(
+                                    iconname: icon,
+                                    title: 'Confirm',
+                                    yes: 'Confirm',
+                                    no: 'Cancel',
+                                    desc: 'Are you sure you want to Sync?',
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoading.value = true; // Show loading spinner
+                                        syncProgress.value = 0.0; // Reset progress
+                                        hasError.value = false; // Reset error state
+                                      });
 
-                                        if (_networkManager.connectionType.value == 1 ||
-                                            _networkManager.connectionType.value == 2) {
-                                          for (int i = 0; i <= 100; i++) {
-                                            await Future.delayed(const Duration(milliseconds: 50));
-                                            syncProgress.value = i / 100; // Update progress
-                                          }
-
-                                          // Call the insert function
-                                          var rsp = await insertSchoolRecce(
-                                            item.tourId,
-                                            item.school,
-                                            item.udiseValue,
-                                            item.udise_correct,
-                                            item.boardImg,
-                                            item.buildingImg,
-                                            item.gradeTaught,
-                                            item.instituteHead,
-                                            item.headDesignation,
-                                            item.headPhone,
-                                            item.headEmail,
-                                            item.appointedYear,
-                                            item.noTeachingStaff,
-                                            item.noNonTeachingStaff,
-                                            item.totalStaff,
-                                            item.registerImg,
-                                            item.smcHeadName,
-                                            item.smcPhone,
-                                            item.smcQual,
-                                            item.qualOther,
-                                            item.totalSmc,
-                                            item.meetingDuration,
-                                            item.meetingOther,
-                                            item.smcDesc,
-                                            item.noUsableClass,
-                                            item.electricityAvailability,
-                                            item.networkAvailability,
-                                            item.digitalLearning,
-                                            item.smartClassImg,
-                                            item.projectorImg,
-                                            item.computerImg,
-                                            item.libraryExisting,
-                                            item.libImg,
-                                            item.playGroundSpace,
-                                            item.spaceImg,
-                                            item.enrollmentReport,
-                                            item.enrollmentImg,
-                                            item.academicYear,
-                                            item.gradeReportYear1,
-                                            item.gradeReportYear2,
-                                            item.gradeReportYear3,
-                                            item.DigiLabRoomImg,
-                                            item.libRoomImg,
-                                            item.remoteInfo,
-                                            item.motorableRoad,
-                                            item.languageSchool,
-                                            item.languageOther,
-                                            item.supportingNgo,
-                                            item.otherNgo,
-                                            item.observationPoint,
-                                            item.submittedBy,
-                                            item.createdAt,
-                                            item.id,
-                                                (progress) {
-                                              syncProgress.value = progress; // Update sync progress
-                                            },
-                                          );
-
-                                          if (rsp['status'] == 1) {
-                                            customSnackbar(
-                                              'Successfully',
-                                              "${rsp['message']}",
-                                              AppColors.secondary,
-                                              AppColors.onSecondary,
-                                              Icons.check,
-                                            );
-                                          } else {
-                                            hasError.value = true; // Set error state if sync fails
-                                            customSnackbar(
-                                              "Error",
-                                              "${rsp['message']}",
-                                              AppColors.error,
-                                              AppColors.onError,
-                                              Icons.warning,
-                                            );
-                                          }
-                                          setState(() {
-                                            isLoading.value = false; // Hide loading spinner
-                                          });
+                                      if (_networkManager.connectionType.value == 1 ||
+                                          _networkManager.connectionType.value == 2) {
+                                        for (int i = 0; i <= 100; i++) {
+                                          await Future.delayed(const Duration(milliseconds: 50));
+                                          syncProgress.value = i / 100; // Update progress
                                         }
-                                      },
-                                    ),
-                                  );
-                                }
+
+                                        // Call the insert function
+                                        var rsp = await insertSchoolRecce(
+                                          item.tourId,
+                                          item.school,
+                                          item.udiseValue,
+                                          item.udise_correct,
+                                          item.boardImg,
+                                          item.buildingImg,
+                                          item.gradeTaught,
+                                          item.instituteHead,
+                                          item.headDesignation,
+                                          item.headPhone,
+                                          item.headEmail,
+                                          item.appointedYear,
+                                          item.noTeachingStaff,
+                                          item.noNonTeachingStaff,
+                                          item.totalStaff,
+                                          item.registerImg,
+                                          item.smcHeadName,
+                                          item.smcPhone,
+                                          item.smcQual,
+                                          item.qualOther,
+                                          item.totalSmc,
+                                          item.meetingDuration,
+                                          item.meetingOther,
+                                          item.smcDesc,
+                                          item.noUsableClass,
+                                          item.electricityAvailability,
+                                          item.networkAvailability,
+                                          item.digitalLearning,
+                                          item.smartClassImg,
+                                          item.projectorImg,
+                                          item.computerImg,
+                                          item.libraryExisting,
+                                          item.libImg,
+                                          item.playGroundSpace,
+                                          item.spaceImg,
+                                          item.enrollmentReport,
+                                          item.enrollmentImg,
+                                          item.academicYear,
+                                          item.gradeReportYear1,
+                                          item.gradeReportYear2,
+                                          item.gradeReportYear3,
+                                          item.DigiLabRoomImg,
+                                          item.libRoomImg,
+                                          item.remoteInfo,
+                                          item.motorableRoad,
+                                          item.languageSchool,
+                                          item.languageOther,
+                                          item.supportingNgo,
+                                          item.otherNgo,
+                                          item.observationPoint,
+                                          item.submittedBy,
+                                          item.createdAt,
+                                          item.id,
+                                              (progress) {
+                                            syncProgress.value = progress; // Update sync progress
+                                          },
+                                        );
+
+                                        if (rsp['status'] == 1) {
+                                          customSnackbar(
+                                            'Successfully',
+                                            "${rsp['message']}",
+                                            AppColors.secondary,
+                                            AppColors.onSecondary,
+                                            Icons.check,
+                                          );
+                                        } else {
+                                          hasError.value = true; // Set error state if sync fails
+                                          customSnackbar(
+                                            "Error",
+                                            "${rsp['message']}",
+                                            AppColors.error,
+                                            AppColors.onError,
+                                            Icons.warning,
+                                          );
+                                        }
+                                        setState(() {
+                                          isLoading.value = false; // Hide loading spinner
+                                        });
+                                      }
+                                    },
+                                  ),
+                                );
                               },
                             ),
                           ],

@@ -73,6 +73,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         padding: EdgeInsets.zero,
         children: [
           // Drawer header with user info
+          // Drawer header with user info
           Container(
             color: AppColors.primary,
             height: responsive.responsiveValue(
@@ -92,7 +93,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  Flexible(
+                  // Username Text
+                  Expanded(
                     child: Text(
                       _username.toUpperCase(),
                       style: TextStyle(
@@ -102,33 +104,40 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1, // Allows text to fit in a single line or ellipsis if too long
+                      softWrap: false, // Prevents unwanted line wrapping
+                      overflow: TextOverflow.ellipsis, // Adds "..." if text overflows
                     ),
                   ),
-                  Flexible(
+                  Expanded(
                     child: Text(
                       _officeName.toUpperCase(),
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
+                      style:TextStyle(
+                        color: Colors.white,
                         fontSize: responsive.responsiveValue(
-                            small: 12, medium: 14, large: 16),
+                            small: 16, medium: 18, large: 20),
+                        fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
+                      maxLines: 1,
+                      softWrap: false,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Flexible(
-                    child: Text(
-                      _version.toUpperCase(),
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
-                        fontSize: responsive.responsiveValue(
-                            small: 12, medium: 14, large: 16),
-                      ),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: Text(
+                  //     _version.toUpperCase(),
+                  //     style: TextStyle(
+                  //       color: Colors.white.withOpacity(0.9),
+                  //       fontSize: responsive.responsiveValue(
+                  //           small: 12, medium: 14, large: 16),
+                  //     ),
+                  //     textAlign: TextAlign.center,
+                  //     maxLines: 1,
+                  //     softWrap: false,
+                  //     overflow: TextOverflow.ellipsis,
+                  //   ),
+                  // ),
                 ],
               ),
             ),

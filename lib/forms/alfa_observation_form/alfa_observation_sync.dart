@@ -99,110 +99,110 @@ class _AlfaObservationSync extends State<AlfaObservationSync> {
                       final item = alfaObservationController.alfaObservationList[index];
                       return ListTile(
                         title: Text(
-                          "${index + 1}. Tour ID: ${item.tourId!}\n    School: ${item.school!}",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          "${index + 1}. Tour ID: ${item.tourId!}\nSchool: ${item.school!}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size based on screen width
+                          ),
                         ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
 
                             IconButton(
-                              color: AppColors.primary,
+                              color: _networkManager.connectionType.value == 0
+                                  ? Colors.grey  // Grey out the button when offline
+                                  : AppColors.primary,  // Regular color when online
                               icon: const Icon(Icons.sync),
-                              onPressed: () async {
+                              onPressed: _networkManager.connectionType.value == 0
+                                  ? null  // Disable the button when offline
+                                  : () async {
+                                // Proceed with sync logic when online
                                 IconData icon = Icons.check_circle;
                                 showDialog(
-                                    context: context,
-                                    builder: (_) => Confirmation(
-                                        iconname: icon,
-                                        title: 'Confirm',
-                                        yes: 'Confirm',
-                                        no: 'Cancel',
-                                        desc: 'Are you sure you want to Sync?',
-                                        onPressed: () async {
-                                          setState(() {
-                                            isLoading.value = true; // Show loading spinner
-                                            syncProgress.value = 0.0; // Reset progress
-                                            hasError.value = false; // Reset error state
-                                          });
-                                          if (_networkManager.connectionType.value == 0) {
-                                            customSnackbar(
-                                                'Warning',
-                                                'You are offline please connect to the internet',
-                                                AppColors.secondary,
-                                                AppColors.onSecondary,
-                                                Icons.warning);
-                                          } else {
-                                            if (_networkManager.connectionType.value == 1 ||
-                                                _networkManager.connectionType.value == 2) {
-                                              for (int i = 0; i <= 100; i++) {
-                                                await Future.delayed(const Duration(milliseconds: 50));
-                                                syncProgress.value = i / 100; // Update progress
-                                              }
+                                  context: context,
+                                  builder: (_) => Confirmation(
+                                    iconname: icon,
+                                    title: 'Confirm',
+                                    yes: 'Confirm',
+                                    no: 'Cancel',
+                                    desc: 'Are you sure you want to Sync?',
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoading.value = true; // Show loading spinner
+                                        syncProgress.value = 0.0; // Reset progress
+                                        hasError.value = false; // Reset error state
+                                      });
 
-                                              print('ready to insert');
-                                              print(item.submittedAt);
-                                              var rsp = await insertAlfaObservation(
-                                                item.tourId,
-                                                item.school,
-                                                item.udiseValue,
-                                                item.correctUdise,
-                                                item.noStaffTrained,
-                                                item.imgNurTimeTable,
-                                                item.imgLKGTimeTable,
-                                                item.imgUKGTimeTable,
-                                                item.bookletValue,
-                                                item.moduleValue,
-                                                item.numeracyBooklet,
-                                                item.numeracyValue,
-                                                item.pairValue,
-                                                item.alfaActivityValue,
-                                                item.alfaGradeReport,
-                                                item.imgAlfa,
-                                                item.refresherTrainingValue,
-                                                item.noTrainedTeacher,
-                                                item.imgTraining,
-                                                item.readingValue,
-                                                item.libGradeReport,
-                                                item.imgLibrary,
-                                                item.tlmKitValue,
-                                                item.imgTlm,
-                                                item.classObservation,
-                                                item.createdAt,
-                                                item.submittedAt,
-                                                item.createdBy,
-                                                item.id,
-                                                    (progress) {
-                                                  syncProgress.value = progress; // Update sync progress
-                                                },
-                                              );
+                                      if (_networkManager.connectionType.value == 1 ||
+                                          _networkManager.connectionType.value == 2) {
+                                        for (int i = 0; i <= 100; i++) {
+                                          await Future.delayed(const Duration(milliseconds: 50));
+                                          syncProgress.value = i / 100; // Update progress
+                                        }
 
-                                              if (rsp['status'] == 1) {
-                                                customSnackbar(
-                                                    'Successfully',
-                                                    "${rsp['message']}",
-                                                    AppColors.secondary,
-                                                    AppColors.onSecondary,
-                                                    Icons.check);
-                                              } else if (rsp['status'] == 0) {
-                                                customSnackbar(
-                                                    "Error",
-                                                    "${rsp['message']}",
-                                                    AppColors.error,
-                                                    AppColors.onError,
-                                                    Icons.warning);
-                                              } else {
-                                                customSnackbar(
-                                                    "Error",
-                                                    "Something went wrong, Please contact Admin",
-                                                    AppColors.error,
-                                                    AppColors.onError,
-                                                    Icons.warning);
-                                              }
-                                              isLoading.value = false; // Hide loading spinner
-                                            }
-                                          }
-                                        }));
+                                        // Call the insert function
+                                        var rsp = await insertAlfaObservation(
+                                          item.tourId,
+                                          item.school,
+                                          item.udiseValue,
+                                          item.correctUdise,
+                                          item.noStaffTrained,
+                                          item.imgNurTimeTable,
+                                          item.imgLKGTimeTable,
+                                          item.imgUKGTimeTable,
+                                          item.bookletValue,
+                                          item.moduleValue,
+                                          item.numeracyBooklet,
+                                          item.numeracyValue,
+                                          item.pairValue,
+                                          item.alfaActivityValue,
+                                          item.alfaGradeReport,
+                                          item.imgAlfa,
+                                          item.refresherTrainingValue,
+                                          item.noTrainedTeacher,
+                                          item.imgTraining,
+                                          item.readingValue,
+                                          item.libGradeReport,
+                                          item.imgLibrary,
+                                          item.tlmKitValue,
+                                          item.imgTlm,
+                                          item.classObservation,
+                                          item.createdAt,
+                                          item.submittedAt,
+                                          item.createdBy,
+                                          item.id,
+
+                                          (progress) {
+                                            syncProgress.value = progress; // Update sync progress
+                                          },
+                                        );
+
+                                        if (rsp['status'] == 1) {
+                                          customSnackbar(
+                                            'Successfully',
+                                            "${rsp['message']}",
+                                            AppColors.secondary,
+                                            AppColors.onSecondary,
+                                            Icons.check,
+                                          );
+                                        } else {
+                                          hasError.value = true; // Set error state if sync fails
+                                          customSnackbar(
+                                            "Error",
+                                            "${rsp['message']}",
+                                            AppColors.error,
+                                            AppColors.onError,
+                                            Icons.warning,
+                                          );
+                                        }
+                                        setState(() {
+                                          isLoading.value = false; // Hide loading spinner
+                                        });
+                                      }
+                                    },
+                                  ),
+                                );
                               },
                             ),
                           ],

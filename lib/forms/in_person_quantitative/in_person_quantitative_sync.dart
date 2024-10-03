@@ -70,7 +70,7 @@ class _InPersonQuantitativeSync extends State<InPersonQuantitativeSync> {
                   const SizedBox(height: 20),
                   Text(
                     'Syncing: ${(syncProgress.value * 100).toStringAsFixed(0)}%',
-                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   if (hasError.value) // Show error message if syncing failed
                     const Text(
@@ -90,129 +90,124 @@ class _InPersonQuantitativeSync extends State<InPersonQuantitativeSync> {
                       final item = inPersonQuantitativeController.inPersonQuantitative[index];
                       return ListTile(
                         title: Text(
-                          "${index + 1}. Tour ID: ${item.tourId!}\n    School: ${item.school!}",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          "${index + 1}. Tour ID: ${item.tourId!}\nSchool: ${item.school!}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size based on screen width
+                          ),
                         ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
 
                             IconButton(
-                              color: AppColors.primary,
+                              color: _networkManager.connectionType.value == 0
+                                  ? Colors.grey  // Grey out the button when offline
+                                  : AppColors.primary,  // Regular color when online
                               icon: const Icon(Icons.sync),
-                              onPressed: () async {
-                                // Check if the user is offline
-                                if (_networkManager.connectionType.value == 0) {
-                                  customSnackbar(
-                                    'Warning',
-                                    'You are offline, please connect to the internet',
-                                    AppColors.secondary,
-                                    AppColors.onSecondary,
-                                    Icons.warning,
-                                  );
-                                } else {
-                                  // Proceed if the user is online
-                                  IconData icon = Icons.check_circle;
-                                  showDialog(
-                                    context: context,
-                                    builder: (_) => Confirmation(
-                                      iconname: icon,
-                                      title: 'Confirm',
-                                      yes: 'Confirm',
-                                      no: 'Cancel',
-                                      desc: 'Are you sure you want to Sync?',
-                                      onPressed: () async {
-                                        setState(() {
-                                          isLoading.value = true; // Show loading spinner
-                                          syncProgress.value = 0.0; // Reset progress
-                                          hasError.value = false; // Reset error state
-                                        });
+                              onPressed: _networkManager.connectionType.value == 0
+                                  ? null  // Disable the button when offline
+                                  : () async {
+                                // Proceed with sync logic when online
+                                IconData icon = Icons.check_circle;
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => Confirmation(
+                                    iconname: icon,
+                                    title: 'Confirm',
+                                    yes: 'Confirm',
+                                    no: 'Cancel',
+                                    desc: 'Are you sure you want to Sync?',
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoading.value = true; // Show loading spinner
+                                        syncProgress.value = 0.0; // Reset progress
+                                        hasError.value = false; // Reset error state
+                                      });
 
-                                        if (_networkManager.connectionType.value == 1 ||
-                                            _networkManager.connectionType.value == 2) {
-                                          for (int i = 0; i <= 100; i++) {
-                                            await Future.delayed(const Duration(milliseconds: 50));
-                                            syncProgress.value = i / 100; // Update progress
-                                          }
-
-                                          // Call the insert function
-                                          var rsp = await insertInPersonQuantitativeRecords(
-                                            item.tourId,
-                                            item.school,
-                                            item.udicevalue,
-                                            item.correct_udice,
-                                            item.no_enrolled,
-                                            item.imgpath,
-                                            item.timetable_available,
-                                            item.class_scheduled,
-
-                                            item.remarks_scheduling,
-                                            item.admin_appointed,
-                                            item.admin_trained,
-                                            item.admin_name,
-                                            item.admin_phone,
-                                            item.sub_teacher_trained,
-                                            item.teacher_ids,
-
-                                            item.no_staff,
-                                            item.training_pic,
-                                            item.specifyOtherTopics,
-                                            item.practical_demo,
-                                            item.reason_demo,
-                                            item.comments_capacity,
-                                            item.children_comfortable,
-                                            item.children_understand,
-                                            item.post_test,
-                                            item.resolved_doubts,
-                                            item.logs_filled,
-                                            item.filled_correctly,
-                                            item.send_report,
-                                            item.app_installed,
-                                            item.data_synced,
-                                            item.last_syncedDate,
-                                            item.lib_timetable,
-                                            item.timetable_followed,
-                                            item.registered_updated,
-                                            item.observation_comment,
-                                            item.topicsCoveredInTraining,
-                                            item.participant_name,
-                                            item.major_issue,
-                                            item.created_at,
-                                            item.submitted_by,
-                                            item.unique_id,
-                                            item.id,
-
-                                            (progress) {
-                                              syncProgress.value = progress; // Update sync progress
-                                            },
-                                          );
-
-                                          if (rsp['status'] == 1) {
-                                            customSnackbar(
-                                              'Successfully',
-                                              "${rsp['message']}",
-                                              AppColors.secondary,
-                                              AppColors.onSecondary,
-                                              Icons.check,
-                                            );
-                                          } else {
-                                            hasError.value = true; // Set error state if sync fails
-                                            customSnackbar(
-                                              "Error",
-                                              "${rsp['message']}",
-                                              AppColors.error,
-                                              AppColors.onError,
-                                              Icons.warning,
-                                            );
-                                          }
-                                          setState(() {
-                                            isLoading.value = false; // Hide loading spinner
-                                          });
+                                      if (_networkManager.connectionType.value == 1 ||
+                                          _networkManager.connectionType.value == 2) {
+                                        for (int i = 0; i <= 100; i++) {
+                                          await Future.delayed(const Duration(milliseconds: 50));
+                                          syncProgress.value = i / 100; // Update progress
                                         }
-                                      },
-                                    ),
-                                  );
-                                }
+
+                                        // Call the insert function
+                                        var rsp = await insertInPersonQuantitativeRecords(
+                                          item.tourId,
+                                          item.school,
+                                          item.udicevalue,
+                                          item.correct_udice,
+                                          item.no_enrolled,
+                                          item.imgpath,
+                                          item.timetable_available,
+                                          item.class_scheduled,
+
+                                          item.remarks_scheduling,
+                                          item.admin_appointed,
+                                          item.admin_trained,
+                                          item.admin_name,
+                                          item.admin_phone,
+                                          item.sub_teacher_trained,
+                                          item.teacher_ids,
+
+                                          item.no_staff,
+                                          item.training_pic,
+                                          item.specifyOtherTopics,
+                                          item.practical_demo,
+                                          item.reason_demo,
+                                          item.comments_capacity,
+                                          item.children_comfortable,
+                                          item.children_understand,
+                                          item.post_test,
+                                          item.resolved_doubts,
+                                          item.logs_filled,
+                                          item.filled_correctly,
+                                          item.send_report,
+                                          item.app_installed,
+                                          item.data_synced,
+                                          item.last_syncedDate,
+                                          item.lib_timetable,
+                                          item.timetable_followed,
+                                          item.registered_updated,
+                                          item.observation_comment,
+                                          item.topicsCoveredInTraining,
+                                          item.participant_name,
+                                          item.major_issue,
+                                          item.created_at,
+                                          item.submitted_by,
+                                          item.unique_id,
+                                          item.id,
+                                              (progress) {
+                                            syncProgress.value = progress; // Update sync progress
+                                          },
+                                        );
+
+                                        if (rsp['status'] == 1) {
+                                          customSnackbar(
+                                            'Successfully',
+                                            "${rsp['message']}",
+                                            AppColors.secondary,
+                                            AppColors.onSecondary,
+                                            Icons.check,
+                                          );
+                                        } else {
+                                          hasError.value = true; // Set error state if sync fails
+                                          customSnackbar(
+                                            "Error",
+                                            "${rsp['message']}",
+                                            AppColors.error,
+                                            AppColors.onError,
+                                            Icons.warning,
+                                          );
+                                        }
+                                        setState(() {
+                                          isLoading.value = false; // Hide loading spinner
+                                        });
+                                      }
+                                    },
+                                  ),
+                                );
                               },
                             ),
                           ],
