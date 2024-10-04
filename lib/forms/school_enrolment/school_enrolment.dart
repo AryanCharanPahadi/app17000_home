@@ -32,7 +32,16 @@ import '../../components/custom_confirmation.dart';
 class SchoolEnrollmentForm extends StatefulWidget {
   String? userid;
   final EnrolmentCollectionModel? existingRecord;
-  SchoolEnrollmentForm({super.key, this.userid, this.existingRecord});
+  String? tourId; // Add this line
+  String? school; // Add this line for school
+
+  SchoolEnrollmentForm({
+    super.key,
+    this.userid,
+    this.existingRecord,
+    this.school,
+    this.tourId, // Update the constructor to accept tourId
+  });
 
   @override
   State<SchoolEnrollmentForm> createState() => _SchoolEnrollmentFormState();
@@ -130,7 +139,7 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
               RegExp(r'(\w+):'), (match) => '"${match[1]}":');
 
           final Map<String, dynamic> parsedData =
-          jsonDecode(correctedJsonString);
+              jsonDecode(correctedJsonString);
           print("Corrected Parsed Data: $parsedData");
 
           if (boysControllers.isEmpty || girlsControllers.isEmpty) {
@@ -236,13 +245,8 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
     super.dispose();
   }
 
-
-
-  TableRow tableRowMethod(
-      String classname,
-      TextEditingController boyController,
-      TextEditingController girlController,
-      ValueNotifier<int> totalNotifier) {
+  TableRow tableRowMethod(String classname, TextEditingController boyController,
+      TextEditingController girlController, ValueNotifier<int> totalNotifier) {
     return TableRow(
       children: [
         TableCell(
@@ -284,7 +288,8 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
               return Center(
                 child: Text(
                   total.toString(),
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               );
             },
@@ -294,13 +299,12 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
 
     return WillPopScope(
-      onWillPop:  () async {
+      onWillPop: () async {
         IconData icon = Icons.check_circle;
         bool shouldExit = await showDialog(
             context: context,
@@ -345,24 +349,32 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                       side: 'height',
                                     ),
                                     CustomDropdownFormField(
-                                      focusNode: schoolEnrolmentController.tourIdFocusNode,
+                                      focusNode: schoolEnrolmentController
+                                          .tourIdFocusNode,
                                       options: tourController.getLocalTourList
-                                          .map((e) => e.tourId!) // Ensure tourId is non-nullable
+                                          .map((e) => e
+                                              .tourId!) // Ensure tourId is non-nullable
                                           .toList(),
-                                      selectedOption: schoolEnrolmentController.tourValue,
+                                      selectedOption:
+                                          schoolEnrolmentController.tourValue,
                                       onChanged: (value) {
                                         // Safely handle the school list splitting by commas
                                         splitSchoolLists = tourController
                                             .getLocalTourList
                                             .where((e) => e.tourId == value)
-                                            .map((e) => e.allSchool!.split(',').map((s) => s.trim()).toList())
+                                            .map((e) => e.allSchool!
+                                                .split(',')
+                                                .map((s) => s.trim())
+                                                .toList())
                                             .expand((x) => x)
                                             .toList();
 
                                         // Single setState call for efficiency
                                         setState(() {
-                                          schoolEnrolmentController.setSchool(null);
-                                          schoolEnrolmentController.setTour(value);
+                                          schoolEnrolmentController
+                                              .setSchool(null);
+                                          schoolEnrolmentController
+                                              .setTour(value);
                                         });
                                       },
                                       labelText: "Select Tour ID",
@@ -389,11 +401,15 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                       popupProps: PopupProps.menu(
                                         showSelectedItems: true,
                                         showSearchBox: true,
-                                        disabledItemFn: (String s) => s.startsWith('I'), // Disable based on condition
+                                        disabledItemFn: (String s) => s.startsWith(
+                                            'I'), // Disable based on condition
                                       ),
-                                      items: splitSchoolLists, // Split school list as strings
-                                      dropdownDecoratorProps: const DropDownDecoratorProps(
-                                        dropdownSearchDecoration: InputDecoration(
+                                      items:
+                                          splitSchoolLists, // Split school list as strings
+                                      dropdownDecoratorProps:
+                                          const DropDownDecoratorProps(
+                                        dropdownSearchDecoration:
+                                            InputDecoration(
                                           labelText: "Select School",
                                           hintText: "Select School",
                                         ),
@@ -401,10 +417,12 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                       onChanged: (value) {
                                         // Set the selected school
                                         setState(() {
-                                          schoolEnrolmentController.setSchool(value);
+                                          schoolEnrolmentController
+                                              .setSchool(value);
                                         });
                                       },
-                                      selectedItem: schoolEnrolmentController.schoolValue,
+                                      selectedItem:
+                                          schoolEnrolmentController.schoolValue,
                                     ),
                                     CustomSizedBox(
                                       value: 20,
@@ -423,7 +441,7 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                       height: 60,
                                       decoration: BoxDecoration(
                                         borderRadius:
-                                        BorderRadius.circular(10.0),
+                                            BorderRadius.circular(10.0),
                                         border: Border.all(
                                             width: 2,
                                             color: _isImageUploaded == false
@@ -433,19 +451,19 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                       child: ListTile(
                                           title: _isImageUploaded == false
                                               ? const Text(
-                                            'Click or Upload Image',
-                                          )
+                                                  'Click or Upload Image',
+                                                )
                                               : const Text(
-                                            'Click or Upload Image',
-                                            style: TextStyle(
-                                                color: AppColors.error),
-                                          ),
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                      color: AppColors.error),
+                                                ),
                                           trailing: const Icon(Icons.camera_alt,
                                               color: AppColors.onBackground),
                                           onTap: () {
                                             showModalBottomSheet(
                                                 backgroundColor:
-                                                AppColors.primary,
+                                                    AppColors.primary,
                                                 context: context,
                                                 builder: ((builder) =>
                                                     schoolEnrolmentController
@@ -462,90 +480,90 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                     ),
 
                                     schoolEnrolmentController
-                                        .multipleImage.isNotEmpty
+                                            .multipleImage.isNotEmpty
                                         ? Container(
-                                      width: responsive.responsiveValue(
-                                          small: 600.0,
-                                          medium: 900.0,
-                                          large: 1400.0),
-                                      height: responsive.responsiveValue(
-                                          small: 170.0,
-                                          medium: 170.0,
-                                          large: 170.0),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.grey),
-                                        borderRadius:
-                                        BorderRadius.circular(10),
-                                      ),
-                                      child: schoolEnrolmentController
-                                          .multipleImage.isEmpty
-                                          ? const Center(
-                                        child: Text(
-                                            'No images selected.'),
-                                      )
-                                          : ListView.builder(
-                                        scrollDirection:
-                                        Axis.horizontal,
-                                        itemCount:
-                                        schoolEnrolmentController
-                                            .multipleImage
-                                            .length,
-                                        itemBuilder:
-                                            (context, index) {
-                                          return SizedBox(
-                                            height: 200,
-                                            width: 200,
-                                            child: Column(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets
-                                                      .all(8.0),
-                                                  child:
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      CustomImagePreview.showImagePreview(
-                                                          schoolEnrolmentController
-                                                              .multipleImage[
-                                                          index]
-                                                              .path,
-                                                          context);
-                                                    },
-                                                    child:
-                                                    Image.file(
-                                                      File(schoolEnrolmentController
-                                                          .multipleImage[
-                                                      index]
-                                                          .path),
-                                                      width: 190,
-                                                      height: 120,
-                                                      fit: BoxFit
-                                                          .fill,
-                                                    ),
-                                                  ),
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      schoolEnrolmentController
-                                                          .multipleImage
-                                                          .removeAt(
-                                                          index);
-                                                    });
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.delete,
-                                                    color:
-                                                    Colors.red,
-                                                  ),
-                                                ),
-                                              ],
+                                            width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0),
+                                            height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                          );
-                                        },
-                                      ),
-                                    )
+                                            child: schoolEnrolmentController
+                                                    .multipleImage.isEmpty
+                                                ? const Center(
+                                                    child: Text(
+                                                        'No images selected.'),
+                                                  )
+                                                : ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    itemCount:
+                                                        schoolEnrolmentController
+                                                            .multipleImage
+                                                            .length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return SizedBox(
+                                                        height: 200,
+                                                        width: 200,
+                                                        child: Column(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () {
+                                                                  CustomImagePreview.showImagePreview(
+                                                                      schoolEnrolmentController
+                                                                          .multipleImage[
+                                                                              index]
+                                                                          .path,
+                                                                      context);
+                                                                },
+                                                                child:
+                                                                    Image.file(
+                                                                  File(schoolEnrolmentController
+                                                                      .multipleImage[
+                                                                          index]
+                                                                      .path),
+                                                                  width: 190,
+                                                                  height: 120,
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  schoolEnrolmentController
+                                                                      .multipleImage
+                                                                      .removeAt(
+                                                                          index);
+                                                                });
+                                                              },
+                                                              child: const Icon(
+                                                                Icons.delete,
+                                                                color:
+                                                                    Colors.red,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                          )
                                         : const SizedBox(),
                                     CustomSizedBox(
                                       value: 40,
@@ -562,45 +580,41 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                               children: [
                                                 TableCell(
                                                     child: Center(
-                                                        child: Text(
-                                                            'Grade',
+                                                        child: Text('Grade',
                                                             style: TextStyle(
-                                                                fontSize:
-                                                                18,
+                                                                fontSize: 18,
                                                                 fontWeight:
-                                                                FontWeight.bold)))),
+                                                                    FontWeight
+                                                                        .bold)))),
                                                 TableCell(
                                                     child: Center(
-                                                        child: Text(
-                                                            'Boys',
+                                                        child: Text('Boys',
                                                             style: TextStyle(
-                                                                fontSize:
-                                                                18,
+                                                                fontSize: 18,
                                                                 fontWeight:
-                                                                FontWeight.bold)))),
+                                                                    FontWeight
+                                                                        .bold)))),
                                                 TableCell(
                                                     child: Center(
-                                                        child: Text(
-                                                            'Girls',
+                                                        child: Text('Girls',
                                                             style: TextStyle(
-                                                                fontSize:
-                                                                18,
+                                                                fontSize: 18,
                                                                 fontWeight:
-                                                                FontWeight.bold)))),
+                                                                    FontWeight
+                                                                        .bold)))),
                                                 TableCell(
                                                     child: Center(
-                                                        child: Text(
-                                                            'Total',
+                                                        child: Text('Total',
                                                             style: TextStyle(
-                                                                fontSize:
-                                                                18,
+                                                                fontSize: 18,
                                                                 fontWeight:
-                                                                FontWeight.bold)))),
+                                                                    FontWeight
+                                                                        .bold)))),
                                               ],
                                             ),
                                             for (int i = 0;
-                                            i < grades.length;
-                                            i++)
+                                                i < grades.length;
+                                                i++)
                                               tableRowMethod(
                                                 grades[i],
                                                 boysControllers[i],
@@ -614,67 +628,60 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                                         child: Text(
                                                             'Grand Total',
                                                             style: TextStyle(
-                                                                fontSize:
-                                                                18,
+                                                                fontSize: 18,
                                                                 fontWeight:
-                                                                FontWeight.bold)))),
+                                                                    FontWeight
+                                                                        .bold)))),
                                                 TableCell(
-                                                  child:
-                                                  ValueListenableBuilder<
+                                                  child: ValueListenableBuilder<
                                                       int>(
                                                     valueListenable:
-                                                    grandTotalBoys,
-                                                    builder: (context,
-                                                        total, child) {
+                                                        grandTotalBoys,
+                                                    builder: (context, total,
+                                                        child) {
                                                       return Center(
                                                           child: Text(
-                                                              total
-                                                                  .toString(),
+                                                              total.toString(),
                                                               style: const TextStyle(
-                                                                  fontSize:
-                                                                  18,
+                                                                  fontSize: 18,
                                                                   fontWeight:
-                                                                  FontWeight.bold)));
+                                                                      FontWeight
+                                                                          .bold)));
                                                     },
                                                   ),
                                                 ),
                                                 TableCell(
-                                                  child:
-                                                  ValueListenableBuilder<
+                                                  child: ValueListenableBuilder<
                                                       int>(
                                                     valueListenable:
-                                                    grandTotalGirls,
-                                                    builder: (context,
-                                                        total, child) {
+                                                        grandTotalGirls,
+                                                    builder: (context, total,
+                                                        child) {
                                                       return Center(
                                                           child: Text(
-                                                              total
-                                                                  .toString(),
+                                                              total.toString(),
                                                               style: const TextStyle(
-                                                                  fontSize:
-                                                                  18,
+                                                                  fontSize: 18,
                                                                   fontWeight:
-                                                                  FontWeight.bold)));
+                                                                      FontWeight
+                                                                          .bold)));
                                                     },
                                                   ),
                                                 ),
                                                 TableCell(
-                                                  child:
-                                                  ValueListenableBuilder<
+                                                  child: ValueListenableBuilder<
                                                       int>(
-                                                    valueListenable:
-                                                    grandTotal,
-                                                    builder: (context,
-                                                        total, child) {
+                                                    valueListenable: grandTotal,
+                                                    builder: (context, total,
+                                                        child) {
                                                       return Center(
                                                           child: Text(
-                                                              total
-                                                                  .toString(),
+                                                              total.toString(),
                                                               style: const TextStyle(
-                                                                  fontSize:
-                                                                  18,
+                                                                  fontSize: 18,
                                                                   fontWeight:
-                                                                  FontWeight.bold)));
+                                                                      FontWeight
+                                                                          .bold)));
                                                     },
                                                   ),
                                                 ),
@@ -685,10 +692,9 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                       ],
                                     ),
                                     ErrorText(
-                                      isVisible:
-                                      validateEnrolmentRecords,
+                                      isVisible: validateEnrolmentRecords,
                                       message:
-                                      'Atleast one enrolment record is required',
+                                          'Atleast one enrolment record is required',
                                     ),
                                     CustomSizedBox(
                                       value: 40,
@@ -700,7 +706,6 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                     CustomSizedBox(side: 'height', value: 10),
                                     LabelText(
                                       label: 'Remarks',
-
                                     ),
                                     CustomSizedBox(side: 'height', value: 20),
                                     CustomTextFormField(
@@ -718,11 +723,15 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                       onPressedButton: () async {
                                         // Perform validation
                                         setState(() {
-                                          validateRegister = schoolEnrolmentController.multipleImage.isEmpty;
-                                          validateEnrolmentRecords = jsonData.isEmpty;
+                                          validateRegister =
+                                              schoolEnrolmentController
+                                                  .multipleImage.isEmpty;
+                                          validateEnrolmentRecords =
+                                              jsonData.isEmpty;
                                         });
 
-                                        if (schoolEnrolmentController.multipleImage.isEmpty) {
+                                        if (schoolEnrolmentController
+                                            .multipleImage.isEmpty) {
                                           customSnackbar(
                                             'Error',
                                             'Please upload or capture a register photo',
@@ -746,12 +755,17 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
 
                                         if (_formKey.currentState!.validate()) {
                                           DateTime now = DateTime.now();
-                                          String formattedDate = DateFormat('yyyy-MM-dd').format(now);
+                                          String formattedDate =
+                                              DateFormat('yyyy-MM-dd')
+                                                  .format(now);
 
                                           // Convert image paths to File format
                                           List<File> registerImageFiles = [];
-                                          for (var imagePath in schoolEnrolmentController.imagePaths) {
-                                            registerImageFiles.add(File(imagePath)); // Convert image path to File
+                                          for (var imagePath
+                                              in schoolEnrolmentController
+                                                  .imagePaths) {
+                                            registerImageFiles.add(File(
+                                                imagePath)); // Convert image path to File
                                           }
 
                                           // Check if the image files have been created correctly
@@ -767,39 +781,61 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                           }
 
                                           // Prepare image file paths to store in the database (comma-separated)
-                                          String registerImageFilePaths = registerImageFiles.map((file) => file.path).join(',');
+                                          String registerImageFilePaths =
+                                              registerImageFiles
+                                                  .map((file) => file.path)
+                                                  .join(',');
 
                                           // Convert `jsonData` to a JSON string for enrolment records
-                                          String enrolmentDataJson = jsonEncode(jsonData); // Ensure the JSON data is properly encoded
+                                          String enrolmentDataJson = jsonEncode(
+                                              jsonData); // Ensure the JSON data is properly encoded
 
                                           // Create the enrolment collection object
-                                          EnrolmentCollectionModel enrolmentCollectionObj = EnrolmentCollectionModel(
-                                            tourId: schoolEnrolmentController.tourValue ?? '',
-                                            school: schoolEnrolmentController.schoolValue ?? '',
-                                            registerImage: registerImageFilePaths, // Store file paths instead of converting to Base64
-                                            enrolmentData: enrolmentDataJson, // Store as valid JSON string
-                                            remarks: schoolEnrolmentController.remarksController.text ?? '',
+                                          EnrolmentCollectionModel
+                                              enrolmentCollectionObj =
+                                              EnrolmentCollectionModel(
+                                            tourId: schoolEnrolmentController
+                                                    .tourValue ??
+                                                '',
+                                            school: schoolEnrolmentController
+                                                    .schoolValue ??
+                                                '',
+                                            registerImage:
+                                                registerImageFilePaths, // Store file paths instead of converting to Base64
+                                            enrolmentData:
+                                                enrolmentDataJson, // Store as valid JSON string
+                                            remarks: schoolEnrolmentController
+                                                    .remarksController.text ??
+                                                '',
                                             createdAt: formattedDate,
                                             submittedAt: formattedDate,
-                                            submittedBy: widget.userid.toString(),
+                                            submittedBy:
+                                                widget.userid.toString(),
                                           );
 
                                           // Insert the data into the local database
-                                          int result = await LocalDbController().addData(
-                                            enrolmentCollectionModel: enrolmentCollectionObj,
+                                          int result =
+                                              await LocalDbController().addData(
+                                            enrolmentCollectionModel:
+                                                enrolmentCollectionObj,
                                           );
 
                                           if (result > 0) {
                                             // Clear form fields upon successful insertion
-                                            schoolEnrolmentController.clearFields();
-schoolEnrolmentController.remarksController.clear();
+                                            schoolEnrolmentController
+                                                .clearFields();
+                                            schoolEnrolmentController
+                                                .remarksController
+                                                .clear();
                                             // Reset any additional variables (like jsonData) in the current state
                                             setState(() {
-                                              jsonData = {}; // Resetting JSON data if required
+                                              jsonData =
+                                                  {}; // Resetting JSON data if required
                                             });
 
-
-                                            await saveDataToFile(enrolmentCollectionObj).then((_) {
+                                            await saveDataToFile(
+                                                    enrolmentCollectionObj)
+                                                .then((_) {
                                               // If successful, show a snackbar indicating the file was downloaded
                                               customSnackbar(
                                                 'File downloaded successfully',
@@ -819,7 +855,6 @@ schoolEnrolmentController.remarksController.clear();
                                               );
                                             });
 
-
                                             customSnackbar(
                                               'Submitted Successfully',
                                               'Your data has been submitted',
@@ -832,7 +867,8 @@ schoolEnrolmentController.remarksController.clear();
                                             Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => HomeScreen(),
+                                                builder: (context) =>
+                                                    HomeScreen(),
                                               ),
                                             );
                                           } else {
@@ -845,11 +881,11 @@ schoolEnrolmentController.remarksController.clear();
                                             );
                                           }
                                         } else {
-                                          FocusScope.of(context).requestFocus(FocusNode());
+                                          FocusScope.of(context)
+                                              .requestFocus(FocusNode());
                                         }
                                       },
                                     )
-
                                   ],
                                 );
                               }));
@@ -866,12 +902,14 @@ schoolEnrolmentController.remarksController.clear();
 
 Future<void> saveDataToFile(EnrolmentCollectionModel data) async {
   try {
-    // Request storage permissions
+    // Request storage permissions (needed for Android)
     var status = await Permission.storage.request();
     if (status.isGranted) {
-      // Use path_provider to get a valid directory, such as downloads
+      // Determine the correct storage directory based on the platform
       Directory? directory;
+
       if (Platform.isAndroid) {
+        // On Android, we use the external storage directory for files that should be accessible
         directory = await getExternalStorageDirectory();
         if (directory != null) {
           String newPath = '';
@@ -886,12 +924,20 @@ Future<void> saveDataToFile(EnrolmentCollectionModel data) async {
           }
           directory = Directory("$newPath/Download");
         }
+      } else if (Platform.isIOS) {
+        // On iOS, we use the documents directory
+        directory = await getApplicationDocumentsDirectory();
+      } else {
+        // For any other platforms, we default to application documents directory
+        directory = await getApplicationDocumentsDirectory();
       }
 
+      // Create the directory if it doesn't exist
       if (directory != null && !await directory.exists()) {
-        await directory.create(recursive: true); // Create the directory if it doesn't exist
+        await directory.create(recursive: true);
       }
 
+      // Prepare the file path with a unique identifier for each enrollment
       final path = '${directory!.path}/school_enrollment_form_${data.submittedBy}.txt';
       print('Saving file to: $path'); // Debugging output
 
@@ -911,7 +957,7 @@ Future<void> saveDataToFile(EnrolmentCollectionModel data) async {
         }
       }
 
-      // Update the enrolment data to include Base64 image strings
+      // Update the enrollment data to include Base64 image strings
       Map<String, dynamic> updatedData = jsonDecode(jsonString);
       updatedData['registerImage'] = base64Images; // Store Base64 instead of file paths
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../base_client/baseClient_controller.dart';
-import '../../helper/database_helper.dart';
+import '../../home/home_controller.dart';
 import 'edit_modal.dart';
 
 class EditController extends GetxController with BaseController {
@@ -22,6 +22,17 @@ class EditController extends GetxController with BaseController {
   final FocusNode _schoolFocusNode = FocusNode();
   FocusNode get schoolFocusNode => _schoolFocusNode;
 
+  // Initialize HomeController
+  late HomeController homeController;
+
+  @override
+  void onInit() {
+    super.onInit();
+    homeController = Get.find<HomeController>(); // Find the HomeController
+    // Now you can access homeController.empId
+    print("Employee ID: ${homeController.empId}");
+  }
+
   void setSchool(String? value) {
     _schoolValue = value;
   }
@@ -29,15 +40,10 @@ class EditController extends GetxController with BaseController {
   void setTour(String? value) {
     _tourValue = value;
   }
-
+  // Getter for empId
+  String? get empId => homeController.empId;
   fetchTourDetails() async {
-
-
-
-
-
-
+    // Your existing logic for fetching tour details
     update();
   }
-
 }

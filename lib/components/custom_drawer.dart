@@ -18,7 +18,6 @@ import '../helper/shared_prefernce.dart';
 import '../home/home_screen.dart';
 import '../home/tour_data.dart';
 import '../login/login_screen.dart';
-
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
 
@@ -26,7 +25,7 @@ class CustomDrawer extends StatefulWidget {
   State<CustomDrawer> createState() => _CustomDrawerState();
 }
 
-class _CustomDrawerState extends State<CustomDrawer> {
+class _CustomDrawerState extends State<CustomDrawer> with WidgetsBindingObserver {
   String _username = '';
   String _officeName = '';
   String _version = '';
@@ -34,7 +33,22 @@ class _CustomDrawerState extends State<CustomDrawer> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this); // Add observer to listen for app lifecycle changes
     _loadUserData(); // Load user data on initialization
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // Remove observer when not needed
+    super.dispose();
+  }
+
+  // Listen for app lifecycle changes (optional)
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadUserData(); // Reload data when app comes back to focus
+    }
   }
 
   // This method loads user data from shared preferences
@@ -64,58 +78,68 @@ class _CustomDrawerState extends State<CustomDrawer> {
     });
     Get.offAll(() => const LoginScreen());
   }
+
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
+
     return Drawer(
       backgroundColor: AppColors.background,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           // Drawer header with user info
-          // Drawer header with user info
-          Container(
-            color: AppColors.primary,
-            height: responsive.responsiveValue(
-                small: 200.0, medium: 210.0, large: 220.0),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person,
-                      size: 60,
-                      color: AppColors.primary,
+          GestureDetector( // Wrap the header with a GestureDetector to refresh when clicked
+            onTap: _refreshUserData, // Refresh user data on click
+            child: Container(
+              color: AppColors.primary,
+              height: responsive.responsiveValue(
+                  small: 250.0, // Increased height for smaller screens
+                  medium: 260.0,
+                  large: 280.0), // Increased height for larger screens
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.person,
+                        size: 60,
+                        color: AppColors.primary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 15),
-                  // Username Text
-                  Expanded(
-                    child: Text(
+                    const SizedBox(height: 15),
+
+                    // Username Text
+                    Text(
                       _username.toUpperCase(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: responsive.responsiveValue(
-                            small: 16, medium: 18, large: 20),
+                            small: 18, // Adjusted font sizes
+                            medium: 20,
+                            large: 22),
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
-                      maxLines: 1, // Allows text to fit in a single line or ellipsis if too long
-                      softWrap: false, // Prevents unwanted line wrapping
-                      overflow: TextOverflow.ellipsis, // Adds "..." if text overflows
+                      maxLines: 1, // Prevent wrapping
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis, // Add ellipsis if text overflows
                     ),
-                  ),
-                  Expanded(
-                    child: Text(
+                    const SizedBox(height: 8), // Add spacing between elements
+
+                    // Office Name Text
+                    Text(
                       _officeName.toUpperCase(),
-                      style:TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: responsive.responsiveValue(
-                            small: 16, medium: 18, large: 20),
+                            small: 16,
+                            medium: 18,
+                            large: 20),
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -123,22 +147,25 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       softWrap: false,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  // Expanded(
-                  //   child: Text(
-                  //     _version.toUpperCase(),
-                  //     style: TextStyle(
-                  //       color: Colors.white.withOpacity(0.9),
-                  //       fontSize: responsive.responsiveValue(
-                  //           small: 12, medium: 14, large: 16),
-                  //     ),
-                  //     textAlign: TextAlign.center,
-                  //     maxLines: 1,
-                  //     softWrap: false,
-                  //     overflow: TextOverflow.ellipsis,
-                  //   ),
-                  // ),
-                ],
+                    const SizedBox(height: 8), // Add spacing between elements
+
+                    // Version Text
+                    Text(
+                      _version.toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: responsive.responsiveValue(
+                            small: 14,
+                            medium: 16,
+                            large: 18),
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
