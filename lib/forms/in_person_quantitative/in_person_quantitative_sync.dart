@@ -41,9 +41,20 @@ class _InPersonQuantitativeSync extends State<InPersonQuantitativeSync> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        bool shouldPop = await BaseClient().showLeaveConfirmationDialog(context);
-        return shouldPop;
+      onWillPop:() async {
+        IconData icon = Icons.check_circle;
+        bool shouldExit = await showDialog(
+            context: context,
+            builder: (_) => Confirmation(
+                iconname: icon,
+                title: 'Exit Confirmation',
+                yes: 'Yes',
+                no: 'no',
+                desc: 'Are you sure you want to leave this screen?',
+                onPressed: () async {
+                  Navigator.of(context).pop(true);
+                }));
+        return shouldExit;
       },
       child: Scaffold(
         appBar: const CustomAppbar(title: 'In Person Quantitative Sync'),

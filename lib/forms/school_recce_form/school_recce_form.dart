@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -55,7 +56,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
   // Track submitted data for academic years
   Map<String, Map<String, int>> submittedData =
-      {}; // key: year, value: totals map
+  {}; // key: year, value: totals map
 
   // Function to calculate total students
   int get totalStudents =>
@@ -218,14 +219,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
   // Helper method to build the dynamic table
   Widget _buildTable(
-    List<String> grades,
-    List<TextEditingController> boysControllers,
-    List<TextEditingController> girlsControllers,
-    List<ValueNotifier<int>> totalNotifiers,
-    ValueNotifier<int> grandTotalBoys,
-    ValueNotifier<int> grandTotalGirls,
-    ValueNotifier<int> grandTotal,
-  ) {
+      List<String> grades,
+      List<TextEditingController> boysControllers,
+      List<TextEditingController> girlsControllers,
+      List<ValueNotifier<int>> totalNotifiers,
+      ValueNotifier<int> grandTotalBoys,
+      ValueNotifier<int> grandTotalGirls,
+      ValueNotifier<int> grandTotal,
+      ) {
     return Column(
       children: [
         Table(
@@ -238,7 +239,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                     child: Text(
                       'Grade',
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -247,7 +248,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                     child: Text(
                       'Boys',
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -256,7 +257,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                     child: Text(
                       'Girls',
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -265,7 +266,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                     child: Text(
                       'Total',
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -281,7 +282,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                     child: Text(
                       'Grand Total',
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -1107,7 +1108,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Is this UDISE code is correct?',
+                                            'Is this UDISE code is correct?',
                                             astrick: true,
                                           ),
                                           Padding(
@@ -1118,13 +1119,13 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 Radio(
                                                   value: 'Yes',
                                                   groupValue:
-                                                      schoolRecceController
-                                                          .getSelectedValue(
-                                                              'udiCode'),
+                                                  schoolRecceController
+                                                      .getSelectedValue(
+                                                      'udiCode'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'udiCode', value);
+                                                        'udiCode', value);
                                                     if (value == 'Yes') {
                                                       schoolRecceController
                                                           .correctUdiseCodeController
@@ -1149,13 +1150,13 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 Radio(
                                                   value: 'No',
                                                   groupValue:
-                                                      schoolRecceController
-                                                          .getSelectedValue(
-                                                              'udiCode'),
+                                                  schoolRecceController
+                                                      .getSelectedValue(
+                                                      'udiCode'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'udiCode', value);
+                                                        'udiCode', value);
                                                   },
                                                 ),
                                                 const Text('No'),
@@ -1166,7 +1167,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               .getRadioFieldError('udiCode'))
                                             const Padding(
                                               padding:
-                                                  EdgeInsets.only(left: 16.0),
+                                              EdgeInsets.only(left: 16.0),
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
@@ -1181,12 +1182,12 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             side: 'height',
                                           ),
                                           if (schoolRecceController
-                                                  .getSelectedValue(
-                                                      'udiCode') ==
+                                              .getSelectedValue(
+                                              'udiCode') ==
                                               'No') ...[
                                             LabelText(
                                               label:
-                                                  'Write Correct UDISE school code',
+                                              'Write Correct UDISE school code',
                                               astrick: true,
                                             ),
                                             CustomSizedBox(
@@ -1195,10 +1196,10 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             ),
                                             CustomTextFormField(
                                               textController:
-                                                  schoolRecceController
-                                                      .correctUdiseCodeController,
+                                              schoolRecceController
+                                                  .correctUdiseCodeController,
                                               textInputType:
-                                                  TextInputType.number,
+                                              TextInputType.number,
                                               inputFormatters: [
                                                 LengthLimitingTextInputFormatter(
                                                     13),
@@ -1206,7 +1207,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                     .digitsOnly,
                                               ],
                                               labelText:
-                                                  'Enter correct UDISE code',
+                                              'Enter correct UDISE code',
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
@@ -1238,41 +1239,41 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             height: 60,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              BorderRadius.circular(10.0),
                                               border: Border.all(
                                                   width: 2,
                                                   color: schoolRecceController
-                                                              .isImageUploadedSchoolBoard ==
-                                                          false
+                                                      .isImageUploadedSchoolBoard ==
+                                                      false
                                                       ? AppColors.primary
                                                       : AppColors.error),
                                             ),
                                             child: ListTile(
                                                 title: schoolRecceController
-                                                            .isImageUploadedSchoolBoard ==
-                                                        false
+                                                    .isImageUploadedSchoolBoard ==
+                                                    false
                                                     ? const Text(
-                                                        'Click or Upload Image',
-                                                      )
+                                                  'Click or Upload Image',
+                                                )
                                                     : const Text(
-                                                        'Click or Upload Image',
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .error),
-                                                      ),
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                      color: AppColors
+                                                          .error),
+                                                ),
                                                 trailing: const Icon(
                                                     Icons.camera_alt,
                                                     color:
-                                                        AppColors.onBackground),
+                                                    AppColors.onBackground),
                                                 onTap: () {
                                                   showModalBottomSheet(
                                                       backgroundColor:
-                                                          AppColors.primary,
+                                                      AppColors.primary,
                                                       context: context,
                                                       builder: ((builder) =>
                                                           schoolRecceController
                                                               .bottomSheet(
-                                                                  context)));
+                                                              context)));
                                                 }),
                                           ),
                                           ErrorText(
@@ -1286,93 +1287,93 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
 
                                           schoolRecceController
-                                                  .multipleImage.isNotEmpty
+                                              .multipleImage.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive
+                                                .responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0),
+                                            height: responsive
+                                                .responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10),
+                                            ),
+                                            child:
+                                            schoolRecceController
+                                                .multipleImage
+                                                .isEmpty
+                                                ? const Center(
+                                              child: Text(
+                                                  'No images selected.'),
+                                            )
+                                                : ListView.builder(
+                                              scrollDirection:
+                                              Axis.horizontal,
+                                              itemCount:
+                                              schoolRecceController
+                                                  .multipleImage
+                                                  .length,
+                                              itemBuilder:
+                                                  (context,
+                                                  index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .all(
+                                                            8.0),
+                                                        child:
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            CustomImagePreview.showImagePreview(schoolRecceController.multipleImage[index].path,
+                                                                context);
+                                                          },
+                                                          child:
+                                                          Image.file(
+                                                            File(schoolRecceController.multipleImage[index].path),
+                                                            width:
+                                                            190,
+                                                            height:
+                                                            120,
+                                                            fit:
+                                                            BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap:
+                                                            () {
+                                                          setState(
+                                                                  () {
+                                                                schoolRecceController.multipleImage.removeAt(index);
+                                                              });
+                                                        },
+                                                        child:
+                                                        const Icon(
+                                                          Icons
+                                                              .delete,
+                                                          color:
+                                                          Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      schoolRecceController
-                                                              .multipleImage
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  schoolRecceController
-                                                                      .multipleImage
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview.showImagePreview(schoolRecceController.multipleImage[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(schoolRecceController.multipleImage[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            schoolRecceController.multipleImage.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -1380,7 +1381,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Photo of School Building (Wide Angle)',
+                                            'Photo of School Building (Wide Angle)',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -1391,41 +1392,41 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             height: 60,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              BorderRadius.circular(10.0),
                                               border: Border.all(
                                                   width: 2,
                                                   color: schoolRecceController
-                                                              .isImageUploadedSchoolBuilding ==
-                                                          false
+                                                      .isImageUploadedSchoolBuilding ==
+                                                      false
                                                       ? AppColors.primary
                                                       : AppColors.error),
                                             ),
                                             child: ListTile(
                                                 title: schoolRecceController
-                                                            .isImageUploadedSchoolBuilding ==
-                                                        false
+                                                    .isImageUploadedSchoolBuilding ==
+                                                    false
                                                     ? const Text(
-                                                        'Click or Upload Image',
-                                                      )
+                                                  'Click or Upload Image',
+                                                )
                                                     : const Text(
-                                                        'Click or Upload Image',
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .error),
-                                                      ),
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                      color: AppColors
+                                                          .error),
+                                                ),
                                                 trailing: const Icon(
                                                     Icons.camera_alt,
                                                     color:
-                                                        AppColors.onBackground),
+                                                    AppColors.onBackground),
                                                 onTap: () {
                                                   showModalBottomSheet(
                                                       backgroundColor:
-                                                          AppColors.primary,
+                                                      AppColors.primary,
                                                       context: context,
                                                       builder: ((builder) =>
                                                           schoolRecceController
                                                               .bottomSheet2(
-                                                                  context)));
+                                                              context)));
                                                 }),
                                           ),
                                           ErrorText(
@@ -1438,93 +1439,93 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             side: 'height',
                                           ),
                                           schoolRecceController
-                                                  .multipleImage2.isNotEmpty
+                                              .multipleImage2.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive
+                                                .responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0),
+                                            height: responsive
+                                                .responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10),
+                                            ),
+                                            child:
+                                            schoolRecceController
+                                                .multipleImage2
+                                                .isEmpty
+                                                ? const Center(
+                                              child: Text(
+                                                  'No images selected.'),
+                                            )
+                                                : ListView.builder(
+                                              scrollDirection:
+                                              Axis.horizontal,
+                                              itemCount:
+                                              schoolRecceController
+                                                  .multipleImage2
+                                                  .length,
+                                              itemBuilder:
+                                                  (context,
+                                                  index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .all(
+                                                            8.0),
+                                                        child:
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            CustomImagePreview2.showImagePreview2(schoolRecceController.multipleImage2[index].path,
+                                                                context);
+                                                          },
+                                                          child:
+                                                          Image.file(
+                                                            File(schoolRecceController.multipleImage2[index].path),
+                                                            width:
+                                                            190,
+                                                            height:
+                                                            120,
+                                                            fit:
+                                                            BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap:
+                                                            () {
+                                                          setState(
+                                                                  () {
+                                                                schoolRecceController.multipleImage2.removeAt(index);
+                                                              });
+                                                        },
+                                                        child:
+                                                        const Icon(
+                                                          Icons
+                                                              .delete,
+                                                          color:
+                                                          Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      schoolRecceController
-                                                              .multipleImage2
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  schoolRecceController
-                                                                      .multipleImage2
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview2.showImagePreview2(schoolRecceController.multipleImage2[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(schoolRecceController.multipleImage2[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            schoolRecceController.multipleImage2.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -1532,7 +1533,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Select Grades being taught in School',
+                                            'Select Grades being taught in School',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -1752,14 +1753,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             onPressedButton: () {
                                               // Perform radio button validations
                                               final isRadioValid1 =
-                                                  schoolRecceController
-                                                      .validateRadioSelection(
-                                                          'udiCode');
+                                              schoolRecceController
+                                                  .validateRadioSelection(
+                                                  'udiCode');
 
                                               // Check if at least one checkbox is selected
                                               bool isCheckboxSelected =
                                                   schoolRecceController
-                                                          .checkboxValue1 ||
+                                                      .checkboxValue1 ||
                                                       schoolRecceController
                                                           .checkboxValue2 ||
                                                       schoolRecceController
@@ -1802,17 +1803,17 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               }
                                               setState(() {
                                                 schoolRecceController
-                                                        .validateSchoolBoard =
+                                                    .validateSchoolBoard =
                                                     schoolRecceController
                                                         .multipleImage.isEmpty;
                                                 schoolRecceController
-                                                        .validateSchoolBuilding =
+                                                    .validateSchoolBuilding =
                                                     schoolRecceController
                                                         .multipleImage2.isEmpty;
                                               });
 
                                               if (_formKey.currentState!
-                                                      .validate() &&
+                                                  .validate() &&
                                                   isRadioValid1 &&
                                                   !schoolRecceController
                                                       .validateSchoolBoard &&
@@ -1856,8 +1857,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           CustomTextFormField(
                                             textController:
-                                                schoolRecceController
-                                                    .nameOfHoiController,
+                                            schoolRecceController
+                                                .nameOfHoiController,
                                             labelText: 'Enter Name',
                                             validator: (value) {
                                               if (value!.isEmpty) {
@@ -1889,7 +1890,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             items: [
                                               DropdownMenuItem(
                                                   value:
-                                                      'HeadMaster/HeadMistress',
+                                                  'HeadMaster/HeadMistress',
                                                   child: Text(
                                                       'HeadMaster/HeadMistress')),
                                               DropdownMenuItem(
@@ -1902,7 +1903,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             onChanged: (value) {
                                               setState(() {
                                                 schoolRecceController
-                                                        .selectedDesignation =
+                                                    .selectedDesignation =
                                                     value;
                                               });
                                             },
@@ -1925,8 +1926,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           CustomTextFormField(
                                             textController:
-                                                schoolRecceController
-                                                    .hoiPhoneNumberController,
+                                            schoolRecceController
+                                                .hoiPhoneNumberController,
                                             labelText: 'Phone number of admin',
                                             textInputType: TextInputType.number,
                                             validator: (value) {
@@ -1960,11 +1961,11 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           CustomTextFormField(
                                             textController:
-                                                schoolRecceController
-                                                    .hoiEmailController,
+                                            schoolRecceController
+                                                .hoiEmailController,
                                             labelText: 'Enter Email',
                                             textInputType:
-                                                TextInputType.emailAddress,
+                                            TextInputType.emailAddress,
                                             validator: (value) {
                                               if (value == null ||
                                                   value.isEmpty) {
@@ -1990,7 +1991,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Year appointed as Head of the Institution',
+                                            'Year appointed as Head of the Institution',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -2006,7 +2007,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             ),
                                             items: List.generate(
                                               2024 - 1990 + 1,
-                                              (index) {
+                                                  (index) {
                                                 int year = 1990 + index;
                                                 return DropdownMenuItem(
                                                   value: year.toString(),
@@ -2035,7 +2036,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'No of Teaching Staff (including Head of Institution)',
+                                            'No of Teaching Staff (including Head of Institution)',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -2094,19 +2095,19 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               value: 20, side: 'height'),
                                           CustomTextFormField(
                                             textController:
-                                                schoolRecceController
-                                                    .totalStaffController,
+                                            schoolRecceController
+                                                .totalStaffController,
                                             labelText: 'Enter Teaching Staff',
 
                                             showCharacterCount: true,
                                             readOnly:
-                                                true, // Make this field read-only
+                                            true, // Make this field read-only
                                           ),
                                           CustomSizedBox(
                                               value: 20, side: 'height'),
                                           LabelText(
                                             label:
-                                                'Upload photo of Teacher Register',
+                                            'Upload photo of Teacher Register',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -2115,41 +2116,41 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             height: 60,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              BorderRadius.circular(10.0),
                                               border: Border.all(
                                                   width: 2,
                                                   color: schoolRecceController
-                                                              .isImageUploadedTeacherRegister ==
-                                                          false
+                                                      .isImageUploadedTeacherRegister ==
+                                                      false
                                                       ? AppColors.primary
                                                       : AppColors.error),
                                             ),
                                             child: ListTile(
                                                 title: schoolRecceController
-                                                            .isImageUploadedTeacherRegister ==
-                                                        false
+                                                    .isImageUploadedTeacherRegister ==
+                                                    false
                                                     ? const Text(
-                                                        'Click or Upload Image',
-                                                      )
+                                                  'Click or Upload Image',
+                                                )
                                                     : const Text(
-                                                        'Click or Upload Image',
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .error),
-                                                      ),
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                      color: AppColors
+                                                          .error),
+                                                ),
                                                 trailing: const Icon(
                                                     Icons.camera_alt,
                                                     color:
-                                                        AppColors.onBackground),
+                                                    AppColors.onBackground),
                                                 onTap: () {
                                                   showModalBottomSheet(
                                                       backgroundColor:
-                                                          AppColors.primary,
+                                                      AppColors.primary,
                                                       context: context,
                                                       builder: ((builder) =>
                                                           schoolRecceController
                                                               .bottomSheet3(
-                                                                  context)));
+                                                              context)));
                                                 }),
                                           ),
                                           ErrorText(
@@ -2162,93 +2163,93 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             side: 'height',
                                           ),
                                           schoolRecceController
-                                                  .multipleImage3.isNotEmpty
+                                              .multipleImage3.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive
+                                                .responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0),
+                                            height: responsive
+                                                .responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10),
+                                            ),
+                                            child:
+                                            schoolRecceController
+                                                .multipleImage3
+                                                .isEmpty
+                                                ? const Center(
+                                              child: Text(
+                                                  'No images selected.'),
+                                            )
+                                                : ListView.builder(
+                                              scrollDirection:
+                                              Axis.horizontal,
+                                              itemCount:
+                                              schoolRecceController
+                                                  .multipleImage3
+                                                  .length,
+                                              itemBuilder:
+                                                  (context,
+                                                  index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .all(
+                                                            8.0),
+                                                        child:
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            CustomImagePreview3.showImagePreview3(schoolRecceController.multipleImage3[index].path,
+                                                                context);
+                                                          },
+                                                          child:
+                                                          Image.file(
+                                                            File(schoolRecceController.multipleImage3[index].path),
+                                                            width:
+                                                            190,
+                                                            height:
+                                                            120,
+                                                            fit:
+                                                            BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap:
+                                                            () {
+                                                          setState(
+                                                                  () {
+                                                                schoolRecceController.multipleImage3.removeAt(index);
+                                                              });
+                                                        },
+                                                        child:
+                                                        const Icon(
+                                                          Icons
+                                                              .delete,
+                                                          color:
+                                                          Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      schoolRecceController
-                                                              .multipleImage3
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  schoolRecceController
-                                                                      .multipleImage3
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview3.showImagePreview3(schoolRecceController.multipleImage3[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(schoolRecceController.multipleImage3[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            schoolRecceController.multipleImage3.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -2261,11 +2262,11 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   onPressedButton: () {
                                                     setState(() {
                                                       schoolRecceController
-                                                              .showBasicDetails =
-                                                          true;
+                                                          .showBasicDetails =
+                                                      true;
                                                       schoolRecceController
-                                                              .showStaffDetails =
-                                                          false;
+                                                          .showStaffDetails =
+                                                      false;
                                                     });
                                                   }),
                                               const Spacer(),
@@ -2273,22 +2274,22 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 title: 'Next',
                                                 onPressedButton: () {
                                                   schoolRecceController
-                                                          .validateTeacherRegister =
+                                                      .validateTeacherRegister =
                                                       schoolRecceController
                                                           .multipleImage3
                                                           .isEmpty;
 
                                                   if (_formKey.currentState!
-                                                          .validate() &&
+                                                      .validate() &&
                                                       !schoolRecceController
                                                           .validateTeacherRegister) {
                                                     setState(() {
                                                       schoolRecceController
-                                                              .showStaffDetails =
-                                                          false;
+                                                          .showStaffDetails =
+                                                      false;
                                                       schoolRecceController
-                                                              .showSmcVecDetails =
-                                                          true;
+                                                          .showSmcVecDetails =
+                                                      true;
                                                     });
                                                   }
                                                 },
@@ -2322,8 +2323,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           CustomTextFormField(
                                             textController:
-                                                schoolRecceController
-                                                    .nameOfSmcController,
+                                            schoolRecceController
+                                                .nameOfSmcController,
                                             labelText: 'Enter Name',
                                             validator: (value) {
                                               if (value!.isEmpty) {
@@ -2339,7 +2340,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Phone no of the SMC President',
+                                            'Phone no of the SMC President',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -2348,8 +2349,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           CustomTextFormField(
                                             textController:
-                                                schoolRecceController
-                                                    .smcPhoneNumberController,
+                                            schoolRecceController
+                                                .smcPhoneNumberController,
                                             labelText: 'Phone number of admin',
                                             textInputType: TextInputType.number,
                                             validator: (value) {
@@ -2375,7 +2376,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Educational Qualification of SMC President',
+                                            'Educational Qualification of SMC President',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -2411,7 +2412,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               // Ensure that the selected value is set properly
                                               setState(() {
                                                 schoolRecceController
-                                                        .selectedQualification =
+                                                    .selectedQualification =
                                                     value;
                                               });
                                             },
@@ -2426,7 +2427,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           CustomSizedBox(
                                               value: 20, side: 'height'),
                                           if (schoolRecceController
-                                                  .selectedQualification ==
+                                              .selectedQualification ==
                                               'other') ...[
                                             LabelText(
                                               label: 'Please Specify Other',
@@ -2436,8 +2437,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 value: 20, side: 'height'),
                                             CustomTextFormField(
                                               textController:
-                                                  schoolRecceController
-                                                      .QualSpecifyController,
+                                              schoolRecceController
+                                                  .QualSpecifyController,
                                               labelText: 'Write here...',
                                               maxlines: 3,
                                               validator: (value) {
@@ -2463,8 +2464,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           CustomTextFormField(
                                             textController:
-                                                schoolRecceController
-                                                    .totalnoOfSmcMemController,
+                                            schoolRecceController
+                                                .totalnoOfSmcMemController,
                                             labelText: 'Enter Teaching Staff',
                                             textInputType: TextInputType.number,
                                             validator: (value) {
@@ -2499,11 +2500,11 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               DropdownMenuItem(
                                                   value: 'once_a_quarter',
                                                   child:
-                                                      Text('Once a quarter')),
+                                                  Text('Once a quarter')),
                                               DropdownMenuItem(
                                                   value: 'once_in_6_months',
                                                   child:
-                                                      Text('Once in 6 months')),
+                                                  Text('Once in 6 months')),
                                               DropdownMenuItem(
                                                   value: 'once_a_year',
                                                   child: Text('Once a year')),
@@ -2527,7 +2528,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           CustomSizedBox(
                                               value: 20, side: 'height'),
                                           if (schoolRecceController
-                                                  .selectedMeetings ==
+                                              .selectedMeetings ==
                                               'others') ...[
                                             LabelText(
                                               label: 'Please Specify Other',
@@ -2537,8 +2538,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 value: 20, side: 'height'),
                                             CustomTextFormField(
                                               textController:
-                                                  schoolRecceController
-                                                      .freSpecifyController,
+                                              schoolRecceController
+                                                  .freSpecifyController,
                                               labelText: 'Write here...',
                                               maxlines: 3,
                                               validator: (value) {
@@ -2556,7 +2557,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ],
                                           LabelText(
                                             label:
-                                                'How supportive are the SMC Members',
+                                            'How supportive are the SMC Members',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -2565,8 +2566,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           CustomTextFormField(
                                             textController:
-                                                schoolRecceController
-                                                    .descriptionController,
+                                            schoolRecceController
+                                                .descriptionController,
                                             maxlines: 2,
                                             labelText: 'Write Description',
                                             validator: (value) {
@@ -2592,11 +2593,11 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   onPressedButton: () {
                                                     setState(() {
                                                       schoolRecceController
-                                                              .showStaffDetails =
-                                                          true;
+                                                          .showStaffDetails =
+                                                      true;
                                                       schoolRecceController
-                                                              .showSmcVecDetails =
-                                                          false;
+                                                          .showSmcVecDetails =
+                                                      false;
                                                     });
                                                   }),
                                               const Spacer(),
@@ -2607,11 +2608,11 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                       .validate()) {
                                                     setState(() {
                                                       schoolRecceController
-                                                              .showSmcVecDetails =
-                                                          false;
+                                                          .showSmcVecDetails =
+                                                      false;
                                                       schoolRecceController
-                                                              .showSchoolInfra =
-                                                          true;
+                                                          .showSchoolInfra =
+                                                      true;
                                                     });
                                                   }
                                                 },
@@ -2637,7 +2638,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'No of usable classrooms in schools',
+                                            'No of usable classrooms in schools',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -2646,8 +2647,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           CustomTextFormField(
                                             textController:
-                                                schoolRecceController
-                                                    .noClassroomsController,
+                                            schoolRecceController
+                                                .noClassroomsController,
                                             textInputType: TextInputType.number,
                                             labelText: 'Enter number',
                                             validator: (value) {
@@ -2669,7 +2670,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Availability of Electricity in Schools',
+                                            'Availability of Electricity in Schools',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -2679,21 +2680,21 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                           Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Row(
                                                 children: [
                                                   Radio<String>(
                                                     value: 'Continuous',
                                                     groupValue:
-                                                        schoolRecceController
-                                                            .getSelectedValue(
-                                                                'electricity'),
+                                                    schoolRecceController
+                                                        .getSelectedValue(
+                                                        'electricity'),
                                                     onChanged: (value) {
                                                       schoolRecceController
                                                           .setRadioValue(
-                                                              'electricity',
-                                                              value);
+                                                          'electricity',
+                                                          value);
                                                     },
                                                   ),
                                                   const Text('Continuous'),
@@ -2704,14 +2705,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   Radio<String>(
                                                     value: 'Intermittent',
                                                     groupValue:
-                                                        schoolRecceController
-                                                            .getSelectedValue(
-                                                                'electricity'),
+                                                    schoolRecceController
+                                                        .getSelectedValue(
+                                                        'electricity'),
                                                     onChanged: (value) {
                                                       schoolRecceController
                                                           .setRadioValue(
-                                                              'electricity',
-                                                              value);
+                                                          'electricity',
+                                                          value);
                                                     },
                                                   ),
                                                   const Text('Intermittent'),
@@ -2719,20 +2720,20 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               ),
                                               SizedBox(
                                                   width:
-                                                      16), // Adjust spacing between rows
+                                                  16), // Adjust spacing between rows
                                               Row(
                                                 children: [
                                                   Radio<String>(
                                                     value: 'No',
                                                     groupValue:
-                                                        schoolRecceController
-                                                            .getSelectedValue(
-                                                                'electricity'),
+                                                    schoolRecceController
+                                                        .getSelectedValue(
+                                                        'electricity'),
                                                     onChanged: (value) {
                                                       schoolRecceController
                                                           .setRadioValue(
-                                                              'electricity',
-                                                              value);
+                                                          'electricity',
+                                                          value);
                                                     },
                                                   ),
                                                   const Text('No'),
@@ -2740,14 +2741,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               ),
                                               if (schoolRecceController
                                                   .getRadioFieldError(
-                                                      'electricity'))
+                                                  'electricity'))
                                                 Padding(
                                                   padding:
-                                                      const EdgeInsets.only(
-                                                          left: 16.0),
+                                                  const EdgeInsets.only(
+                                                      left: 16.0),
                                                   child: Align(
                                                     alignment:
-                                                        Alignment.centerLeft,
+                                                    Alignment.centerLeft,
                                                     child: const Text(
                                                       'Please select an option',
                                                       style: TextStyle(
@@ -2764,7 +2765,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Availability of Network connectivity in school?',
+                                            'Availability of Network connectivity in school?',
                                             astrick: true,
                                           ),
 
@@ -2777,12 +2778,12 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   value: 'Yes',
                                                   groupValue: schoolRecceController
                                                       .getSelectedValue(
-                                                          'networkConnectivity'),
+                                                      'networkConnectivity'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'networkConnectivity',
-                                                            value);
+                                                        'networkConnectivity',
+                                                        value);
                                                   },
                                                 ),
                                                 const Text('Yes'),
@@ -2803,25 +2804,25 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   value: 'No',
                                                   groupValue: schoolRecceController
                                                       .getSelectedValue(
-                                                          'networkConnectivity'),
+                                                      'networkConnectivity'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'networkConnectivity',
-                                                            value);
+                                                        'networkConnectivity',
+                                                        value);
                                                     if (value == 'No') {
                                                       schoolRecceController
-                                                              .checkboxValue16 =
-                                                          false;
+                                                          .checkboxValue16 =
+                                                      false;
                                                       schoolRecceController
-                                                              .checkboxValue17 =
-                                                          false;
+                                                          .checkboxValue17 =
+                                                      false;
                                                       schoolRecceController
-                                                              .checkboxValue18 =
-                                                          false;
+                                                          .checkboxValue18 =
+                                                      false;
                                                       schoolRecceController
-                                                              .checkboxValue19 =
-                                                          false;
+                                                          .checkboxValue19 =
+                                                      false;
                                                     }
                                                   },
                                                 ),
@@ -2831,10 +2832,10 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           if (schoolRecceController
                                               .getRadioFieldError(
-                                                  'networkConnectivity'))
+                                              'networkConnectivity'))
                                             const Padding(
                                               padding:
-                                                  EdgeInsets.only(left: 16.0),
+                                              EdgeInsets.only(left: 16.0),
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
@@ -2849,8 +2850,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             side: 'height',
                                           ),
                                           if (schoolRecceController
-                                                  .getSelectedValue(
-                                                      'networkConnectivity') ==
+                                              .getSelectedValue(
+                                              'networkConnectivity') ==
                                               'Yes') ...[
                                             LabelText(
                                               label: 'Select Option',
@@ -2915,7 +2916,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                     left: 16.0),
                                                 child: Align(
                                                   alignment:
-                                                      Alignment.centerLeft,
+                                                  Alignment.centerLeft,
                                                   child: const Text(
                                                     'Please select at least one topic',
                                                     style: TextStyle(
@@ -2930,7 +2931,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ],
                                           LabelText(
                                             label:
-                                                'Availability of Digital Learning Facilities in school?',
+                                            'Availability of Digital Learning Facilities in school?',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -2945,14 +2946,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 Radio(
                                                   value: 'Yes',
                                                   groupValue:
-                                                      schoolRecceController
-                                                          .getSelectedValue(
-                                                              'learningFacility'),
+                                                  schoolRecceController
+                                                      .getSelectedValue(
+                                                      'learningFacility'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'learningFacility',
-                                                            value);
+                                                        'learningFacility',
+                                                        value);
                                                   },
                                                 ),
                                                 const Text('Yes'),
@@ -2972,24 +2973,24 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 Radio(
                                                   value: 'No',
                                                   groupValue:
-                                                      schoolRecceController
-                                                          .getSelectedValue(
-                                                              'learningFacility'),
+                                                  schoolRecceController
+                                                      .getSelectedValue(
+                                                      'learningFacility'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'learningFacility',
-                                                            value);
+                                                        'learningFacility',
+                                                        value);
                                                     if (value == 'No') {
                                                       schoolRecceController
-                                                              .checkboxValue20 =
-                                                          false;
+                                                          .checkboxValue20 =
+                                                      false;
                                                       schoolRecceController
-                                                              .checkboxValue21 =
-                                                          false;
+                                                          .checkboxValue21 =
+                                                      false;
                                                       schoolRecceController
-                                                              .checkboxValue22 =
-                                                          false;
+                                                          .checkboxValue22 =
+                                                      false;
                                                       schoolRecceController
                                                           .multipleImage4
                                                           .clear();
@@ -3008,10 +3009,10 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           if (schoolRecceController
                                               .getRadioFieldError(
-                                                  'learningFacility'))
+                                              'learningFacility'))
                                             const Padding(
                                               padding:
-                                                  EdgeInsets.only(left: 16.0),
+                                              EdgeInsets.only(left: 16.0),
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
@@ -3027,8 +3028,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
 
                                           if (schoolRecceController
-                                                  .getSelectedValue(
-                                                      'learningFacility') ==
+                                              .getSelectedValue(
+                                              'learningFacility') ==
                                               'Yes') ...[
                                             LabelText(
                                               label: 'Select Option',
@@ -3103,7 +3104,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                     left: 16.0),
                                                 child: Align(
                                                   alignment:
-                                                      Alignment.centerLeft,
+                                                  Alignment.centerLeft,
                                                   child: const Text(
                                                     'Please select at least one topic',
                                                     style: TextStyle(
@@ -3120,7 +3121,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               .checkboxValue20) ...[
                                             LabelText(
                                               label:
-                                                  'Upload photo of Smart Class',
+                                              'Upload photo of Smart Class',
                                               astrick: true,
                                             ),
                                             CustomSizedBox(
@@ -3131,28 +3132,28 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               height: 60,
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                BorderRadius.circular(10.0),
                                                 border: Border.all(
                                                     width: 2,
                                                     color: schoolRecceController
-                                                                .isImageUploadedSmartClass ==
-                                                            false
+                                                        .isImageUploadedSmartClass ==
+                                                        false
                                                         ? AppColors.primary
                                                         : AppColors.error),
                                               ),
                                               child: ListTile(
                                                   title: schoolRecceController
-                                                              .isImageUploadedSmartClass ==
-                                                          false
+                                                      .isImageUploadedSmartClass ==
+                                                      false
                                                       ? const Text(
-                                                          'Click or Upload Image',
-                                                        )
+                                                    'Click or Upload Image',
+                                                  )
                                                       : const Text(
-                                                          'Click or Upload Image',
-                                                          style: TextStyle(
-                                                              color: AppColors
-                                                                  .error),
-                                                        ),
+                                                    'Click or Upload Image',
+                                                    style: TextStyle(
+                                                        color: AppColors
+                                                            .error),
+                                                  ),
                                                   trailing: const Icon(
                                                       Icons.camera_alt,
                                                       color: AppColors
@@ -3160,12 +3161,12 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   onTap: () {
                                                     showModalBottomSheet(
                                                         backgroundColor:
-                                                            AppColors.primary,
+                                                        AppColors.primary,
                                                         context: context,
                                                         builder: ((builder) =>
                                                             schoolRecceController
                                                                 .bottomSheet4(
-                                                                    context)));
+                                                                context)));
                                                   }),
                                             ),
                                             ErrorText(
@@ -3178,88 +3179,88 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               side: 'height',
                                             ),
                                             schoolRecceController
-                                                    .multipleImage4.isNotEmpty
+                                                .multipleImage4.isNotEmpty
                                                 ? Container(
-                                                    width: responsive
-                                                        .responsiveValue(
-                                                            small: 600.0,
-                                                            medium: 900.0,
-                                                            large: 1400.0),
-                                                    height: responsive
-                                                        .responsiveValue(
-                                                            small: 170.0,
-                                                            medium: 170.0,
-                                                            large: 170.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
+                                              width: responsive
+                                                  .responsiveValue(
+                                                  small: 600.0,
+                                                  medium: 900.0,
+                                                  large: 1400.0),
+                                              height: responsive
+                                                  .responsiveValue(
+                                                  small: 170.0,
+                                                  medium: 170.0,
+                                                  large: 170.0),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.grey),
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    10),
+                                              ),
+                                              child:
+                                              schoolRecceController
+                                                  .multipleImage4
+                                                  .isEmpty
+                                                  ? const Center(
+                                                child: Text(
+                                                    'No images selected.'),
+                                              )
+                                                  : ListView.builder(
+                                                scrollDirection:
+                                                Axis.horizontal,
+                                                itemCount:
+                                                schoolRecceController
+                                                    .multipleImage4
+                                                    .length,
+                                                itemBuilder:
+                                                    (context,
+                                                    index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
                                                     child:
-                                                        schoolRecceController
-                                                                .multipleImage4
-                                                                .isEmpty
-                                                            ? const Center(
-                                                                child: Text(
-                                                                    'No images selected.'),
-                                                              )
-                                                            : ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemCount:
-                                                                    schoolRecceController
-                                                                        .multipleImage4
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return SizedBox(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              CustomImagePreview4.showImagePreview4(schoolRecceController.multipleImage4[index].path, context);
-                                                                            },
-                                                                            child:
-                                                                                Image.file(
-                                                                              File(schoolRecceController.multipleImage4[index].path),
-                                                                              width: 190,
-                                                                              height: 120,
-                                                                              fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              schoolRecceController.multipleImage4.removeAt(index);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              const Icon(
-                                                                            Icons.delete,
-                                                                            color:
-                                                                                Colors.red,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                  )
+                                                    Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                              .all(
+                                                              8.0),
+                                                          child:
+                                                          GestureDetector(
+                                                            onTap:
+                                                                () {
+                                                              CustomImagePreview4.showImagePreview4(schoolRecceController.multipleImage4[index].path, context);
+                                                            },
+                                                            child:
+                                                            Image.file(
+                                                              File(schoolRecceController.multipleImage4[index].path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            setState(() {
+                                                              schoolRecceController.multipleImage4.removeAt(index);
+                                                            });
+                                                          },
+                                                          child:
+                                                          const Icon(
+                                                            Icons.delete,
+                                                            color:
+                                                            Colors.red,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            )
                                                 : const SizedBox(),
                                             CustomSizedBox(
                                               value: 20,
@@ -3270,7 +3271,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               .checkboxValue21) ...[
                                             LabelText(
                                               label:
-                                                  'Upload photo of Projector',
+                                              'Upload photo of Projector',
                                               astrick: true,
                                             ),
                                             CustomSizedBox(
@@ -3281,28 +3282,28 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               height: 60,
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                BorderRadius.circular(10.0),
                                                 border: Border.all(
                                                     width: 2,
                                                     color: schoolRecceController
-                                                                .isImageUploadedProjector ==
-                                                            false
+                                                        .isImageUploadedProjector ==
+                                                        false
                                                         ? AppColors.primary
                                                         : AppColors.error),
                                               ),
                                               child: ListTile(
                                                   title: schoolRecceController
-                                                              .isImageUploadedProjector ==
-                                                          false
+                                                      .isImageUploadedProjector ==
+                                                      false
                                                       ? const Text(
-                                                          'Click or Upload Image',
-                                                        )
+                                                    'Click or Upload Image',
+                                                  )
                                                       : const Text(
-                                                          'Click or Upload Image',
-                                                          style: TextStyle(
-                                                              color: AppColors
-                                                                  .error),
-                                                        ),
+                                                    'Click or Upload Image',
+                                                    style: TextStyle(
+                                                        color: AppColors
+                                                            .error),
+                                                  ),
                                                   trailing: const Icon(
                                                       Icons.camera_alt,
                                                       color: AppColors
@@ -3310,12 +3311,12 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   onTap: () {
                                                     showModalBottomSheet(
                                                         backgroundColor:
-                                                            AppColors.primary,
+                                                        AppColors.primary,
                                                         context: context,
                                                         builder: ((builder) =>
                                                             schoolRecceController
                                                                 .bottomSheet5(
-                                                                    context)));
+                                                                context)));
                                                   }),
                                             ),
                                             ErrorText(
@@ -3328,88 +3329,88 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               side: 'height',
                                             ),
                                             schoolRecceController
-                                                    .multipleImage5.isNotEmpty
+                                                .multipleImage5.isNotEmpty
                                                 ? Container(
-                                                    width: responsive
-                                                        .responsiveValue(
-                                                            small: 600.0,
-                                                            medium: 900.0,
-                                                            large: 1400.0),
-                                                    height: responsive
-                                                        .responsiveValue(
-                                                            small: 170.0,
-                                                            medium: 170.0,
-                                                            large: 170.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
+                                              width: responsive
+                                                  .responsiveValue(
+                                                  small: 600.0,
+                                                  medium: 900.0,
+                                                  large: 1400.0),
+                                              height: responsive
+                                                  .responsiveValue(
+                                                  small: 170.0,
+                                                  medium: 170.0,
+                                                  large: 170.0),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.grey),
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    10),
+                                              ),
+                                              child:
+                                              schoolRecceController
+                                                  .multipleImage5
+                                                  .isEmpty
+                                                  ? const Center(
+                                                child: Text(
+                                                    'No images selected.'),
+                                              )
+                                                  : ListView.builder(
+                                                scrollDirection:
+                                                Axis.horizontal,
+                                                itemCount:
+                                                schoolRecceController
+                                                    .multipleImage5
+                                                    .length,
+                                                itemBuilder:
+                                                    (context,
+                                                    index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
                                                     child:
-                                                        schoolRecceController
-                                                                .multipleImage5
-                                                                .isEmpty
-                                                            ? const Center(
-                                                                child: Text(
-                                                                    'No images selected.'),
-                                                              )
-                                                            : ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemCount:
-                                                                    schoolRecceController
-                                                                        .multipleImage5
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return SizedBox(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              CustomImagePreview5.showImagePreview5(schoolRecceController.multipleImage5[index].path, context);
-                                                                            },
-                                                                            child:
-                                                                                Image.file(
-                                                                              File(schoolRecceController.multipleImage5[index].path),
-                                                                              width: 190,
-                                                                              height: 120,
-                                                                              fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              schoolRecceController.multipleImage5.removeAt(index);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              const Icon(
-                                                                            Icons.delete,
-                                                                            color:
-                                                                                Colors.red,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                  )
+                                                    Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                              .all(
+                                                              8.0),
+                                                          child:
+                                                          GestureDetector(
+                                                            onTap:
+                                                                () {
+                                                              CustomImagePreview5.showImagePreview5(schoolRecceController.multipleImage5[index].path, context);
+                                                            },
+                                                            child:
+                                                            Image.file(
+                                                              File(schoolRecceController.multipleImage5[index].path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            setState(() {
+                                                              schoolRecceController.multipleImage5.removeAt(index);
+                                                            });
+                                                          },
+                                                          child:
+                                                          const Icon(
+                                                            Icons.delete,
+                                                            color:
+                                                            Colors.red,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            )
                                                 : const SizedBox(),
                                             CustomSizedBox(
                                               value: 20,
@@ -3430,28 +3431,28 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               height: 60,
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                BorderRadius.circular(10.0),
                                                 border: Border.all(
                                                     width: 2,
                                                     color: schoolRecceController
-                                                                .isImageUploadedComputer ==
-                                                            false
+                                                        .isImageUploadedComputer ==
+                                                        false
                                                         ? AppColors.primary
                                                         : AppColors.error),
                                               ),
                                               child: ListTile(
                                                   title: schoolRecceController
-                                                              .isImageUploadedComputer ==
-                                                          false
+                                                      .isImageUploadedComputer ==
+                                                      false
                                                       ? const Text(
-                                                          'Click or Upload Image',
-                                                        )
+                                                    'Click or Upload Image',
+                                                  )
                                                       : const Text(
-                                                          'Click or Upload Image',
-                                                          style: TextStyle(
-                                                              color: AppColors
-                                                                  .error),
-                                                        ),
+                                                    'Click or Upload Image',
+                                                    style: TextStyle(
+                                                        color: AppColors
+                                                            .error),
+                                                  ),
                                                   trailing: const Icon(
                                                       Icons.camera_alt,
                                                       color: AppColors
@@ -3459,12 +3460,12 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   onTap: () {
                                                     showModalBottomSheet(
                                                         backgroundColor:
-                                                            AppColors.primary,
+                                                        AppColors.primary,
                                                         context: context,
                                                         builder: ((builder) =>
                                                             schoolRecceController
                                                                 .bottomSheet6(
-                                                                    context)));
+                                                                context)));
                                                   }),
                                             ),
                                             ErrorText(
@@ -3477,88 +3478,88 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               side: 'height',
                                             ),
                                             schoolRecceController
-                                                    .multipleImage6.isNotEmpty
+                                                .multipleImage6.isNotEmpty
                                                 ? Container(
-                                                    width: responsive
-                                                        .responsiveValue(
-                                                            small: 600.0,
-                                                            medium: 900.0,
-                                                            large: 1400.0),
-                                                    height: responsive
-                                                        .responsiveValue(
-                                                            small: 170.0,
-                                                            medium: 170.0,
-                                                            large: 170.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
+                                              width: responsive
+                                                  .responsiveValue(
+                                                  small: 600.0,
+                                                  medium: 900.0,
+                                                  large: 1400.0),
+                                              height: responsive
+                                                  .responsiveValue(
+                                                  small: 170.0,
+                                                  medium: 170.0,
+                                                  large: 170.0),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.grey),
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    10),
+                                              ),
+                                              child:
+                                              schoolRecceController
+                                                  .multipleImage6
+                                                  .isEmpty
+                                                  ? const Center(
+                                                child: Text(
+                                                    'No images selected.'),
+                                              )
+                                                  : ListView.builder(
+                                                scrollDirection:
+                                                Axis.horizontal,
+                                                itemCount:
+                                                schoolRecceController
+                                                    .multipleImage6
+                                                    .length,
+                                                itemBuilder:
+                                                    (context,
+                                                    index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
                                                     child:
-                                                        schoolRecceController
-                                                                .multipleImage6
-                                                                .isEmpty
-                                                            ? const Center(
-                                                                child: Text(
-                                                                    'No images selected.'),
-                                                              )
-                                                            : ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemCount:
-                                                                    schoolRecceController
-                                                                        .multipleImage6
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return SizedBox(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              CustomImagePreview6.showImagePreview6(schoolRecceController.multipleImage6[index].path, context);
-                                                                            },
-                                                                            child:
-                                                                                Image.file(
-                                                                              File(schoolRecceController.multipleImage6[index].path),
-                                                                              width: 190,
-                                                                              height: 120,
-                                                                              fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              schoolRecceController.multipleImage6.removeAt(index);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              const Icon(
-                                                                            Icons.delete,
-                                                                            color:
-                                                                                Colors.red,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                  )
+                                                    Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                              .all(
+                                                              8.0),
+                                                          child:
+                                                          GestureDetector(
+                                                            onTap:
+                                                                () {
+                                                              CustomImagePreview6.showImagePreview6(schoolRecceController.multipleImage6[index].path, context);
+                                                            },
+                                                            child:
+                                                            Image.file(
+                                                              File(schoolRecceController.multipleImage6[index].path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            setState(() {
+                                                              schoolRecceController.multipleImage6.removeAt(index);
+                                                            });
+                                                          },
+                                                          child:
+                                                          const Icon(
+                                                            Icons.delete,
+                                                            color:
+                                                            Colors.red,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            )
                                                 : const SizedBox(),
                                             CustomSizedBox(
                                               value: 20,
@@ -3581,14 +3582,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 Radio(
                                                   value: 'Yes',
                                                   groupValue:
-                                                      schoolRecceController
-                                                          .getSelectedValue(
-                                                              'existingLibrary'),
+                                                  schoolRecceController
+                                                      .getSelectedValue(
+                                                      'existingLibrary'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'existingLibrary',
-                                                            value);
+                                                        'existingLibrary',
+                                                        value);
                                                   },
                                                 ),
                                                 const Text('Yes'),
@@ -3608,14 +3609,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 Radio(
                                                   value: 'No',
                                                   groupValue:
-                                                      schoolRecceController
-                                                          .getSelectedValue(
-                                                              'existingLibrary'),
+                                                  schoolRecceController
+                                                      .getSelectedValue(
+                                                      'existingLibrary'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'existingLibrary',
-                                                            value);
+                                                        'existingLibrary',
+                                                        value);
                                                     if (value == 'No') {
                                                       schoolRecceController
                                                           .multipleImage7
@@ -3629,10 +3630,10 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           if (schoolRecceController
                                               .getRadioFieldError(
-                                                  'existingLibrary'))
+                                              'existingLibrary'))
                                             const Padding(
                                               padding:
-                                                  EdgeInsets.only(left: 16.0),
+                                              EdgeInsets.only(left: 16.0),
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
@@ -3647,8 +3648,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             side: 'height',
                                           ),
                                           if (schoolRecceController
-                                                  .getSelectedValue(
-                                                      'existingLibrary') ==
+                                              .getSelectedValue(
+                                              'existingLibrary') ==
                                               'Yes') ...[
                                             LabelText(
                                               label: 'Upload photo of Library',
@@ -3662,28 +3663,28 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               height: 60,
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                BorderRadius.circular(10.0),
                                                 border: Border.all(
                                                     width: 2,
                                                     color: schoolRecceController
-                                                                .isImageUploadedExisitingLibrary ==
-                                                            false
+                                                        .isImageUploadedExisitingLibrary ==
+                                                        false
                                                         ? AppColors.primary
                                                         : AppColors.error),
                                               ),
                                               child: ListTile(
                                                   title: schoolRecceController
-                                                              .isImageUploadedExisitingLibrary ==
-                                                          false
+                                                      .isImageUploadedExisitingLibrary ==
+                                                      false
                                                       ? const Text(
-                                                          'Click or Upload Image',
-                                                        )
+                                                    'Click or Upload Image',
+                                                  )
                                                       : const Text(
-                                                          'Click or Upload Image',
-                                                          style: TextStyle(
-                                                              color: AppColors
-                                                                  .error),
-                                                        ),
+                                                    'Click or Upload Image',
+                                                    style: TextStyle(
+                                                        color: AppColors
+                                                            .error),
+                                                  ),
                                                   trailing: const Icon(
                                                       Icons.camera_alt,
                                                       color: AppColors
@@ -3691,12 +3692,12 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   onTap: () {
                                                     showModalBottomSheet(
                                                         backgroundColor:
-                                                            AppColors.primary,
+                                                        AppColors.primary,
                                                         context: context,
                                                         builder: ((builder) =>
                                                             schoolRecceController
                                                                 .bottomSheet7(
-                                                                    context)));
+                                                                context)));
                                                   }),
                                             ),
                                             ErrorText(
@@ -3709,88 +3710,88 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               side: 'height',
                                             ),
                                             schoolRecceController
-                                                    .multipleImage7.isNotEmpty
+                                                .multipleImage7.isNotEmpty
                                                 ? Container(
-                                                    width: responsive
-                                                        .responsiveValue(
-                                                            small: 600.0,
-                                                            medium: 900.0,
-                                                            large: 1400.0),
-                                                    height: responsive
-                                                        .responsiveValue(
-                                                            small: 170.0,
-                                                            medium: 170.0,
-                                                            large: 170.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
+                                              width: responsive
+                                                  .responsiveValue(
+                                                  small: 600.0,
+                                                  medium: 900.0,
+                                                  large: 1400.0),
+                                              height: responsive
+                                                  .responsiveValue(
+                                                  small: 170.0,
+                                                  medium: 170.0,
+                                                  large: 170.0),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.grey),
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    10),
+                                              ),
+                                              child:
+                                              schoolRecceController
+                                                  .multipleImage7
+                                                  .isEmpty
+                                                  ? const Center(
+                                                child: Text(
+                                                    'No images selected.'),
+                                              )
+                                                  : ListView.builder(
+                                                scrollDirection:
+                                                Axis.horizontal,
+                                                itemCount:
+                                                schoolRecceController
+                                                    .multipleImage7
+                                                    .length,
+                                                itemBuilder:
+                                                    (context,
+                                                    index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
                                                     child:
-                                                        schoolRecceController
-                                                                .multipleImage7
-                                                                .isEmpty
-                                                            ? const Center(
-                                                                child: Text(
-                                                                    'No images selected.'),
-                                                              )
-                                                            : ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemCount:
-                                                                    schoolRecceController
-                                                                        .multipleImage7
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return SizedBox(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              CustomImagePreview7.showImagePreview7(schoolRecceController.multipleImage7[index].path, context);
-                                                                            },
-                                                                            child:
-                                                                                Image.file(
-                                                                              File(schoolRecceController.multipleImage7[index].path),
-                                                                              width: 190,
-                                                                              height: 120,
-                                                                              fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              schoolRecceController.multipleImage7.removeAt(index);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              const Icon(
-                                                                            Icons.delete,
-                                                                            color:
-                                                                                Colors.red,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                  )
+                                                    Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                              .all(
+                                                              8.0),
+                                                          child:
+                                                          GestureDetector(
+                                                            onTap:
+                                                                () {
+                                                              CustomImagePreview7.showImagePreview7(schoolRecceController.multipleImage7[index].path, context);
+                                                            },
+                                                            child:
+                                                            Image.file(
+                                                              File(schoolRecceController.multipleImage7[index].path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            setState(() {
+                                                              schoolRecceController.multipleImage7.removeAt(index);
+                                                            });
+                                                          },
+                                                          child:
+                                                          const Icon(
+                                                            Icons.delete,
+                                                            color:
+                                                            Colors.red,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            )
                                                 : const SizedBox(),
                                             CustomSizedBox(
                                               value: 20,
@@ -3800,7 +3801,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                           LabelText(
                                             label:
-                                                'Approx. measurement of space for playground',
+                                            'Approx. measurement of space for playground',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -3812,10 +3813,10 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               Expanded(
                                                 child: CustomTextFormField(
                                                   textController:
-                                                      schoolRecceController
-                                                          .measurnment1Controller,
+                                                  schoolRecceController
+                                                      .measurnment1Controller,
                                                   textInputType:
-                                                      TextInputType.number,
+                                                  TextInputType.number,
                                                   validator: (value) {
                                                     if (value == null ||
                                                         value.isEmpty) {
@@ -3839,16 +3840,16 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight:
-                                                        FontWeight.bold),
+                                                    FontWeight.bold),
                                               ),
                                               SizedBox(width: 8),
                                               Expanded(
                                                 child: CustomTextFormField(
                                                   textController:
-                                                      schoolRecceController
-                                                          .measurnment2Controller,
+                                                  schoolRecceController
+                                                      .measurnment2Controller,
                                                   textInputType:
-                                                      TextInputType.number,
+                                                  TextInputType.number,
                                                   validator: (value) {
                                                     if (value == null ||
                                                         value.isEmpty) {
@@ -3872,7 +3873,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight:
-                                                        FontWeight.bold),
+                                                    FontWeight.bold),
                                               ),
                                             ],
                                           ),
@@ -3882,7 +3883,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Upload photo of Available Space',
+                                            'Upload photo of Available Space',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -3893,41 +3894,41 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             height: 60,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              BorderRadius.circular(10.0),
                                               border: Border.all(
                                                   width: 2,
                                                   color: schoolRecceController
-                                                              .isImageUploadedAvailabaleSpace ==
-                                                          false
+                                                      .isImageUploadedAvailabaleSpace ==
+                                                      false
                                                       ? AppColors.primary
                                                       : AppColors.error),
                                             ),
                                             child: ListTile(
                                                 title: schoolRecceController
-                                                            .isImageUploadedAvailabaleSpace ==
-                                                        false
+                                                    .isImageUploadedAvailabaleSpace ==
+                                                    false
                                                     ? const Text(
-                                                        'Click or Upload Image',
-                                                      )
+                                                  'Click or Upload Image',
+                                                )
                                                     : const Text(
-                                                        'Click or Upload Image',
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .error),
-                                                      ),
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                      color: AppColors
+                                                          .error),
+                                                ),
                                                 trailing: const Icon(
                                                     Icons.camera_alt,
                                                     color:
-                                                        AppColors.onBackground),
+                                                    AppColors.onBackground),
                                                 onTap: () {
                                                   showModalBottomSheet(
                                                       backgroundColor:
-                                                          AppColors.primary,
+                                                      AppColors.primary,
                                                       context: context,
                                                       builder: ((builder) =>
                                                           schoolRecceController
                                                               .bottomSheet8(
-                                                                  context)));
+                                                              context)));
                                                 }),
                                           ),
                                           ErrorText(
@@ -3940,93 +3941,93 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             side: 'height',
                                           ),
                                           schoolRecceController
-                                                  .multipleImage8.isNotEmpty
+                                              .multipleImage8.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive
+                                                .responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0),
+                                            height: responsive
+                                                .responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10),
+                                            ),
+                                            child:
+                                            schoolRecceController
+                                                .multipleImage8
+                                                .isEmpty
+                                                ? const Center(
+                                              child: Text(
+                                                  'No images selected.'),
+                                            )
+                                                : ListView.builder(
+                                              scrollDirection:
+                                              Axis.horizontal,
+                                              itemCount:
+                                              schoolRecceController
+                                                  .multipleImage8
+                                                  .length,
+                                              itemBuilder:
+                                                  (context,
+                                                  index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .all(
+                                                            8.0),
+                                                        child:
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            CustomImagePreview8.showImagePreview8(schoolRecceController.multipleImage8[index].path,
+                                                                context);
+                                                          },
+                                                          child:
+                                                          Image.file(
+                                                            File(schoolRecceController.multipleImage8[index].path),
+                                                            width:
+                                                            190,
+                                                            height:
+                                                            120,
+                                                            fit:
+                                                            BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap:
+                                                            () {
+                                                          setState(
+                                                                  () {
+                                                                schoolRecceController.multipleImage8.removeAt(index);
+                                                              });
+                                                        },
+                                                        child:
+                                                        const Icon(
+                                                          Icons
+                                                              .delete,
+                                                          color:
+                                                          Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      schoolRecceController
-                                                              .multipleImage8
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  schoolRecceController
-                                                                      .multipleImage8
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview8.showImagePreview8(schoolRecceController.multipleImage8[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(schoolRecceController.multipleImage8[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            schoolRecceController.multipleImage8.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -4039,11 +4040,11 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   onPressedButton: () {
                                                     setState(() {
                                                       schoolRecceController
-                                                              .showSmcVecDetails =
-                                                          true;
+                                                          .showSmcVecDetails =
+                                                      true;
                                                       schoolRecceController
-                                                              .showSchoolInfra =
-                                                          false;
+                                                          .showSchoolInfra =
+                                                      false;
                                                     });
                                                   }),
                                               const Spacer(),
@@ -4052,30 +4053,30 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 onPressedButton: () {
                                                   // Perform radio button validation
                                                   final isRadioValid1 =
-                                                      schoolRecceController
-                                                          .validateRadioSelection(
-                                                              'electricity');
+                                                  schoolRecceController
+                                                      .validateRadioSelection(
+                                                      'electricity');
                                                   final isRadioValid2 =
-                                                      schoolRecceController
-                                                          .validateRadioSelection(
-                                                              'networkConnectivity');
+                                                  schoolRecceController
+                                                      .validateRadioSelection(
+                                                      'networkConnectivity');
                                                   final isRadioValid3 =
-                                                      schoolRecceController
-                                                          .validateRadioSelection(
-                                                              'learningFacility');
+                                                  schoolRecceController
+                                                      .validateRadioSelection(
+                                                      'learningFacility');
                                                   final isRadioValid4 =
-                                                      schoolRecceController
-                                                          .validateRadioSelection(
-                                                              'existingLibrary');
+                                                  schoolRecceController
+                                                      .validateRadioSelection(
+                                                      'existingLibrary');
 
                                                   // Validate checkboxes if 'networkConnectivity' is 'Yes'
                                                   if (schoolRecceController
-                                                          .getSelectedValue(
-                                                              'networkConnectivity') ==
+                                                      .getSelectedValue(
+                                                      'networkConnectivity') ==
                                                       'Yes') {
                                                     bool isCheckboxSelected =
                                                         schoolRecceController
-                                                                .checkboxValue16 ||
+                                                            .checkboxValue16 ||
                                                             schoolRecceController
                                                                 .checkboxValue17 ||
                                                             schoolRecceController
@@ -4085,8 +4086,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                                     setState(() {
                                                       schoolRecceController
-                                                              .checkBoxError2 =
-                                                          !isCheckboxSelected;
+                                                          .checkBoxError2 =
+                                                      !isCheckboxSelected;
                                                     });
 
                                                     if (!isCheckboxSelected) {
@@ -4096,12 +4097,12 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                                   // Validate checkboxes if 'learningFacility' is 'Yes'
                                                   if (schoolRecceController
-                                                          .getSelectedValue(
-                                                              'learningFacility') ==
+                                                      .getSelectedValue(
+                                                      'learningFacility') ==
                                                       'Yes') {
                                                     bool isCheckboxSelected2 =
                                                         schoolRecceController
-                                                                .checkboxValue20 ||
+                                                            .checkboxValue20 ||
                                                             schoolRecceController
                                                                 .checkboxValue21 ||
                                                             schoolRecceController
@@ -4109,8 +4110,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                                     setState(() {
                                                       schoolRecceController
-                                                              .checkBoxError3 =
-                                                          !isCheckboxSelected2;
+                                                          .checkBoxError3 =
+                                                      !isCheckboxSelected2;
                                                     });
 
                                                     if (!isCheckboxSelected2) {
@@ -4120,60 +4121,60 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                                   setState(() {
                                                     if (schoolRecceController
-                                                            .getSelectedValue(
-                                                                'existingLibrary') ==
+                                                        .getSelectedValue(
+                                                        'existingLibrary') ==
                                                         'Yes') {
                                                       schoolRecceController
-                                                              .validateExisitingLibrary =
+                                                          .validateExisitingLibrary =
                                                           schoolRecceController
                                                               .multipleImage7
                                                               .isEmpty;
                                                     } else {
                                                       schoolRecceController
-                                                              .validateExisitingLibrary =
-                                                          false; // Skip validation
+                                                          .validateExisitingLibrary =
+                                                      false; // Skip validation
                                                     }
 
                                                     if (schoolRecceController
                                                         .checkboxValue20) {
                                                       schoolRecceController
-                                                              .validateSmartClass =
+                                                          .validateSmartClass =
                                                           schoolRecceController
                                                               .multipleImage4
                                                               .isEmpty;
                                                     } else {
                                                       schoolRecceController
-                                                              .validateSmartClass =
-                                                          false; // Skip validation
+                                                          .validateSmartClass =
+                                                      false; // Skip validation
                                                     }
 
                                                     if (schoolRecceController
                                                         .checkboxValue21) {
                                                       schoolRecceController
-                                                              .validateProjector =
+                                                          .validateProjector =
                                                           schoolRecceController
                                                               .multipleImage5
                                                               .isEmpty;
                                                     } else {
                                                       schoolRecceController
-                                                              .validateProjector =
-                                                          false; // Skip validation
+                                                          .validateProjector =
+                                                      false; // Skip validation
                                                     }
 
                                                     if (schoolRecceController
                                                         .checkboxValue22) {
                                                       schoolRecceController
-                                                              .validateComputer =
+                                                          .validateComputer =
                                                           schoolRecceController
                                                               .multipleImage6
                                                               .isEmpty;
                                                     } else {
                                                       schoolRecceController
-                                                              .validateComputer =
-                                                          false; // Skip validation
+                                                          .validateComputer =
+                                                      false; // Skip validation
                                                     }
                                                     schoolRecceController
-                                                            .validateAvailabaleSpace =
+                                                        .validateAvailabaleSpace =
                                                         schoolRecceController
                                                             .multipleImage8
                                                             .isEmpty;
@@ -4181,7 +4182,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                                   // Proceed with form validation
                                                   if (_formKey.currentState!
-                                                          .validate() &&
+                                                      .validate() &&
                                                       isRadioValid1 &&
                                                       isRadioValid2 &&
                                                       isRadioValid3 &&
@@ -4199,11 +4200,11 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                     setState(() {
                                                       // Transition to the next view or state
                                                       schoolRecceController
-                                                              .showSchoolInfra =
-                                                          false;
+                                                          .showSchoolInfra =
+                                                      false;
                                                       schoolRecceController
-                                                              .showSchoolStrngth =
-                                                          true;
+                                                          .showSchoolStrngth =
+                                                      true;
                                                     });
                                                   }
                                                 },
@@ -4229,7 +4230,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Class wise enrolment for the current year',
+                                            'Class wise enrolment for the current year',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -4249,45 +4250,45 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                                   'Grade',
                                                                   style: TextStyle(
                                                                       fontSize:
-                                                                          18,
+                                                                      18,
                                                                       fontWeight:
-                                                                          FontWeight
-                                                                              .bold)))),
+                                                                      FontWeight
+                                                                          .bold)))),
                                                       TableCell(
                                                           child: Center(
                                                               child: Text(
                                                                   'Boys',
                                                                   style: TextStyle(
                                                                       fontSize:
-                                                                          18,
+                                                                      18,
                                                                       fontWeight:
-                                                                          FontWeight
-                                                                              .bold)))),
+                                                                      FontWeight
+                                                                          .bold)))),
                                                       TableCell(
                                                           child: Center(
                                                               child: Text(
                                                                   'Girls',
                                                                   style: TextStyle(
                                                                       fontSize:
-                                                                          18,
+                                                                      18,
                                                                       fontWeight:
-                                                                          FontWeight
-                                                                              .bold)))),
+                                                                      FontWeight
+                                                                          .bold)))),
                                                       TableCell(
                                                           child: Center(
                                                               child: Text(
                                                                   'Total',
                                                                   style: TextStyle(
                                                                       fontSize:
-                                                                          18,
+                                                                      18,
                                                                       fontWeight:
-                                                                          FontWeight
-                                                                              .bold)))),
+                                                                      FontWeight
+                                                                          .bold)))),
                                                     ],
                                                   ),
                                                   for (int i = 0;
-                                                      i < grades.length;
-                                                      i++)
+                                                  i < grades.length;
+                                                  i++)
                                                     tableRowMethod(
                                                       grades[i],
                                                       boysControllers[i],
@@ -4302,16 +4303,16 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                                   'Grand Total',
                                                                   style: TextStyle(
                                                                       fontSize:
-                                                                          18,
+                                                                      18,
                                                                       fontWeight:
-                                                                          FontWeight
-                                                                              .bold)))),
+                                                                      FontWeight
+                                                                          .bold)))),
                                                       TableCell(
                                                         child:
-                                                            ValueListenableBuilder<
-                                                                int>(
+                                                        ValueListenableBuilder<
+                                                            int>(
                                                           valueListenable:
-                                                              grandTotalBoys,
+                                                          grandTotalBoys,
                                                           builder: (context,
                                                               total, child) {
                                                             return Center(
@@ -4320,18 +4321,18 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                                         .toString(),
                                                                     style: const TextStyle(
                                                                         fontSize:
-                                                                            18,
+                                                                        18,
                                                                         fontWeight:
-                                                                            FontWeight.bold)));
+                                                                        FontWeight.bold)));
                                                           },
                                                         ),
                                                       ),
                                                       TableCell(
                                                         child:
-                                                            ValueListenableBuilder<
-                                                                int>(
+                                                        ValueListenableBuilder<
+                                                            int>(
                                                           valueListenable:
-                                                              grandTotalGirls,
+                                                          grandTotalGirls,
                                                           builder: (context,
                                                               total, child) {
                                                             return Center(
@@ -4340,18 +4341,18 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                                         .toString(),
                                                                     style: const TextStyle(
                                                                         fontSize:
-                                                                            18,
+                                                                        18,
                                                                         fontWeight:
-                                                                            FontWeight.bold)));
+                                                                        FontWeight.bold)));
                                                           },
                                                         ),
                                                       ),
                                                       TableCell(
                                                         child:
-                                                            ValueListenableBuilder<
-                                                                int>(
+                                                        ValueListenableBuilder<
+                                                            int>(
                                                           valueListenable:
-                                                              grandTotal,
+                                                          grandTotal,
                                                           builder: (context,
                                                               total, child) {
                                                             return Center(
@@ -4360,9 +4361,9 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                                         .toString(),
                                                                     style: const TextStyle(
                                                                         fontSize:
-                                                                            18,
+                                                                        18,
                                                                         fontWeight:
-                                                                            FontWeight.bold)));
+                                                                        FontWeight.bold)));
                                                           },
                                                         ),
                                                       ),
@@ -4375,7 +4376,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ErrorText(
                                             isVisible: validateEnrolmentRecords,
                                             message:
-                                                'Atleast one enrolment record is required',
+                                            'Atleast one enrolment record is required',
                                           ),
                                           CustomSizedBox(
                                             value: 40,
@@ -4386,7 +4387,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               side: 'height', value: 10),
                                           LabelText(
                                             label:
-                                                'Upload photo of Enrolment Register',
+                                            'Upload photo of Enrolment Register',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -4397,41 +4398,41 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             height: 60,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              BorderRadius.circular(10.0),
                                               border: Border.all(
                                                   width: 2,
                                                   color: schoolRecceController
-                                                              .isImageUploadedEnrollement ==
-                                                          false
+                                                      .isImageUploadedEnrollement ==
+                                                      false
                                                       ? AppColors.primary
                                                       : AppColors.error),
                                             ),
                                             child: ListTile(
                                                 title: schoolRecceController
-                                                            .isImageUploadedEnrollement ==
-                                                        false
+                                                    .isImageUploadedEnrollement ==
+                                                    false
                                                     ? const Text(
-                                                        'Click or Upload Image',
-                                                      )
+                                                  'Click or Upload Image',
+                                                )
                                                     : const Text(
-                                                        'Click or Upload Image',
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .error),
-                                                      ),
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                      color: AppColors
+                                                          .error),
+                                                ),
                                                 trailing: const Icon(
                                                     Icons.camera_alt,
                                                     color:
-                                                        AppColors.onBackground),
+                                                    AppColors.onBackground),
                                                 onTap: () {
                                                   showModalBottomSheet(
                                                       backgroundColor:
-                                                          AppColors.primary,
+                                                      AppColors.primary,
                                                       context: context,
                                                       builder: ((builder) =>
                                                           schoolRecceController
                                                               .bottomSheet9(
-                                                                  context)));
+                                                              context)));
                                                 }),
                                           ),
                                           ErrorText(
@@ -4444,93 +4445,93 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             side: 'height',
                                           ),
                                           schoolRecceController
-                                                  .multipleImage9.isNotEmpty
+                                              .multipleImage9.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive
+                                                .responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0),
+                                            height: responsive
+                                                .responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10),
+                                            ),
+                                            child:
+                                            schoolRecceController
+                                                .multipleImage9
+                                                .isEmpty
+                                                ? const Center(
+                                              child: Text(
+                                                  'No images selected.'),
+                                            )
+                                                : ListView.builder(
+                                              scrollDirection:
+                                              Axis.horizontal,
+                                              itemCount:
+                                              schoolRecceController
+                                                  .multipleImage9
+                                                  .length,
+                                              itemBuilder:
+                                                  (context,
+                                                  index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .all(
+                                                            8.0),
+                                                        child:
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            CustomImagePreview9.showImagePreview9(schoolRecceController.multipleImage9[index].path,
+                                                                context);
+                                                          },
+                                                          child:
+                                                          Image.file(
+                                                            File(schoolRecceController.multipleImage9[index].path),
+                                                            width:
+                                                            190,
+                                                            height:
+                                                            120,
+                                                            fit:
+                                                            BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap:
+                                                            () {
+                                                          setState(
+                                                                  () {
+                                                                schoolRecceController.multipleImage9.removeAt(index);
+                                                              });
+                                                        },
+                                                        child:
+                                                        const Icon(
+                                                          Icons
+                                                              .delete,
+                                                          color:
+                                                          Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      schoolRecceController
-                                                              .multipleImage9
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  schoolRecceController
-                                                                      .multipleImage9
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview9.showImagePreview9(schoolRecceController.multipleImage9[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(schoolRecceController.multipleImage9[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            schoolRecceController.multipleImage9.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -4559,20 +4560,20 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           // ListTile to show filled academic years
                                           Column(
                                             children:
-                                                submittedData.keys.map((year) {
+                                            submittedData.keys.map((year) {
                                               return Padding(
                                                 padding: const EdgeInsets.only(
                                                     bottom: 12.0),
                                                 child: ListTile(
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            8.0),
+                                                    BorderRadius.circular(
+                                                        8.0),
                                                   ),
                                                   tileColor: Colors.white,
                                                   contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          horizontal: 16.0),
+                                                  EdgeInsets.symmetric(
+                                                      horizontal: 16.0),
                                                   leading: Icon(Icons.school,
                                                       color: Colors.green),
                                                   title: Text(
@@ -4580,7 +4581,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                     style: TextStyle(
                                                         fontSize: 16,
                                                         fontWeight:
-                                                            FontWeight.w500),
+                                                        FontWeight.w500),
                                                   ),
                                                   trailing: IconButton(
                                                     icon: Icon(Icons.delete,
@@ -4600,7 +4601,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Photo of the room shortlisted for DL installation',
+                                            'Photo of the room shortlisted for DL installation',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -4611,41 +4612,41 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             height: 60,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              BorderRadius.circular(10.0),
                                               border: Border.all(
                                                   width: 2,
                                                   color: schoolRecceController
-                                                              .isImageUploadedDlInstallation ==
-                                                          false
+                                                      .isImageUploadedDlInstallation ==
+                                                      false
                                                       ? AppColors.primary
                                                       : AppColors.error),
                                             ),
                                             child: ListTile(
                                                 title: schoolRecceController
-                                                            .isImageUploadedDlInstallation ==
-                                                        false
+                                                    .isImageUploadedDlInstallation ==
+                                                    false
                                                     ? const Text(
-                                                        'Click or Upload Image',
-                                                      )
+                                                  'Click or Upload Image',
+                                                )
                                                     : const Text(
-                                                        'Click or Upload Image',
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .error),
-                                                      ),
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                      color: AppColors
+                                                          .error),
+                                                ),
                                                 trailing: const Icon(
                                                     Icons.camera_alt,
                                                     color:
-                                                        AppColors.onBackground),
+                                                    AppColors.onBackground),
                                                 onTap: () {
                                                   showModalBottomSheet(
                                                       backgroundColor:
-                                                          AppColors.primary,
+                                                      AppColors.primary,
                                                       context: context,
                                                       builder: ((builder) =>
                                                           schoolRecceController
                                                               .bottomSheet10(
-                                                                  context)));
+                                                              context)));
                                                 }),
                                           ),
                                           ErrorText(
@@ -4658,93 +4659,93 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             side: 'height',
                                           ),
                                           schoolRecceController
-                                                  .multipleImage10.isNotEmpty
+                                              .multipleImage10.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive
+                                                .responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0),
+                                            height: responsive
+                                                .responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10),
+                                            ),
+                                            child:
+                                            schoolRecceController
+                                                .multipleImage10
+                                                .isEmpty
+                                                ? const Center(
+                                              child: Text(
+                                                  'No images selected.'),
+                                            )
+                                                : ListView.builder(
+                                              scrollDirection:
+                                              Axis.horizontal,
+                                              itemCount:
+                                              schoolRecceController
+                                                  .multipleImage10
+                                                  .length,
+                                              itemBuilder:
+                                                  (context,
+                                                  index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .all(
+                                                            8.0),
+                                                        child:
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            CustomImagePreview10.showImagePreview10(schoolRecceController.multipleImage10[index].path,
+                                                                context);
+                                                          },
+                                                          child:
+                                                          Image.file(
+                                                            File(schoolRecceController.multipleImage10[index].path),
+                                                            width:
+                                                            190,
+                                                            height:
+                                                            120,
+                                                            fit:
+                                                            BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap:
+                                                            () {
+                                                          setState(
+                                                                  () {
+                                                                schoolRecceController.multipleImage10.removeAt(index);
+                                                              });
+                                                        },
+                                                        child:
+                                                        const Icon(
+                                                          Icons
+                                                              .delete,
+                                                          color:
+                                                          Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      schoolRecceController
-                                                              .multipleImage10
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  schoolRecceController
-                                                                      .multipleImage10
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview10.showImagePreview10(schoolRecceController.multipleImage10[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(schoolRecceController.multipleImage10[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            schoolRecceController.multipleImage10.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -4752,7 +4753,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Photo of the room shortlisted for Library setup',
+                                            'Photo of the room shortlisted for Library setup',
                                             astrick: true,
                                           ),
                                           CustomSizedBox(
@@ -4763,41 +4764,41 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             height: 60,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              BorderRadius.circular(10.0),
                                               border: Border.all(
                                                   width: 2,
                                                   color: schoolRecceController
-                                                              .isImageUploadedDlInstallation ==
-                                                          false
+                                                      .isImageUploadedDlInstallation ==
+                                                      false
                                                       ? AppColors.primary
                                                       : AppColors.error),
                                             ),
                                             child: ListTile(
                                                 title: schoolRecceController
-                                                            .isImageUploadedLibrarySetup ==
-                                                        false
+                                                    .isImageUploadedLibrarySetup ==
+                                                    false
                                                     ? const Text(
-                                                        'Click or Upload Image',
-                                                      )
+                                                  'Click or Upload Image',
+                                                )
                                                     : const Text(
-                                                        'Click or Upload Image',
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .error),
-                                                      ),
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                      color: AppColors
+                                                          .error),
+                                                ),
                                                 trailing: const Icon(
                                                     Icons.camera_alt,
                                                     color:
-                                                        AppColors.onBackground),
+                                                    AppColors.onBackground),
                                                 onTap: () {
                                                   showModalBottomSheet(
                                                       backgroundColor:
-                                                          AppColors.primary,
+                                                      AppColors.primary,
                                                       context: context,
                                                       builder: ((builder) =>
                                                           schoolRecceController
                                                               .bottomSheet11(
-                                                                  context)));
+                                                              context)));
                                                 }),
                                           ),
                                           ErrorText(
@@ -4810,93 +4811,93 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             side: 'height',
                                           ),
                                           schoolRecceController
-                                                  .multipleImage11.isNotEmpty
+                                              .multipleImage11.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive
+                                                .responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0),
+                                            height: responsive
+                                                .responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10),
+                                            ),
+                                            child:
+                                            schoolRecceController
+                                                .multipleImage11
+                                                .isEmpty
+                                                ? const Center(
+                                              child: Text(
+                                                  'No images selected.'),
+                                            )
+                                                : ListView.builder(
+                                              scrollDirection:
+                                              Axis.horizontal,
+                                              itemCount:
+                                              schoolRecceController
+                                                  .multipleImage11
+                                                  .length,
+                                              itemBuilder:
+                                                  (context,
+                                                  index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .all(
+                                                            8.0),
+                                                        child:
+                                                        GestureDetector(
+                                                          onTap:
+                                                              () {
+                                                            CustomImagePreview11.showImagePreview11(schoolRecceController.multipleImage11[index].path,
+                                                                context);
+                                                          },
+                                                          child:
+                                                          Image.file(
+                                                            File(schoolRecceController.multipleImage11[index].path),
+                                                            width:
+                                                            190,
+                                                            height:
+                                                            120,
+                                                            fit:
+                                                            BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap:
+                                                            () {
+                                                          setState(
+                                                                  () {
+                                                                schoolRecceController.multipleImage11.removeAt(index);
+                                                              });
+                                                        },
+                                                        child:
+                                                        const Icon(
+                                                          Icons
+                                                              .delete,
+                                                          color:
+                                                          Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      schoolRecceController
-                                                              .multipleImage11
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  schoolRecceController
-                                                                      .multipleImage11
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview11.showImagePreview11(schoolRecceController.multipleImage11[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(schoolRecceController.multipleImage11[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            schoolRecceController.multipleImage11.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -4909,11 +4910,11 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   onPressedButton: () {
                                                     setState(() {
                                                       schoolRecceController
-                                                              .showSchoolInfra =
-                                                          true;
+                                                          .showSchoolInfra =
+                                                      true;
                                                       schoolRecceController
-                                                              .showSchoolStrngth =
-                                                          false;
+                                                          .showSchoolStrngth =
+                                                      false;
                                                     });
                                                   }),
                                               const Spacer(),
@@ -4980,20 +4981,20 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                           Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Row(
                                                 children: [
                                                   Radio<String>(
                                                     value: 'Not Remote',
                                                     groupValue:
-                                                        schoolRecceController
-                                                            .getSelectedValue(
-                                                                'remote'),
+                                                    schoolRecceController
+                                                        .getSelectedValue(
+                                                        'remote'),
                                                     onChanged: (value) {
                                                       schoolRecceController
                                                           .setRadioValue(
-                                                              'remote', value);
+                                                          'remote', value);
                                                     },
                                                   ),
                                                   const Text('Not Remote'),
@@ -5004,13 +5005,13 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   Radio<String>(
                                                     value: 'Somewhat Remote',
                                                     groupValue:
-                                                        schoolRecceController
-                                                            .getSelectedValue(
-                                                                'remote'),
+                                                    schoolRecceController
+                                                        .getSelectedValue(
+                                                        'remote'),
                                                     onChanged: (value) {
                                                       schoolRecceController
                                                           .setRadioValue(
-                                                              'remote', value);
+                                                          'remote', value);
                                                     },
                                                   ),
                                                   const Text('Somewhat Remote'),
@@ -5021,13 +5022,13 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   Radio<String>(
                                                     value: 'Remote',
                                                     groupValue:
-                                                        schoolRecceController
-                                                            .getSelectedValue(
-                                                                'remote'),
+                                                    schoolRecceController
+                                                        .getSelectedValue(
+                                                        'remote'),
                                                     onChanged: (value) {
                                                       schoolRecceController
                                                           .setRadioValue(
-                                                              'remote', value);
+                                                          'remote', value);
                                                     },
                                                   ),
                                                   const Text('Remote'),
@@ -5038,13 +5039,13 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   Radio<String>(
                                                     value: 'Very Remote',
                                                     groupValue:
-                                                        schoolRecceController
-                                                            .getSelectedValue(
-                                                                'remote'),
+                                                    schoolRecceController
+                                                        .getSelectedValue(
+                                                        'remote'),
                                                     onChanged: (value) {
                                                       schoolRecceController
                                                           .setRadioValue(
-                                                              'remote', value);
+                                                          'remote', value);
                                                     },
                                                   ),
                                                   const Text('Very Remote'),
@@ -5052,19 +5053,19 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               ),
                                               SizedBox(
                                                   width:
-                                                      16), // Adjust spacing between rows
+                                                  16), // Adjust spacing between rows
                                               Row(
                                                 children: [
                                                   Radio<String>(
                                                     value: 'Extremely Remote',
                                                     groupValue:
-                                                        schoolRecceController
-                                                            .getSelectedValue(
-                                                                'remote'),
+                                                    schoolRecceController
+                                                        .getSelectedValue(
+                                                        'remote'),
                                                     onChanged: (value) {
                                                       schoolRecceController
                                                           .setRadioValue(
-                                                              'remote', value);
+                                                          'remote', value);
                                                     },
                                                   ),
                                                   const Text(
@@ -5075,11 +5076,11 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   .getRadioFieldError('remote'))
                                                 Padding(
                                                   padding:
-                                                      const EdgeInsets.only(
-                                                          left: 16.0),
+                                                  const EdgeInsets.only(
+                                                      left: 16.0),
                                                   child: Align(
                                                     alignment:
-                                                        Alignment.centerLeft,
+                                                    Alignment.centerLeft,
                                                     child: const Text(
                                                       'Please select an option',
                                                       style: TextStyle(
@@ -5096,7 +5097,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           LabelText(
                                             label:
-                                                'Is School on/next to a motorable road?',
+                                            'Is School on/next to a motorable road?',
                                             astrick: true,
                                           ),
 
@@ -5108,13 +5109,13 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 Radio(
                                                   value: 'Yes',
                                                   groupValue:
-                                                      schoolRecceController
-                                                          .getSelectedValue(
-                                                              'motorable'),
+                                                  schoolRecceController
+                                                      .getSelectedValue(
+                                                      'motorable'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'motorable', value);
+                                                        'motorable', value);
                                                   },
                                                 ),
                                                 const Text('Yes'),
@@ -5134,13 +5135,13 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 Radio(
                                                   value: 'No',
                                                   groupValue:
-                                                      schoolRecceController
-                                                          .getSelectedValue(
-                                                              'motorable'),
+                                                  schoolRecceController
+                                                      .getSelectedValue(
+                                                      'motorable'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'motorable', value);
+                                                        'motorable', value);
                                                   },
                                                 ),
                                                 const Text('No'),
@@ -5151,7 +5152,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               .getRadioFieldError('motorable'))
                                             const Padding(
                                               padding:
-                                                  EdgeInsets.only(left: 16.0),
+                                              EdgeInsets.only(left: 16.0),
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
@@ -5247,8 +5248,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             ),
                                             CustomTextFormField(
                                               textController:
-                                                  schoolRecceController
-                                                      .specifyOtherController,
+                                              schoolRecceController
+                                                  .specifyOtherController,
                                               labelText: 'Please Specify',
                                               maxlines: 3,
                                               validator: (value) {
@@ -5270,7 +5271,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ],
                                           LabelText(
                                             label:
-                                                'Are there any other NGO currently supporting the school?',
+                                            'Are there any other NGO currently supporting the school?',
                                             astrick: true,
                                           ),
                                           Padding(
@@ -5281,14 +5282,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 Radio(
                                                   value: 'Yes',
                                                   groupValue:
-                                                      schoolRecceController
-                                                          .getSelectedValue(
-                                                              'supportingNgo'),
+                                                  schoolRecceController
+                                                      .getSelectedValue(
+                                                      'supportingNgo'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'supportingNgo',
-                                                            value);
+                                                        'supportingNgo',
+                                                        value);
                                                   },
                                                 ),
                                                 const Text('Yes'),
@@ -5308,14 +5309,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                 Radio(
                                                   value: 'No',
                                                   groupValue:
-                                                      schoolRecceController
-                                                          .getSelectedValue(
-                                                              'supportingNgo'),
+                                                  schoolRecceController
+                                                      .getSelectedValue(
+                                                      'supportingNgo'),
                                                   onChanged: (value) {
                                                     schoolRecceController
                                                         .setRadioValue(
-                                                            'supportingNgo',
-                                                            value);
+                                                        'supportingNgo',
+                                                        value);
                                                     if (value == 'No') {
                                                       schoolRecceController
                                                           .supportingNgoController
@@ -5329,10 +5330,10 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
                                           if (schoolRecceController
                                               .getRadioFieldError(
-                                                  'supportingNgo'))
+                                              'supportingNgo'))
                                             const Padding(
                                               padding:
-                                                  EdgeInsets.only(left: 16.0),
+                                              EdgeInsets.only(left: 16.0),
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
@@ -5348,8 +5349,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           ),
 
                                           if (schoolRecceController
-                                                  .getSelectedValue(
-                                                      'supportingNgo') ==
+                                              .getSelectedValue(
+                                              'supportingNgo') ==
                                               'Yes') ...[
                                             LabelText(
                                               label: 'How are they Supporting?',
@@ -5361,8 +5362,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             ),
                                             CustomTextFormField(
                                               textController:
-                                                  schoolRecceController
-                                                      .supportingNgoController,
+                                              schoolRecceController
+                                                  .supportingNgoController,
                                               labelText: 'Write here...',
                                               maxlines: 3,
                                               validator: (value) {
@@ -5385,7 +5386,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                           LabelText(
                                             label:
-                                                'Are key points/interesting observation that you would like o highlight',
+                                            'Are key points/interesting observation that you would like o highlight',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
@@ -5394,8 +5395,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                           CustomTextFormField(
                                             textController:
-                                                schoolRecceController
-                                                    .keyPointsController,
+                                            schoolRecceController
+                                                .keyPointsController,
                                             labelText: 'Write here...',
                                             maxlines: 3,
                                             showCharacterCount: true,
@@ -5456,7 +5457,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                                   String getSelectedGrades() {
                                                     List<String>
-                                                        selectedGrades = [];
+                                                    selectedGrades = [];
 
                                                     if (schoolRecceController
                                                         .checkboxValue1)
@@ -5522,7 +5523,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
                                                   String getSelectedLanguage() {
                                                     List<String>
-                                                        selectedLanguage = [];
+                                                    selectedLanguage = [];
 
                                                     if (schoolRecceController
                                                         .checkboxValue23)
@@ -5551,33 +5552,33 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
 
                                                     DateTime now =
-                                                        DateTime.now();
+                                                    DateTime.now();
                                                     String formattedDate =
-                                                        DateFormat('yyyy-MM-dd')
-                                                            .format(now);
+                                                    DateFormat('yyyy-MM-dd')
+                                                        .format(now);
 
                                                     String networkConnectivity =
-                                                        [
+                                                    [
                                                       schoolRecceController
-                                                              .checkboxValue16
+                                                          .checkboxValue16
                                                           ? '2G'
                                                           : null,
                                                       schoolRecceController
-                                                              .checkboxValue17
+                                                          .checkboxValue17
                                                           ? '3G'
                                                           : null,
                                                       schoolRecceController
-                                                              .checkboxValue18
+                                                          .checkboxValue18
                                                           ? '4G'
                                                           : null,
                                                       schoolRecceController
-                                                              .checkboxValue19
+                                                          .checkboxValue19
                                                           ? '5G'
                                                           : null,
                                                     ]
-                                                            .where((value) =>
-                                                                value != null)
-                                                            .join(', ');
+                                                        .where((value) =>
+                                                    value != null)
+                                                        .join(', ');
 
 
                                                     List<String> selectedAcademicYears = [];
@@ -5597,107 +5598,107 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
 
 
                                                     List<File> boardImgFiles =
-                                                        [];
+                                                    [];
                                                     for (var imagePath
-                                                        in schoolRecceController
-                                                            .imagePaths) {
+                                                    in schoolRecceController
+                                                        .imagePaths) {
                                                       boardImgFiles.add(File(
                                                           imagePath)); // Convert image path to File
                                                     }
 
                                                     List<File>
-                                                        buildingImgFiles = [];
+                                                    buildingImgFiles = [];
                                                     for (var imagePath2
-                                                        in schoolRecceController
-                                                            .imagePaths2) {
+                                                    in schoolRecceController
+                                                        .imagePaths2) {
                                                       buildingImgFiles.add(File(
                                                           imagePath2)); // Convert image path to File
                                                     }
 
                                                     List<File>
-                                                        registerImgFiles = [];
+                                                    registerImgFiles = [];
                                                     for (var imagePath3
-                                                        in schoolRecceController
-                                                            .imagePaths3) {
+                                                    in schoolRecceController
+                                                        .imagePaths3) {
                                                       registerImgFiles.add(File(
                                                           imagePath3)); // Convert image path to File
                                                     }
 
                                                     List<File> smrtImgFiles =
-                                                        [];
+                                                    [];
                                                     for (var imagePath4
-                                                        in schoolRecceController
-                                                            .imagePaths4) {
+                                                    in schoolRecceController
+                                                        .imagePaths4) {
                                                       smrtImgFiles.add(File(
                                                           imagePath4)); // Convert image path to File
                                                     }
 
                                                     List<File>
-                                                        projectorImgFiles = [];
+                                                    projectorImgFiles = [];
                                                     for (var imagePath5
-                                                        in schoolRecceController
-                                                            .imagePaths5) {
+                                                    in schoolRecceController
+                                                        .imagePaths5) {
                                                       projectorImgFiles.add(File(
                                                           imagePath5)); // Convert image path to File
                                                     }
 
                                                     List<File>
-                                                        computerImgFiles = [];
+                                                    computerImgFiles = [];
                                                     for (var imagePath6
-                                                        in schoolRecceController
-                                                            .imagePaths6) {
+                                                    in schoolRecceController
+                                                        .imagePaths6) {
                                                       computerImgFiles.add(File(
                                                           imagePath6)); // Convert image path to File
                                                     }
 
                                                     List<File> libImgFiles = [];
                                                     for (var imagePath7
-                                                        in schoolRecceController
-                                                            .imagePaths7) {
+                                                    in schoolRecceController
+                                                        .imagePaths7) {
                                                       libImgFiles.add(File(
                                                           imagePath7)); // Convert image path to File
                                                     }
 
                                                     List<File> spaceImgFiles =
-                                                        [];
+                                                    [];
                                                     for (var imagePath8
-                                                        in schoolRecceController
-                                                            .imagePaths8) {
+                                                    in schoolRecceController
+                                                        .imagePaths8) {
                                                       spaceImgFiles.add(File(
                                                           imagePath8)); // Convert image path to File
                                                     }
 
                                                     List<File>
-                                                        enrollmentImgFiles = [];
+                                                    enrollmentImgFiles = [];
                                                     for (var imagePath9
-                                                        in schoolRecceController
-                                                            .imagePaths9) {
+                                                    in schoolRecceController
+                                                        .imagePaths9) {
                                                       enrollmentImgFiles.add(File(
                                                           imagePath9)); // Convert image path to File
                                                     }
 
                                                     List<File> digiLabImgFiles =
-                                                        [];
+                                                    [];
                                                     for (var imagePath10
-                                                        in schoolRecceController
-                                                            .imagePaths10) {
+                                                    in schoolRecceController
+                                                        .imagePaths10) {
                                                       digiLabImgFiles.add(File(
                                                           imagePath10)); // Convert image path to File
                                                     }
 
                                                     List<File> libRoomImgFiles =
-                                                        [];
+                                                    [];
                                                     for (var imagePath11
-                                                        in schoolRecceController
-                                                            .imagePaths11) {
+                                                    in schoolRecceController
+                                                        .imagePaths11) {
                                                       libRoomImgFiles.add(File(
                                                           imagePath11)); // Convert image path to File
                                                     }
 
                                                     String
-                                                        enrollmentReportJson =
-                                                        jsonEncode(
-                                                            jsonData); // Ensure the JSON data is properly encoded
+                                                    enrollmentReportJson =
+                                                    jsonEncode(
+                                                        jsonData); // Ensure the JSON data is properly encoded
                                                     String gradeReportYear1Json = jsonEncode(staffJsonData);
                                                     String gradeReportYear2Json = jsonEncode(readingJson2);
                                                     String gradeReportYear3Json = jsonEncode(readingJson3);
@@ -5725,236 +5726,252 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                     }
 
                                                     String boardImgFilesPaths =
-                                                        boardImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    boardImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
                                                     String
-                                                        buildingImgFilesPaths =
-                                                        buildingImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    buildingImgFilesPaths =
+                                                    buildingImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
                                                     String
-                                                        registerImgFilesPaths =
-                                                        registerImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    registerImgFilesPaths =
+                                                    registerImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
                                                     String smrtImgFilesPaths =
-                                                        smrtImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    smrtImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
                                                     String
-                                                        projectorImgFilesPaths =
-                                                        projectorImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    projectorImgFilesPaths =
+                                                    projectorImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
                                                     String
-                                                        computerImgFilesPaths =
-                                                        computerImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    computerImgFilesPaths =
+                                                    computerImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
                                                     String libImgFilesPaths =
-                                                        libImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    libImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
                                                     String spaceImgFilesPaths =
-                                                        spaceImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    spaceImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
                                                     String
-                                                        enrollmentImgFilesPaths =
-                                                        enrollmentImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    enrollmentImgFilesPaths =
+                                                    enrollmentImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
                                                     String
-                                                        digiLabImgFilesPaths =
-                                                        digiLabImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    digiLabImgFilesPaths =
+                                                    digiLabImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
                                                     String
-                                                        libRoomImgFilesPaths =
-                                                        libRoomImgFiles
-                                                            .map((file) =>
-                                                                file.path)
-                                                            .join(',');
+                                                    libRoomImgFilesPaths =
+                                                    libRoomImgFiles
+                                                        .map((file) =>
+                                                    file.path)
+                                                        .join(',');
+                                                    String generateUniqueId(
+                                                        int length) {
+                                                      const _chars =
+                                                          'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                                                      Random _rnd = Random();
+                                                      return String.fromCharCodes(
+                                                          Iterable.generate(
+                                                              length,
+                                                                  (_) => _chars
+                                                                  .codeUnitAt(_rnd
+                                                                  .nextInt(
+                                                                  _chars
+                                                                      .length))));
+                                                    }
 
+                                                    String uniqueId =
+                                                    generateUniqueId(6);
                                                     // Capture selected grades as a comma-separated string
                                                     String selectedGrades =
-                                                        getSelectedGrades();
+                                                    getSelectedGrades();
                                                     String selectedLanguage =
-                                                        getSelectedLanguage();
+                                                    getSelectedLanguage();
                                                     // Create the enrolment collection object
                                                     SchoolRecceModal
-                                                        schoolRecceModal =
-                                                        SchoolRecceModal(
+                                                    schoolRecceModal =
+                                                    SchoolRecceModal(
                                                       tourId:
-                                                          schoolRecceController
-                                                                  .tourValue ??
-                                                              '',
+                                                      schoolRecceController
+                                                          .tourValue ??
+                                                          '',
                                                       school:
-                                                          schoolRecceController
-                                                                  .schoolValue ??
-                                                              '',
+                                                      schoolRecceController
+                                                          .schoolValue ??
+                                                          '',
                                                       udiseValue: schoolRecceController
-                                                              .getSelectedValue(
-                                                                  'udiCode') ??
+                                                          .getSelectedValue(
+                                                          'udiCode') ??
                                                           '',
                                                       udise_correct:
-                                                          schoolRecceController
-                                                              .correctUdiseCodeController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .correctUdiseCodeController
+                                                          .text,
                                                       boardImg:
-                                                          boardImgFilesPaths,
+                                                      boardImgFilesPaths,
                                                       buildingImg:
-                                                          buildingImgFilesPaths,
+                                                      buildingImgFilesPaths,
                                                       gradeTaught:
-                                                          selectedGrades,
+                                                      selectedGrades,
                                                       instituteHead:
-                                                          schoolRecceController
-                                                              .nameOfHoiController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .nameOfHoiController
+                                                          .text,
                                                       headDesignation:
-                                                          schoolRecceController
-                                                              .selectedDesignation,
+                                                      schoolRecceController
+                                                          .selectedDesignation,
                                                       headPhone:
-                                                          schoolRecceController
-                                                              .hoiPhoneNumberController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .hoiPhoneNumberController
+                                                          .text,
                                                       headEmail:
-                                                          schoolRecceController
-                                                              .hoiEmailController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .hoiEmailController
+                                                          .text,
                                                       appointedYear:
-                                                          schoolRecceController
-                                                              .selectedYear,
+                                                      schoolRecceController
+                                                          .selectedYear,
                                                       noTeachingStaff:
-                                                          schoolRecceController
-                                                              .totalTeachingStaffController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .totalTeachingStaffController
+                                                          .text,
                                                       noNonTeachingStaff:
-                                                          schoolRecceController
-                                                              .totalNonTeachingStaffController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .totalNonTeachingStaffController
+                                                          .text,
                                                       totalStaff:
-                                                          schoolRecceController
-                                                              .totalStaffController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .totalStaffController
+                                                          .text,
                                                       registerImg:
-                                                          registerImgFilesPaths,
+                                                      registerImgFilesPaths,
                                                       smcHeadName:
-                                                          schoolRecceController
-                                                              .nameOfSmcController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .nameOfSmcController
+                                                          .text,
                                                       smcPhone:
-                                                          schoolRecceController
-                                                              .smcPhoneNumberController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .smcPhoneNumberController
+                                                          .text,
                                                       smcQual: schoolRecceController
                                                           .selectedQualification,
                                                       qualOther:
-                                                          schoolRecceController
-                                                              .QualSpecifyController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .QualSpecifyController
+                                                          .text,
                                                       totalSmc:
-                                                          schoolRecceController
-                                                              .totalnoOfSmcMemController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .totalnoOfSmcMemController
+                                                          .text,
                                                       meetingDuration:
-                                                          schoolRecceController
-                                                              .selectedMeetings,
+                                                      schoolRecceController
+                                                          .selectedMeetings,
                                                       meetingOther:
-                                                          schoolRecceController
-                                                              .freSpecifyController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .freSpecifyController
+                                                          .text,
                                                       smcDesc: schoolRecceController
                                                           .descriptionController
                                                           .text,
                                                       noUsableClass:
-                                                          schoolRecceController
-                                                              .noClassroomsController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .noClassroomsController
+                                                          .text,
                                                       electricityAvailability:
-                                                          schoolRecceController
-                                                                  .getSelectedValue(
-                                                                      'electricity') ??
-                                                              '',
+                                                      schoolRecceController
+                                                          .getSelectedValue(
+                                                          'electricity') ??
+                                                          '',
                                                       networkAvailability:
-                                                          networkConnectivity,
+                                                      networkConnectivity,
                                                       digitalLearning:
-                                                          schoolRecceController
-                                                                  .getSelectedValue(
-                                                                      'learningFacility') ??
-                                                              '',
+                                                      schoolRecceController
+                                                          .getSelectedValue(
+                                                          'learningFacility') ??
+                                                          '',
                                                       smartClassImg:
-                                                          smrtImgFilesPaths,
+                                                      smrtImgFilesPaths,
                                                       projectorImg:
-                                                          projectorImgFilesPaths,
+                                                      projectorImgFilesPaths,
                                                       computerImg:
-                                                          computerImgFilesPaths,
+                                                      computerImgFilesPaths,
                                                       libraryExisting:
-                                                          schoolRecceController
-                                                                  .getSelectedValue(
-                                                                      'existingLibrary') ??
-                                                              '',
+                                                      schoolRecceController
+                                                          .getSelectedValue(
+                                                          'existingLibrary') ??
+                                                          '',
                                                       libImg: libImgFilesPaths,
                                                       playGroundSpace:
-                                                          playGroundSpace,
+                                                      playGroundSpace,
                                                       spaceImg:
-                                                          spaceImgFilesPaths,
+                                                      spaceImgFilesPaths,
                                                       enrollmentReport:
-                                                          enrollmentReportJson,
+                                                      enrollmentReportJson,
                                                       enrollmentImg:
-                                                          enrollmentImgFilesPaths,
+                                                      enrollmentImgFilesPaths,
                                                       academicYear:academicYearsString,
 
                                                       gradeReportYear1:
-                                                          gradeReportYear1Json,
+                                                      gradeReportYear1Json,
                                                       gradeReportYear2:
-                                                          gradeReportYear2Json,
+                                                      gradeReportYear2Json,
                                                       gradeReportYear3:
-                                                          gradeReportYear3Json,
+                                                      gradeReportYear3Json,
                                                       DigiLabRoomImg:
-                                                          digiLabImgFilesPaths,
+                                                      digiLabImgFilesPaths,
                                                       libRoomImg:
-                                                          libRoomImgFilesPaths,
+                                                      libRoomImgFilesPaths,
                                                       remoteInfo:
-                                                          schoolRecceController
-                                                                  .getSelectedValue(
-                                                                      'remote') ??
-                                                              '',
+                                                      schoolRecceController
+                                                          .getSelectedValue(
+                                                          'remote') ??
+                                                          '',
                                                       motorableRoad:
-                                                          schoolRecceController
-                                                                  .getSelectedValue(
-                                                                      'motorable') ??
-                                                              '',
+                                                      schoolRecceController
+                                                          .getSelectedValue(
+                                                          'motorable') ??
+                                                          '',
                                                       languageSchool:
-                                                          selectedLanguage,
+                                                      selectedLanguage,
                                                       languageOther:
-                                                          schoolRecceController
-                                                              .specifyOtherController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .specifyOtherController
+                                                          .text,
                                                       supportingNgo:
-                                                          schoolRecceController
-                                                                  .getSelectedValue(
-                                                                      'supportingNgo') ??
-                                                              '',
+                                                      schoolRecceController
+                                                          .getSelectedValue(
+                                                          'supportingNgo') ??
+                                                          '',
                                                       otherNgo:
-                                                          schoolRecceController
-                                                              .supportingNgoController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .supportingNgoController
+                                                          .text,
                                                       observationPoint:
-                                                          schoolRecceController
-                                                              .keyPointsController
-                                                              .text,
+                                                      schoolRecceController
+                                                          .keyPointsController
+                                                          .text,
                                                       submittedBy: widget.userid
                                                           .toString(),
                                                       createdAt: formattedDate
@@ -5962,10 +5979,10 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                     );
 
                                                     int result =
-                                                        await LocalDbController()
-                                                            .addData(
-                                                                schoolRecceModal:
-                                                                    schoolRecceModal);
+                                                    await LocalDbController()
+                                                        .addData(
+                                                        schoolRecceModal:
+                                                        schoolRecceModal);
                                                     if (result > 0) {
                                                       schoolRecceController
                                                           .clearFields();
@@ -6015,29 +6032,52 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                             .checkboxValue20;
                                                       });
 
-                                                      // Save the data to a file as JSON
-                                                      await saveDataToFile(
-                                                              schoolRecceModal)
-                                                          .then((_) {
-                                                        // If successful, show a snackbar indicating the file was downloaded
+
+                                                      String jsonData1 =
+                                                      jsonEncode(
+                                                          schoolRecceModal
+                                                              .toJson());
+
+                                                      try {
+                                                        JsonFileDownloader
+                                                        downloader =
+                                                        JsonFileDownloader();
+                                                        String? filePath = await downloader
+                                                            .downloadJsonFile(
+                                                          jsonData1,
+                                                          uniqueId,
+                                                          boardImgFiles,
+                                                          buildingImgFiles,
+                                                          registerImgFiles,
+                                                          smrtImgFiles,
+                                                          projectorImgFiles,
+                                                          computerImgFiles,
+                                                          libImgFiles,
+                                                          spaceImgFiles,
+                                                          enrollmentImgFiles,
+                                                          digiLabImgFiles,
+                                                          libRoomImgFiles,
+
+
+
+                                                        );
+                                                        // Notify user of success
                                                         customSnackbar(
-                                                          'File downloaded successfully',
-                                                          'downloaded',
+                                                          'File Downloaded Successfully',
+                                                          'File saved at $filePath',
                                                           AppColors.primary,
                                                           AppColors.onPrimary,
-                                                          Icons
-                                                              .file_download_done,
+                                                          Icons.download_done,
                                                         );
-                                                      }).catchError((error) {
-                                                        // If there's an error during download, show an error snackbar
+                                                      } catch (e) {
                                                         customSnackbar(
                                                           'Error',
-                                                          'File download failed: $error',
+                                                          e.toString(),
                                                           AppColors.primary,
                                                           AppColors.onPrimary,
                                                           Icons.error,
                                                         );
-                                                      });
+                                                      }
 
                                                       customSnackbar(
                                                           'Submitted Successfully',
@@ -6064,7 +6104,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                   } else {
                                                     FocusScope.of(context)
                                                         .requestFocus(
-                                                            FocusNode());
+                                                        FocusNode());
                                                   }
                                                 },
                                               ),
@@ -6078,97 +6118,131 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
   }
 }
 
+class JsonFileDownloader {
+  // Method to download JSON data to the Downloads directory
+  Future<String?> downloadJsonFile(
+      String jsonData,
+      String uniqueId,
+      List<File> boardImgFiles,
+      List<File> buildingImgFiles,
+      List<File> registerImgFiles,
+      List<File> smrtImgFiles,
+      List<File> projectorImgFiles,
+      List<File> computerImgFiles,
+      List<File> libImgFiles,
+      List<File> spaceImgFiles,
+      List<File> enrollmentImgFiles,
+      List<File> digiLabImgFiles,
+      List<File> libRoomImgFiles,
+      ) async {
+    // Check for storage permission
+    PermissionStatus permissionStatus = await Permission.storage.status;
 
+    if (permissionStatus.isDenied) {
+      // Request storage permission if it's denied
+      permissionStatus = await Permission.storage.request();
+    }
 
-Future<void> saveDataToFile(SchoolRecceModal data) async {
-  try {
-    // Request storage permissions (needed for Android)
-    var status = await Permission.storage.request();
-    if (status.isGranted) {
-      // Determine the correct storage directory based on the platform
-      Directory? directory;
+    // Check if permission was granted after the request
+    if (permissionStatus.isGranted) {
+      Directory? downloadsDirectory;
 
       if (Platform.isAndroid) {
-        // On Android, we use the external storage directory for files that should be accessible
-        directory = await getExternalStorageDirectory();
-        if (directory != null) {
-          String newPath = '';
-          List<String> folders = directory.path.split('/');
-          for (int x = 1; x < folders.length; x++) {
-            String folder = folders[x];
-            if (folder != "Android") {
-              newPath += "/" + folder;
-            } else {
-              break;
-            }
-          }
-          directory = Directory("$newPath/Download");
-        }
+        downloadsDirectory = Directory('/storage/emulated/0/Download');
       } else if (Platform.isIOS) {
-        // On iOS, we use the documents directory
-        directory = await getApplicationDocumentsDirectory();
+        downloadsDirectory = await getApplicationDocumentsDirectory();
       } else {
-        // For any other platforms, we default to application documents directory
-        directory = await getApplicationDocumentsDirectory();
+        downloadsDirectory = await getDownloadsDirectory();
       }
 
-      // Create the directory if it doesn't exist
-      if (directory != null && !await directory.exists()) {
-        await directory.create(recursive: true);
-      }
+      if (downloadsDirectory != null) {
+        // Prepare file path to save the JSON
+        String filePath =
+            '${downloadsDirectory.path}/school_recce_form_$uniqueId.txt';
+        File file = File(filePath);
 
-      // Prepare the file path with a unique identifier (using `submittedBy`)
-      final path = '${directory!.path}/school_facilities_form_${data.submittedBy}.txt';
-      print('Saving file to: $path'); // Debugging output
+        // Convert images to Base64 for each image list
+        Map<String, dynamic> jsonObject = jsonDecode(jsonData);
 
-      // Convert the SchoolRecceModal object to a JSON string
-      String jsonString = jsonEncode(data);
+        jsonObject['base64_boardImages'] =
+        await _convertImagesToBase64(boardImgFiles);
+        jsonObject['base64_buildingImages'] =
+        await _convertImagesToBase64(buildingImgFiles);
+        jsonObject['base64_registerImages'] =
+        await _convertImagesToBase64(registerImgFiles);
+        jsonObject['base64_smrtImages'] =
+        await _convertImagesToBase64(smrtImgFiles);
+        jsonObject['base64_projectorImages'] =
+        await _convertImagesToBase64(projectorImgFiles);
+        jsonObject['base64_computerImages'] =
+        await _convertImagesToBase64(computerImgFiles);
+        jsonObject['base64_libImages'] =
+        await _convertImagesToBase64(libImgFiles);
+        jsonObject['base64_spaceImages'] =
+        await _convertImagesToBase64(spaceImgFiles);
+        jsonObject['base64_enrollmentIImages'] =
+        await _convertImagesToBase64(enrollmentImgFiles);
+        jsonObject['base64_digiLabIImages'] =
+        await _convertImagesToBase64(digiLabImgFiles);
+        jsonObject['base64_libRoomIImages'] =
+        await _convertImagesToBase64(libRoomImgFiles);
 
-      // Function to convert image paths to Base64
-      Future<List<String>> convertImagesToBase64(List<String> imagePaths) async {
-        List<String> base64Images = [];
-        for (String imagePath in imagePaths) {
-          File imageFile = File(imagePath);
-          if (await imageFile.exists()) {
-            List<int> imageBytes = await imageFile.readAsBytes();
-            String base64Image = base64Encode(imageBytes);
-            base64Images.add(base64Image);
-          } else {
-            print('Image not found: $imagePath');
-          }
-        }
-        return base64Images;
-      }
+        jsonObject['base64_libImages'] =
+        await _convertImagesToBase64(libImgFiles);
 
-      // Convert and update images into Base64 format
-      Map<String, dynamic> updatedData = jsonDecode(jsonString);
-      updatedData['boardImg'] = await convertImagesToBase64(data.boardImg!.split(','));
-      updatedData['buildingImg'] = await convertImagesToBase64(data.buildingImg!.split(','));
-      updatedData['smartClassImg'] = await convertImagesToBase64(data.smartClassImg!.split(','));
-      updatedData['projectorImg'] = await convertImagesToBase64(data.projectorImg!.split(','));
-      updatedData['computerImg'] = await convertImagesToBase64(data.computerImg!.split(','));
-      updatedData['libImg'] = await convertImagesToBase64(data.libImg!.split(','));
-      updatedData['spaceImg'] = await convertImagesToBase64(data.spaceImg!.split(','));
-      updatedData['enrollmentImg'] = await convertImagesToBase64(data.enrollmentImg!.split(','));
-      updatedData['DigiLabRoomImg'] = await convertImagesToBase64(data.DigiLabRoomImg!.split(','));
-      updatedData['libRoomImg'] = await convertImagesToBase64(data.libRoomImg!.split(','));
-      updatedData['registerImg'] = await convertImagesToBase64(data.registerImg!.split(','));
+        // Write the updated JSON data to the file
+        await file.writeAsString(jsonEncode(jsonObject));
 
-      // Write the updated JSON string to a file
-      File file = File(path);
-      await file.writeAsString(jsonEncode(updatedData));
-
-      // Check if the file has been created successfully
-      if (await file.exists()) {
-        print('File successfully created at: ${file.path}');
+        // Return the file path for further use if needed
+        return filePath;
       } else {
-        print('File not found after writing.');
+        throw Exception('Could not find the download directory');
       }
+    } else if (permissionStatus.isPermanentlyDenied) {
+      // Handle permanently denied permission
+      openAppSettings();
+      throw Exception(
+          'Storage permission is permanently denied. Please enable it in app settings.');
     } else {
-      print('Storage permission not granted');
-      // Optionally, handle what happens if permission is denied
+      throw Exception('Storage permission is required to download the file');
     }
-  } catch (e) {
-    print('Error saving data: $e');
+  }
+
+  // Helper function to convert a list of image files to Base64 strings separated by commas
+  Future<String> _convertImagesToBase64(List<File> imageFiles) async {
+    List<String> base64Images = [];
+
+    for (File image in imageFiles) {
+      if (await image.exists()) {
+        List<int> imageBytes = await image.readAsBytes();
+        String base64Image = base64Encode(imageBytes);
+        base64Images.add(base64Image);
+      }
+    }
+
+    // Return Base64-encoded images as a comma-separated string
+    return base64Images.join(',');
+  }
+}
+
+class NumericRangeTextInputFormatter extends TextInputFormatter {
+  final int min;
+  final int max;
+
+  NumericRangeTextInputFormatter({required this.min, required this.max});
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.isEmpty) {
+      return newValue; // Allow empty input
+    }
+
+    final int? newValueInt = int.tryParse(newValue.text);
+    if (newValueInt != null && (newValueInt < min || newValueInt > max)) {
+      return oldValue; // Prevent entering numbers outside the range
+    }
+
+    return newValue; // Allow valid input
   }
 }

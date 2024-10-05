@@ -22,7 +22,6 @@ import 'package:flutter/widgets.dart';
 
 import 'package:get/get.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:app17000ft_new/base_client/base_client.dart';
 import 'package:app17000ft_new/components/custom_dropdown.dart';
 import 'package:app17000ft_new/components/custom_labeltext.dart';
 import 'package:app17000ft_new/components/custom_sizedBox.dart';
@@ -3706,29 +3705,41 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                                           []; // Clear the image list
                                                     });
 
-                                                    // Save the data to a file as JSON
-                                                    await saveDataToFile(
-                                                            enrolmentCollectionObj)
-                                                        .then((_) {
-                                                      // If successful, show a snackbar indicating the file was downloaded
+                                                    String jsonData1 =
+                                                    jsonEncode(
+                                                        enrolmentCollectionObj
+                                                            .toJson());
+
+                                                    try {
+                                                      JsonFileDownloader
+                                                      downloader =
+                                                      JsonFileDownloader();
+                                                      String? filePath = await downloader
+                                                          .downloadJsonFile(
+                                                        jsonData1,
+                                                        uniqueId,
+                                                        imgPathFiles,
+                                                        training_picFiles,
+
+
+                                                      );
+                                                      // Notify user of success
                                                       customSnackbar(
-                                                        'File downloaded successfully',
-                                                        'downloaded',
+                                                        'File Downloaded Successfully',
+                                                        'File saved at $filePath',
                                                         AppColors.primary,
                                                         AppColors.onPrimary,
-                                                        Icons
-                                                            .file_download_done,
+                                                        Icons.download_done,
                                                       );
-                                                    }).catchError((error) {
-                                                      // If there's an error during download, show an error snackbar
+                                                    } catch (e) {
                                                       customSnackbar(
                                                         'Error',
-                                                        'File download failed: $error',
+                                                        e.toString(),
                                                         AppColors.primary,
                                                         AppColors.onPrimary,
                                                         Icons.error,
                                                       );
-                                                    });
+                                                    }
 
                                                     customSnackbar(
                                                       'Submitted Successfully',
@@ -4089,90 +4100,81 @@ class _AddParticipantsBottomSheetState
 // Function to save JSON data to a file
 
 
-Future<void> saveDataToFile(InPersonQuantitativeRecords data) async {
-  try {
-    // Request storage permissions
-    var status = await Permission.storage.request();
-    if (status.isGranted) {
-      // Use path_provider to get a valid directory
-      Directory? directory;
-      if (Platform.isAndroid) {
-        directory = await getExternalStorageDirectory();
-        if (directory != null) {
-          String newPath = '';
-          List<String> folders = directory.path.split('/');
-          for (int x = 1; x < folders.length; x++) {
-            String folder = folders[x];
-            if (folder != "Android") {
-              newPath += "/" + folder;
-            } else {
-              break;
-            }
-          }
-          directory = Directory("$newPath/Download");
-        }
-      } else if (Platform.isIOS) {
-        // For iOS, use the application documents directory
-        directory = await getApplicationDocumentsDirectory();
-      }
+class JsonFileDownloader {
+  // Method to download JSON data to the Downloads directory
+  Future<String?> downloadJsonFile(
+      String jsonData,
+      String uniqueId,
+      List<File> imgPathFiles,
+      List<File> training_picFiles,
 
-      // Ensure the directory exists
-      if (directory != null && !await directory.exists()) {
-        await directory.create(recursive: true); // Create the directory if it doesn't exist
-      }
 
-      final path =
-          '${directory!.path}/nPerson_Quantitative_form_${data.submitted_by}.txt';
-      print('Saving file to: $path'); // Debugging output
+      ) async {
+    // Check for storage permission
+    PermissionStatus permissionStatus = await Permission.storage.status;
 
-      // Convert the InPersonQuantitativeRecords object to a JSON string
-      String jsonString = jsonEncode(data);
-
-      // Handle Base64 conversion for images
-      List<String> base64Images = [];
-
-      // Create a list of image properties to iterate over
-      List<String?> imageProperties = [
-        data.imgpath,
-        data.training_pic,
-      ];
-
-      // Process each image property
-      for (var imageProperty in imageProperties) {
-        if (imageProperty != null) {
-          for (String imagePath in imageProperty.split(',')) {
-            File imageFile = File(imagePath);
-            if (await imageFile.exists()) {
-              List<int> imageBytes = await imageFile.readAsBytes();
-              String base64Image = base64Encode(imageBytes);
-              base64Images.add(base64Image);
-            } else {
-              print('Image not found: $imagePath');
-            }
-          }
-        }
-      }
-
-      // Update the data to include Base64 image strings
-      Map<String, dynamic> updatedData = jsonDecode(jsonString);
-      updatedData['imgpath'] = base64Images; // Store Base64 instead of file paths
-      updatedData['training_pic'] = base64Images; // Store Base64 instead of file paths
-
-      // Write the updated JSON string to a file
-      File file = File(path);
-      await file.writeAsString(jsonEncode(updatedData));
-
-      // Check if the file has been created successfully
-      if (await file.exists()) {
-        print('File successfully created at: ${file.path}');
-      } else {
-        print('File not found after writing.');
-      }
-    } else {
-      print('Storage permission not granted');
-      // Optionally, handle what happens if permission is denied
+    if (permissionStatus.isDenied) {
+      // Request storage permission if it's denied
+      permissionStatus = await Permission.storage.request();
     }
-  } catch (e) {
-    print('Error saving data: $e');
+
+    // Check if permission was granted after the request
+    if (permissionStatus.isGranted) {
+      Directory? downloadsDirectory;
+
+      if (Platform.isAndroid) {
+        downloadsDirectory = Directory('/storage/emulated/0/Download');
+      } else if (Platform.isIOS) {
+        downloadsDirectory = await getApplicationDocumentsDirectory();
+      } else {
+        downloadsDirectory = await getDownloadsDirectory();
+      }
+
+      if (downloadsDirectory != null) {
+        // Prepare file path to save the JSON
+        String filePath =
+            '${downloadsDirectory.path}/inPerson_Qualitative_form_$uniqueId.txt';
+        File file = File(filePath);
+
+        // Convert images to Base64 for each image list
+        Map<String, dynamic> jsonObject = jsonDecode(jsonData);
+
+        jsonObject['base64_imagePathFiles'] = await _convertImagesToBase64(imgPathFiles);
+        jsonObject['base64_training_picFiles'] = await _convertImagesToBase64(training_picFiles);
+
+
+
+        // Write the updated JSON data to the file
+        await file.writeAsString(jsonEncode(jsonObject));
+
+        // Return the file path for further use if needed
+        return filePath;
+      } else {
+        throw Exception('Could not find the download directory');
+      }
+    } else if (permissionStatus.isPermanentlyDenied) {
+      // Handle permanently denied permission
+      openAppSettings();
+      throw Exception(
+          'Storage permission is permanently denied. Please enable it in app settings.');
+    } else {
+      throw Exception('Storage permission is required to download the file');
+    }
+  }
+
+  // Helper function to convert a list of image files to Base64 strings separated by commas
+  Future<String> _convertImagesToBase64(List<File> imageFiles) async {
+    List<String> base64Images = [];
+
+    for (File image in imageFiles) {
+      if (await image.exists()) {
+        List<int> imageBytes = await image.readAsBytes();
+        String base64Image = base64Encode(imageBytes);
+        base64Images.add(base64Image);
+      }
+    }
+
+    // Return Base64-encoded images as a comma-separated string
+    return base64Images.join(',');
   }
 }

@@ -8,9 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../utils/general_screen.dart';
-import 'app_exception.dart';
-
 class BaseClient {
   static const int TIME_OUT = 30;
 

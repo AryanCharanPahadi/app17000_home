@@ -350,31 +350,25 @@ Future<Map<String, dynamic>> insertCabMeterTracing(
   try {
     var response = await request.send();
     var responseBody = await response.stream.bytesToString();
-    print('Raw response body: $responseBody');
 
-    // Check if the response body contains HTML (which suggests an issue with the server)
-    if (responseBody.contains('<br />') || responseBody.contains('<b>')) {
-      print("HTML error response detected.");
-      return {"status": 0, "message": "Server returned HTML instead of JSON. Please check the API."};
+    if (response.statusCode == 200) {
+      if (responseBody.isEmpty) {
+        return {"status": 0, "message": "Empty response from server"};
+      }
+
+      var parsedResponse = json.decode(responseBody);
+      if (parsedResponse['status'] == 1) {
+        await SqfliteDatabaseHelper().queryDelete(arg: id.toString(), table: 'cabMeter_tracing', field: 'id');
+        await Get.find<CabMeterTracingController>().fetchData();
+        return parsedResponse;
+      } else {
+        return {"status": 0, "message": parsedResponse['message'] ?? 'Failed to insert data'};
+      }
+    } else {
+      print(responseBody);
+      return {"status": 0, "message": "Server returned an error: $responseBody"};
     }
-
-    // Try parsing the response as JSON
-    var parsedResponse = json.decode(responseBody);
-
-    if (parsedResponse['status'] == 1) {
-      // If successfully inserted, delete from local database
-      await SqfliteDatabaseHelper().queryDelete(
-        arg: id.toString(),
-        table: 'cabMeter_tracing',
-        field: 'id',
-      );
-      print("Record with id $id deleted from local database.");
-      await Get.find<CabMeterTracingController>().fetchData();
-    }
-
-    return parsedResponse;
-  } catch (error) {
-    print("Error: $error");
-    return {"status": 0, "message": "Something went wrong, Please contact Admin"};
+  } catch (responseBody) {
+    return {"status": 0, "message": "Something went wrong, Please contact Admin: $responseBody"};
   }
 }

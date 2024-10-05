@@ -48,6 +48,8 @@ class CabMeterTracingController extends GetxController with BaseController{
     update(); // Update the UI
   }
 
+  // Convert the object to JSON
+
   // Method to validate radio button selection
   bool validateRadioSelection(String key) {
     if (_selectedValues[key] == null) {

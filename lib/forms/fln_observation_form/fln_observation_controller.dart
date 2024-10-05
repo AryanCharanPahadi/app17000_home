@@ -1,24 +1,15 @@
-
-import 'dart:convert';
-import 'dart:io';
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:app17000ft_new/constants/color_const.dart';
-import 'package:app17000ft_new/forms/alfa_observation_form/alfa_obervation_modal.dart';
 import 'package:app17000ft_new/forms/fln_observation_form/fln_observation_modal.dart';
-import 'package:app17000ft_new/forms/school_enrolment/school_enrolment_model.dart';
-import 'package:app17000ft_new/forms/school_enrolment/school_enrolment_sync.dart';
 import 'package:app17000ft_new/helper/database_helper.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-
 import '../../base_client/baseClient_controller.dart';
+
 class FlnObservationController extends GetxController with BaseController{
 
   String? _tourValue;
@@ -1041,10 +1032,6 @@ class FlnObservationController extends GetxController with BaseController{
 
     update();
   }
-
-//
-
-//Update the UI
 
 
 }

@@ -14,8 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../base_client/baseClient_controller.dart';
-import '../../constants/color_const.dart';
-import 'alfa_obervation_modal.dart';
+
 class AlfaObservationController extends GetxController with BaseController{
 
   String? _tourValue;

@@ -868,12 +868,12 @@ class _IssueTrackerFormState extends State<IssueTrackerForm> {
 
     // If all validations pass, add the issue
     if (isValid && (_formKey.currentState!.validate())) {
-      List<File> imagesFiles = [];
+      List<File> digiLabImagesFiles = [];
       for (var imagePath in issueTrackerController.imagePaths) {
-        imagesFiles.add(File(imagePath)); // Convert image path to File
+        digiLabImagesFiles.add(File(imagePath)); // Convert image path to File
       }
       String imagesFilesFilesPaths =
-          imagesFiles.map((file) => file.path).join(',');
+      digiLabImagesFiles.map((file) => file.path).join(',');
 
       issuesList3.add({
         'issue': _selectedValue12!,
@@ -983,12 +983,12 @@ class _IssueTrackerFormState extends State<IssueTrackerForm> {
 
     // If all validations pass, add the issue
     if (isValid && (_formKey.currentState!.validate())) {
-      List<File> images2Files = [];
+      List<File> classroomImagesFiles = [];
       for (var imagePath in issueTrackerController.imagePaths) {
-        images2Files.add(File(imagePath)); // Convert image path to File
+        classroomImagesFiles.add(File(imagePath)); // Convert image path to File
       }
       String images2FilesPaths =
-          images2Files.map((file) => file.path).join(',');
+      classroomImagesFiles.map((file) => file.path).join(',');
 
       issuesList4.add({
         'issue': _selectedValue14!,
@@ -1104,12 +1104,12 @@ class _IssueTrackerFormState extends State<IssueTrackerForm> {
 
     // If all validations pass, add the issue
     if (isValid && (_formKey.currentState!.validate())) {
-      List<File> images3Files = [];
+      List<File> alexaImagesFiles = [];
       for (var imagePath in issueTrackerController.imagePaths) {
-        images3Files.add(File(imagePath)); // Convert image path to File
+        alexaImagesFiles.add(File(imagePath)); // Convert image path to File
       }
       String images3FilesPaths =
-          images3Files.map((file) => file.path).join(',');
+      alexaImagesFiles.map((file) => file.path).join(',');
 
       issuesList5.add({
         'issue': _selectedValue18!,
@@ -6813,6 +6813,51 @@ class _IssueTrackerFormState extends State<IssueTrackerForm> {
                                                         );
                                                       }).toList();
 
+                                                      // Combine all objects into a single JSON-like structure
+                                                      Map<String, dynamic> combinedData = {
+                                                        'basicIssue': basicIssueObj.toJson(),
+                                                        'libIssues': libIssues.map((e) => e.toJson()).toList(),
+                                                        'playgroundIssues': playgroundIssueObj.map((e) => e.toJson()).toList(),
+                                                        'digiLabIssues': digiLabIssueObj.map((e) => e.toJson()).toList(),
+                                                        'furnitureIssues': furnitureIssueObj.map((e) => e.toJson()).toList(),
+                                                        'alexaIssues': alexaIssueObj.map((e) => e.toJson()).toList(),
+                                                      };
+
+                                                      // Download the combined data as a JSON file
+                                                      try {
+                                                        JsonFileDownloader downloader = JsonFileDownloader();
+                                                        String? filePath = await downloader.downloadJsonFile(combinedData, uniqueId);
+
+                                                        // Notify the user of success
+                                                        if (filePath != null) {
+                                                          customSnackbar(
+                                                            'File Downloaded Successfully',
+                                                            'File saved at $filePath',
+                                                            AppColors.primary,
+                                                            AppColors.onPrimary,
+                                                            Icons.download_done,
+                                                          );
+                                                        } else {
+                                                          customSnackbar(
+                                                            'Error',
+                                                            'Failed to download the file',
+                                                            AppColors.primary,
+                                                            AppColors.onPrimary,
+                                                            Icons.error,
+                                                          );
+                                                        }
+
+                                                      } catch (e) {
+                                                        customSnackbar(
+                                                          'Error',
+                                                          e.toString(),
+                                                          AppColors.primary,
+                                                          AppColors.onPrimary,
+                                                          Icons.error,
+                                                        );
+                                                      }
+
+
                                                       // Save data to local database
                                                       int result =
                                                           await LocalDbController()
@@ -6833,39 +6878,8 @@ class _IssueTrackerFormState extends State<IssueTrackerForm> {
                                                       if (result > 0) {
                                                         issueTrackerController
                                                             .clearFields();
-                                                        setState(() {
-                                                          jsonData = {};
-                                                        });
-
-                                                        // Call the function to save data to a file
-                                                        await saveIssuesToFile(
-                                                          basicIssueObj,
-                                                          libIssues,
-                                                          playgroundIssueObj,
-                                                          digiLabIssueObj,
-                                                          furnitureIssueObj,
-                                                          alexaIssueObj,
-                                                        ).then((_) {
-                                                          // If successful, show a snackbar indicating the file was downloaded
-                                                          customSnackbar(
-                                                            'File downloaded successfully',
-                                                            'Downloaded',
-                                                            AppColors.primary,
-                                                            AppColors.onPrimary,
-                                                            Icons
-                                                                .file_download_done,
-                                                          );
-                                                        }).catchError((error) {
-                                                          // If there's an error during download, show an error snackbar
-                                                          customSnackbar(
-                                                            'Error',
-                                                            'File download failed: $error',
-                                                            AppColors.primary,
-                                                            AppColors.onPrimary,
-                                                            Icons.error,
-                                                          );
-                                                        });
                                                       }
+
 
                                                       customSnackbar(
                                                         'Submitted Successfully',
@@ -7361,104 +7375,49 @@ class UniqueIdGenerator {
 
 
 
-Future<void> saveIssuesToFile(
-    IssueTrackerRecords issueRecord,
-    List<LibIssue> libIssues,
-    List<PlaygroundIssue> playgroundIssues,
-    List<DigiLabIssue> digiLabIssues,
-    List<FurnitureIssue> furnitureIssues,
-    List<AlexaIssue> alexaIssues,
-    ) async {
-  try {
-    // Request storage permissions
-    var status = await Permission.storage.request();
-    if (status.isGranted) {
-      // Get the public Download directory
-      Directory? directory;
-      if (Platform.isAndroid) {
-        directory = Directory('/storage/emulated/0/Download');
-      } else if (Platform.isIOS) {
-        directory = await getApplicationDocumentsDirectory();
-      }
+class JsonFileDownloader {
+  Future<String?> downloadJsonFile(
+      Map<String, dynamic> combinedData, String uniqueId) async {
+    // Check for storage permission
+    PermissionStatus permissionStatus = await Permission.storage.status;
 
-      // If the directory does not exist, create it
-      if (directory != null && !await directory.exists()) {
-        await directory.create(recursive: true);
-      }
-
-      // Prepare the path for the file
-      final path =
-          '${directory!.path}/issue_tracker_${issueRecord.uniqueId}.txt';
-
-      // Function to convert image file to Base64
-      Future<String?> convertImageToBase64(String? imagePath) async {
-        if (imagePath == null) return null;
-        final file = File(imagePath);
-        if (await file.exists()) {
-          final bytes = await file.readAsBytes();
-          return base64Encode(bytes);
-        }
-        return null;
-      }
-
-      // Combine all objects into one JSON structure with Base64 images
-      Map<String, dynamic> dataToSave = {
-        'issueRecord': issueRecord.toJson(),
-        'libIssues': await Future.wait(libIssues.map((issue) async {
-          String? base64Image = await convertImageToBase64(issue.lib_issue_img);
-          return {
-            ...issue.toJson(),
-            'lib_issue_img': base64Image,
-          };
-        })),
-        'playgroundIssues': await Future.wait(playgroundIssues.map((issue) async {
-          String? base64Image = await convertImageToBase64(issue.play_issue_img);
-          return {
-            ...issue.toJson(),
-            'play_issue_img': base64Image,
-          };
-        })),
-        'digiLabIssues': await Future.wait(digiLabIssues.map((issue) async {
-          String? base64Image = await convertImageToBase64(issue.dig_issue_img);
-          return {
-            ...issue.toJson(),
-            'dig_issue_img': base64Image,
-          };
-        })),
-        'furnitureIssues': await Future.wait(furnitureIssues.map((issue) async {
-          String? base64Image = await convertImageToBase64(issue.furn_issue_img);
-          return {
-            ...issue.toJson(),
-            'furn_issue_img': base64Image,
-          };
-        })),
-        'alexaIssues': await Future.wait(alexaIssues.map((issue) async {
-          String? base64Image = await convertImageToBase64(issue.alexa_issue_img);
-          return {
-            ...issue.toJson(),
-            'alexa_issue_img': base64Image,
-          };
-        })),
-      };
-
-      // Convert the combined object to a JSON string
-      String jsonString = jsonEncode(dataToSave);
-
-      // Write the JSON string to a file
-      File file = File(path);
-      await file.writeAsString(jsonString);
-
-      print('Data saved to $path');
-
-      // Notify media scanner to make the file visible to the user (Android only)
-      if (Platform.isAndroid) {
-        const MethodChannel channel = MethodChannel('com.example.app/media_scanner');
-        await channel.invokeMethod('scanMedia', {'path': path});
-      }
-    } else {
-      print('Storage permission not granted');
+    if (permissionStatus.isDenied) {
+      // Request storage permission if it's denied
+      permissionStatus = await Permission.storage.request();
     }
-  } catch (e) {
-    print('Error saving data: $e');
+
+    if (permissionStatus.isGranted) {
+      Directory? downloadsDirectory;
+
+      if (Platform.isAndroid) {
+        downloadsDirectory = Directory('/storage/emulated/0/Download');
+      } else if (Platform.isIOS) {
+        downloadsDirectory = await getApplicationDocumentsDirectory();
+      } else {
+        downloadsDirectory = await getDownloadsDirectory();
+      }
+
+      if (downloadsDirectory != null) {
+        // Prepare the file path to save the JSON
+        String filePath =
+            '${downloadsDirectory.path}/issue_tracker_$uniqueId.txt';
+        File file = File(filePath);
+
+        // Write the JSON data to the file
+        await file.writeAsString(jsonEncode(combinedData));
+
+        return filePath;
+      } else {
+        throw Exception('Could not find the download directory');
+      }
+    } else if (permissionStatus.isPermanentlyDenied) {
+      // Handle permanently denied permission
+      openAppSettings();
+      throw Exception('Storage permission is permanently denied.');
+    } else {
+      throw Exception('Storage permission is required to download the file');
+    }
   }
 }
+
+

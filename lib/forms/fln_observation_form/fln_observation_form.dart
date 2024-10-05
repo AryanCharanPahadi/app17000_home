@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -31,7 +32,7 @@ import 'package:app17000ft_new/forms/school_enrolment/school_enrolment_controlle
 import 'package:app17000ft_new/home/home_screen.dart';
 
 import '../../components/custom_confirmation.dart';
-import '../../utils/file_utils.dart';
+import '../../utils/image_utils.dart';
 import '../alfa_observation_form/alfa_observation_controller.dart';
 import 'fln_observation_controller.dart';
 
@@ -106,7 +107,7 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
     return false; // No records present
   }
 
-  final List<String> grades = [ '1st', '2nd', '3rd'];
+  final List<String> grades = ['1st', '2nd', '3rd'];
   bool isInitialized = false;
 
   // ValueNotifiers for the grand totals
@@ -264,17 +265,10 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
     grandTotalTeachingStaff.dispose();
     grandTotalNonTeachingStaff.dispose();
     grandTotalStaff.dispose();
-
-
-
-
   }
 
-  TableRow tableRowMethod(
-      String classname,
-      TextEditingController boyController,
-      TextEditingController girlController,
-      ValueNotifier<int> totalNotifier) {
+  TableRow tableRowMethod(String classname, TextEditingController boyController,
+      TextEditingController girlController, ValueNotifier<int> totalNotifier) {
     return TableRow(
       children: [
         TableCell(
@@ -316,7 +310,8 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
               return Center(
                 child: Text(
                   total.toString(),
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               );
             },
@@ -538,7 +533,6 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
@@ -572,11 +566,12 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                           builder: (flnObservationController) {
                             return Form(
                                 key: _formKey,
-                                child:GetBuilder<TourController>(
+                                child: GetBuilder<TourController>(
                                     init: TourController(),
                                     builder: (tourController) {
                                       // Fetch tour details once, not on every rebuild.
-                                      if (tourController.getLocalTourList.isEmpty) {
+                                      if (tourController
+                                          .getLocalTourList.isEmpty) {
                                         tourController.fetchTourDetails();
                                       }
 
@@ -598,24 +593,35 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                             side: 'height',
                                           ),
                                           CustomDropdownFormField(
-                                            focusNode: flnObservationController.tourIdFocusNode,
-                                            options: tourController.getLocalTourList
-                                                .map((e) => e.tourId!) // Ensure tourId is non-nullable
+                                            focusNode: flnObservationController
+                                                .tourIdFocusNode,
+                                            options: tourController
+                                                .getLocalTourList
+                                                .map((e) => e
+                                                    .tourId!) // Ensure tourId is non-nullable
                                                 .toList(),
-                                            selectedOption: flnObservationController.tourValue,
+                                            selectedOption:
+                                                flnObservationController
+                                                    .tourValue,
                                             onChanged: (value) {
                                               // Safely handle the school list splitting by commas
                                               splitSchoolLists = tourController
                                                   .getLocalTourList
-                                                  .where((e) => e.tourId == value)
-                                                  .map((e) => e.allSchool!.split(',').map((s) => s.trim()).toList())
+                                                  .where(
+                                                      (e) => e.tourId == value)
+                                                  .map((e) => e.allSchool!
+                                                      .split(',')
+                                                      .map((s) => s.trim())
+                                                      .toList())
                                                   .expand((x) => x)
                                                   .toList();
 
                                               // Single setState call for efficiency
                                               setState(() {
-                                                flnObservationController.setSchool(null);
-                                                flnObservationController.setTour(value);
+                                                flnObservationController
+                                                    .setSchool(null);
+                                                flnObservationController
+                                                    .setTour(value);
                                               });
                                             },
                                             labelText: "Select Tour ID",
@@ -635,7 +641,8 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                           // DropdownSearch for selecting a single school
                                           DropdownSearch<String>(
                                             validator: (value) {
-                                              if (value == null || value.isEmpty) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
                                                 return "Please Select School";
                                               }
                                               return null;
@@ -643,11 +650,16 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                             popupProps: PopupProps.menu(
                                               showSelectedItems: true,
                                               showSearchBox: true,
-                                              disabledItemFn: (String s) => s.startsWith('I'), // Disable based on condition
+                                              disabledItemFn: (String s) =>
+                                                  s.startsWith(
+                                                      'I'), // Disable based on condition
                                             ),
-                                            items:splitSchoolLists, // Split school list as strings
-                                            dropdownDecoratorProps: const DropDownDecoratorProps(
-                                              dropdownSearchDecoration: InputDecoration(
+                                            items:
+                                                splitSchoolLists, // Split school list as strings
+                                            dropdownDecoratorProps:
+                                                const DropDownDecoratorProps(
+                                              dropdownSearchDecoration:
+                                                  InputDecoration(
                                                 labelText: "Select School",
                                                 hintText: "Select School",
                                               ),
@@ -655,10 +667,13 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                             onChanged: (value) {
                                               // Set the selected school
                                               setState(() {
-                                                flnObservationController.setSchool(value);
+                                                flnObservationController
+                                                    .setSchool(value);
                                               });
                                             },
-                                            selectedItem: flnObservationController.schoolValue,
+                                            selectedItem:
+                                                flnObservationController
+                                                    .schoolValue,
                                           ),
                                           CustomSizedBox(
                                             value: 20,
@@ -685,9 +700,9 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                                         .setRadioValue(
                                                             'udiCode', value);
                                                     if (value == 'Yes') {
-
-                                                      flnObservationController.correctUdiseCodeController.clear();
-
+                                                      flnObservationController
+                                                          .correctUdiseCodeController
+                                                          .clear();
                                                     }
                                                   },
                                                 ),
@@ -1388,9 +1403,9 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                                             'activityCorner',
                                                             value);
                                                     if (value == 'No') {
-
-                                                      flnObservationController.multipleImage4.clear();
-
+                                                      flnObservationController
+                                                          .multipleImage4
+                                                          .clear();
                                                     }
                                                   },
                                                 ),
@@ -1768,8 +1783,7 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                               });
 
                                               if (_formKey.currentState!
-                                                      .validate()
-                                                  &&
+                                                      .validate() &&
                                                   isRadioValid1 &&
                                                   isRadioValid2 &&
                                                   isRadioValid3 &&
@@ -1777,8 +1791,7 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                                   !validateLkg &&
                                                   !validateUkg &&
                                                   !validateActivityCorner &&
-                                                  !validateTlm
-                                                  ) {
+                                                  !validateTlm) {
                                                 setState(() {
                                                   showBasicDetails = false;
                                                   showBaseLineAssessment = true;
@@ -2140,9 +2153,9 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                                             'flnActivities',
                                                             value);
                                                     if (value == 'No') {
-
-                                                      flnObservationController.multipleImage6.clear();
-
+                                                      flnObservationController
+                                                          .multipleImage6
+                                                          .clear();
                                                     }
                                                   },
                                                 ),
@@ -2589,10 +2602,12 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                                             'refresherTraining',
                                                             value);
                                                     if (value == 'No') {
-
-                                                      flnObservationController.multipleImage7.clear();
-                                                      flnObservationController.noOfTeacherTrainedController.clear();
-
+                                                      flnObservationController
+                                                          .multipleImage7
+                                                          .clear();
+                                                      flnObservationController
+                                                          .noOfTeacherTrainedController
+                                                          .clear();
                                                     }
                                                   },
                                                 ),
@@ -2914,10 +2929,9 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                                         .setRadioValue(
                                                             'reading', value);
                                                     if (value == 'No') {
-
-                                                      flnObservationController.multipleImage8.clear();
-
-
+                                                      flnObservationController
+                                                          .multipleImage8
+                                                          .clear();
                                                     }
                                                   },
                                                 ),
@@ -3578,96 +3592,207 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                               CustomButton(
                                                 title: 'Submit',
                                                 onPressedButton: () async {
-                                                  final isRadioValid8 = flnObservationController.validateRadioSelection('baselineAssessment');
+                                                  final isRadioValid8 =
+                                                      flnObservationController
+                                                          .validateRadioSelection(
+                                                              'baselineAssessment');
 
                                                   setState(() {
                                                     // Validate enrolment records only when 'refresherTrainingOnALFA' is 'Yes'
-                                                    validateClassroom = flnObservationController.multipleImage9.isEmpty;
+                                                    validateClassroom =
+                                                        flnObservationController
+                                                            .multipleImage9
+                                                            .isEmpty;
                                                   });
 
-                                                  if (_formKey.currentState!.validate() && isRadioValid8 && !validateClassroom) {
-                                                    DateTime now = DateTime.now();
-                                                    String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-
-                                                    List<File> nurTimeTableFiles = [];
-                                                    for (var imagePath in flnObservationController.imagePaths) {
-                                                      nurTimeTableFiles.add(File(imagePath)); // Convert image path to File
+                                                  if (_formKey.currentState!
+                                                          .validate() &&
+                                                      isRadioValid8 &&
+                                                      !validateClassroom) {
+                                                    DateTime now =
+                                                        DateTime.now();
+                                                    String formattedDate =
+                                                        DateFormat('yyyy-MM-dd')
+                                                            .format(now);
+                                                    String generateUniqueId(
+                                                        int length) {
+                                                      const _chars =
+                                                          'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                                                      Random _rnd = Random();
+                                                      return String.fromCharCodes(
+                                                          Iterable.generate(
+                                                              length,
+                                                              (_) => _chars
+                                                                  .codeUnitAt(_rnd
+                                                                      .nextInt(
+                                                                          _chars
+                                                                              .length))));
                                                     }
 
-                                                    List<File> lkgTimeTableFiles = [];
-                                                    for (var imagePath2 in flnObservationController.imagePaths2) {
-                                                      lkgTimeTableFiles.add(File(imagePath2)); // Convert image path to File
+                                                    String uniqueId =
+                                                        generateUniqueId(6);
+                                                    List<File>
+                                                        nurTimeTableFiles = [];
+                                                    for (var imagePath
+                                                        in flnObservationController
+                                                            .imagePaths) {
+                                                      nurTimeTableFiles.add(File(
+                                                          imagePath)); // Convert image path to File
                                                     }
 
-                                                    List<File> ukgTimeTableFiles = [];
-                                                    for (var imagePath3 in flnObservationController.imagePaths3) {
-                                                      ukgTimeTableFiles.add(File(imagePath3)); // Convert image path to File
+                                                    List<File>
+                                                        lkgTimeTableFiles = [];
+                                                    for (var imagePath2
+                                                        in flnObservationController
+                                                            .imagePaths2) {
+                                                      lkgTimeTableFiles.add(File(
+                                                          imagePath2)); // Convert image path to File
                                                     }
 
-                                                    List<File> activityImgFiles = [];
-                                                    for (var imagePath4 in flnObservationController.imagePaths4) {
-                                                      activityImgFiles.add(File(imagePath4)); // Convert image path to File
+                                                    List<File>
+                                                        ukgTimeTableFiles = [];
+                                                    for (var imagePath3
+                                                        in flnObservationController
+                                                            .imagePaths3) {
+                                                      ukgTimeTableFiles.add(File(
+                                                          imagePath3)); // Convert image path to File
+                                                    }
+
+                                                    List<File>
+                                                        activityImgFiles = [];
+                                                    for (var imagePath4
+                                                        in flnObservationController
+                                                            .imagePaths4) {
+                                                      activityImgFiles.add(File(
+                                                          imagePath4)); // Convert image path to File
                                                     }
 
                                                     List<File> tlmImgFiles = [];
-                                                    for (var imagePath5 in flnObservationController.imagePaths5) {
-                                                      tlmImgFiles.add(File(imagePath5)); // Convert image path to File
+                                                    for (var imagePath5
+                                                        in flnObservationController
+                                                            .imagePaths5) {
+                                                      tlmImgFiles.add(File(
+                                                          imagePath5)); // Convert image path to File
                                                     }
 
                                                     List<File> flnImgFiles = [];
-                                                    for (var imagePath6 in flnObservationController.imagePaths6) {
-                                                      flnImgFiles.add(File(imagePath6)); // Convert image path to File
+                                                    for (var imagePath6
+                                                        in flnObservationController
+                                                            .imagePaths6) {
+                                                      flnImgFiles.add(File(
+                                                          imagePath6)); // Convert image path to File
                                                     }
 
-                                                    List<File> trainingImgFiles = [];
-                                                    for (var imagePath7 in flnObservationController.imagePaths7) {
-                                                      trainingImgFiles.add(File(imagePath7)); // Convert image path to File
+                                                    List<File>
+                                                        trainingImgFiles = [];
+                                                    for (var imagePath7
+                                                        in flnObservationController
+                                                            .imagePaths7) {
+                                                      trainingImgFiles.add(File(
+                                                          imagePath7)); // Convert image path to File
                                                     }
 
                                                     List<File> libImgFiles = [];
-                                                    for (var imagePath8 in flnObservationController.imagePaths8) {
-                                                      libImgFiles.add(File(imagePath8)); // Convert image path to File
+                                                    for (var imagePath8
+                                                        in flnObservationController
+                                                            .imagePaths8) {
+                                                      libImgFiles.add(File(
+                                                          imagePath8)); // Convert image path to File
                                                     }
 
-                                                    List<File> classImgFiles = [];
-                                                    for (var imagePath9 in flnObservationController.imagePaths9) {
-                                                      classImgFiles.add(File(imagePath9)); // Convert image path to File
+                                                    List<File> classImgFiles =
+                                                        [];
+                                                    for (var imagePath9
+                                                        in flnObservationController
+                                                            .imagePaths9) {
+                                                      classImgFiles.add(File(
+                                                          imagePath9)); // Convert image path to File
                                                     }
 
-                                                    String nurTimeTableFilePaths = nurTimeTableFiles.map((file) => file.path).join(',');
-                                                    String lkgTimeTableFilePaths = lkgTimeTableFiles.map((file) => file.path).join(',');
-                                                    String ukgTimeTableFilePaths = ukgTimeTableFiles.map((file) => file.path).join(',');
-                                                    String activityImgFilesPaths = activityImgFiles.map((file) => file.path).join(',');
-                                                    String trainingImgFilesPaths = trainingImgFiles.map((file) => file.path).join(',');
-                                                    String libImgFilesPaths = libImgFiles.map((file) => file.path).join(',');
-                                                    String tlmImgFilesPaths = tlmImgFiles.map((file) => file.path).join(',');
-                                                    String classImgFilesPaths = classImgFiles.map((file) => file.path).join(',');
-                                                    String flnImgFilesPaths = flnImgFiles.map((file) => file.path).join(',');
-
-
-                                                    print('Image Paths: ${nurTimeTableFiles.map((file) => file.path).toList()}');
-                                                    print('Image Paths: ${lkgTimeTableFiles.map((file) => file.path).toList()}');
-                                                    print('Image Paths: ${ukgTimeTableFiles.map((file) => file.path).toList()}');
-                                                    print('Image Paths: ${activityImgFiles.map((file) => file.path).toList()}');
-                                                    print('Image Paths: ${trainingImgFiles.map((file) => file.path).toList()}');
-                                                    print('Image Paths: ${libImgFiles.map((file) => file.path).toList()}');
-                                                    print('Image Paths: ${tlmImgFiles.map((file) => file.path).toList()}');
-                                                    print('Image Paths: ${classImgFiles.map((file) => file.path).toList()}');
-                                                    print('Image Paths: ${flnImgFiles.map((file) => file.path).toList()}');
-
+                                                    String
+                                                        nurTimeTableFilePaths =
+                                                        nurTimeTableFiles
+                                                            .map((file) =>
+                                                                file.path)
+                                                            .join(',');
+                                                    String
+                                                        lkgTimeTableFilePaths =
+                                                        lkgTimeTableFiles
+                                                            .map((file) =>
+                                                                file.path)
+                                                            .join(',');
+                                                    String
+                                                        ukgTimeTableFilePaths =
+                                                        ukgTimeTableFiles
+                                                            .map((file) =>
+                                                                file.path)
+                                                            .join(',');
+                                                    String
+                                                        activityImgFilesPaths =
+                                                        activityImgFiles
+                                                            .map((file) =>
+                                                                file.path)
+                                                            .join(',');
+                                                    String
+                                                        trainingImgFilesPaths =
+                                                        trainingImgFiles
+                                                            .map((file) =>
+                                                                file.path)
+                                                            .join(',');
+                                                    String libImgFilesPaths =
+                                                        libImgFiles
+                                                            .map((file) =>
+                                                                file.path)
+                                                            .join(',');
+                                                    String tlmImgFilesPaths =
+                                                        tlmImgFiles
+                                                            .map((file) =>
+                                                                file.path)
+                                                            .join(',');
+                                                    String classImgFilesPaths =
+                                                        classImgFiles
+                                                            .map((file) =>
+                                                                file.path)
+                                                            .join(',');
+                                                    String flnImgFilesPaths =
+                                                        flnImgFiles
+                                                            .map((file) =>
+                                                                file.path)
+                                                            .join(',');
 
                                                     // Create the enrolment collection object
                                                     FlnObservationModel flnObservationModel = FlnObservationModel(
-                                                        tourId: flnObservationController.tourValue ?? '',
-                                                        school: flnObservationController.schoolValue ?? '',
-                                                        udiseValue: flnObservationController.getSelectedValue('udiCode') ?? '',
-                                                        correctUdise: flnObservationController.correctUdiseCodeController.text,
-                                                        noStaffTrained: flnObservationController.noOfStaffTrainedController.text,
-                                                        imgNurTimeTable: nurTimeTableFilePaths,
-                                                        imgLKGTimeTable: lkgTimeTableFilePaths,
-                                                        imgUKGTimeTable: ukgTimeTableFilePaths,
-                                                        lessonPlanValue: flnObservationController.getSelectedValue('lessonPlan') ?? '',
-                                                        activityValue: flnObservationController.getSelectedValue('activityCorner') ?? '',
+                                                        tourId: flnObservationController.tourValue ??
+                                                            '',
+                                                        school: flnObservationController
+                                                                .schoolValue ??
+                                                            '',
+                                                        udiseValue:
+                                                            flnObservationController.getSelectedValue('udiCode') ??
+                                                                '',
+                                                        correctUdise:
+                                                            flnObservationController
+                                                                .correctUdiseCodeController
+                                                                .text,
+                                                        noStaffTrained:
+                                                            flnObservationController
+                                                                .noOfStaffTrainedController
+                                                                .text,
+                                                        imgNurTimeTable:
+                                                            nurTimeTableFilePaths,
+                                                        imgLKGTimeTable:
+                                                            lkgTimeTableFilePaths,
+                                                        imgUKGTimeTable:
+                                                            ukgTimeTableFilePaths,
+                                                        lessonPlanValue:
+                                                            flnObservationController
+                                                                    .getSelectedValue(
+                                                                        'lessonPlan') ??
+                                                                '',
+                                                        activityValue:
+                                                            flnObservationController
+                                                                    .getSelectedValue('activityCorner') ??
+                                                                '',
                                                         imgActivity: activityImgFilesPaths,
                                                         imgTLM: tlmImgFilesPaths,
                                                         baselineValue: flnObservationController.getSelectedValue('baselineAssessment') ?? '',
@@ -3686,52 +3811,88 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                                         observation: flnObservationController.remarksController.text,
                                                         createdAt: formattedDate.toString(),
                                                         submittedAt: formattedDate.toString(),
-                                                        created_by: widget.userid.toString()
-                                                    );
+                                                        created_by: widget.userid.toString());
 
-                                                    int result = await LocalDbController().addData(flnObservationModel: flnObservationModel);
+                                                    int result =
+                                                        await LocalDbController()
+                                                            .addData(
+                                                                flnObservationModel:
+                                                                    flnObservationModel);
                                                     if (result > 0) {
-                                                      flnObservationController.clearFields();
+                                                      flnObservationController
+                                                          .clearFields();
                                                       setState(() {
                                                         jsonData = {};
                                                         staffJsonData = {};
                                                         readingJson = {};
                                                       });
 
-                                                      // Save the data to a file as JSON
-                                                      await saveDataToFile(flnObservationModel).then((_) {
-                                                        // If successful, show a snackbar indicating the file was downloaded
+                                                      String jsonData1 =
+                                                          jsonEncode(
+                                                              flnObservationModel
+                                                                  .toJson());
+
+                                                      try {
+                                                        JsonFileDownloader
+                                                            downloader =
+                                                            JsonFileDownloader();
+                                                        String? filePath = await downloader
+                                                            .downloadJsonFile(
+                                                                jsonData1,
+                                                                uniqueId,
+                                                                nurTimeTableFiles,
+                                                                lkgTimeTableFiles,
+                                                                ukgTimeTableFiles,
+                                                                activityImgFiles,
+                                                                tlmImgFiles,
+                                                                flnImgFiles,
+                                                                trainingImgFiles,
+                                                                libImgFiles,
+                                                                classImgFiles);
+                                                        // Notify user of success
                                                         customSnackbar(
-                                                          'File downloaded successfully',
-                                                          'downloaded',
+                                                          'File Downloaded Successfully',
+                                                          'File saved at $filePath',
                                                           AppColors.primary,
                                                           AppColors.onPrimary,
-                                                          Icons.file_download_done,
+                                                          Icons.download_done,
                                                         );
-                                                      }).catchError((error) {
-                                                        // If there's an error during download, show an error snackbar
+                                                      } catch (e) {
                                                         customSnackbar(
                                                           'Error',
-                                                          'File download failed: $error',
+                                                          e.toString(),
                                                           AppColors.primary,
                                                           AppColors.onPrimary,
                                                           Icons.error,
                                                         );
-                                                      });
+                                                      }
 
-
-                                                      customSnackbar('Submitted Successfully', 'Submitted', AppColors.primary, AppColors.onPrimary, Icons.verified);
+                                                      customSnackbar(
+                                                          'Submitted Successfully',
+                                                          'Submitted',
+                                                          AppColors.primary,
+                                                          AppColors.onPrimary,
+                                                          Icons.verified);
 
                                                       // Navigate to HomeScreen
                                                       Navigator.pushReplacement(
                                                         context,
-                                                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                HomeScreen()),
                                                       );
                                                     } else {
-                                                      customSnackbar('Error', 'Something went wrong', AppColors.error, Colors.white, Icons.error);
+                                                      customSnackbar(
+                                                          'Error',
+                                                          'Something went wrong',
+                                                          AppColors.error,
+                                                          Colors.white,
+                                                          Icons.error);
                                                     }
                                                   } else {
-                                                    FocusScope.of(context).requestFocus(FocusNode());
+                                                    FocusScope.of(context)
+                                                        .requestFocus(
+                                                            FocusNode());
                                                   }
                                                 },
                                               ),
@@ -3746,100 +3907,99 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
 }
 
 
+class JsonFileDownloader {
+  // Method to download JSON data to the Downloads directory
+  Future<String?> downloadJsonFile(
+      String jsonData,
+      String uniqueId,
+      List<File> nurTimeTableFiles,
+      List<File> lkgTimeTableFiles,
+      List<File> ukgTimeTableFiles,
+      List<File> activityImgFiles,
+      List<File> tlmImgFiles,
+      List<File> flnImgFiles,
+      List<File> trainingImgFiles,
+      List<File> libImgFiles,
+      List<File> classImgFiles) async {
+    // Check for storage permission
+    PermissionStatus permissionStatus = await Permission.storage.status;
 
-Future<void> saveDataToFile(FlnObservationModel data) async {
-  try {
-    // Request storage permissions
-    var status = await Permission.storage.request();
-    if (status.isGranted) {
-      // Use path_provider to get a valid directory
-      Directory? directory;
-      if (Platform.isAndroid) {
-        directory = await getExternalStorageDirectory();
-        if (directory != null) {
-          String newPath = '';
-          List<String> folders = directory.path.split('/');
-          for (int x = 1; x < folders.length; x++) {
-            String folder = folders[x];
-            if (folder != "Android") {
-              newPath += "/" + folder;
-            } else {
-              break;
-            }
-          }
-          directory = Directory("$newPath/Download");
-        }
-      }
-
-      if (directory != null && !await directory.exists()) {
-        await directory.create(recursive: true); // Create the directory if it doesn't exist
-      }
-
-      final path = '${directory!.path}/fln_observation_form_${data.created_by}.txt';
-      print('Saving file to: $path'); // Debugging output
-
-      // Convert the FlnObservationModel object to a JSON string
-      String jsonString = jsonEncode(data);
-
-      // Handle Base64 conversion for images
-      List<String> base64Images = [];
-
-      // Create a list of image properties to iterate over
-      List<String?> imageProperties = [
-        data.imgNurTimeTable,
-        data.imgLKGTimeTable,
-        data.imgUKGTimeTable,
-        data.imgClass,
-        data.imgLib,
-        data.imgTraining,
-        data.imgFLN,
-        data.imgActivity,
-        data.imgTLM,
-      ];
-
-      // Process each image property
-      for (var imageProperty in imageProperties) {
-        if (imageProperty != null) {
-          for (String imagePath in imageProperty.split(',')) {
-            File imageFile = File(imagePath);
-            if (await imageFile.exists()) {
-              List<int> imageBytes = await imageFile.readAsBytes();
-              String base64Image = base64Encode(imageBytes);
-              base64Images.add(base64Image);
-            } else {
-              print('Image not found: $imagePath');
-            }
-          }
-        }
-      }
-
-      // Update the data to include Base64 image strings
-      Map<String, dynamic> updatedData = jsonDecode(jsonString);
-      updatedData['imgNurTimeTable'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgLKGTimeTable'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgUKGTimeTable'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgClass'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgLib'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgTraining'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgFLN'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgActivity'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgTLM'] = base64Images; // Store Base64 instead of file paths
-
-      // Write the updated JSON string to a file
-      File file = File(path);
-      await file.writeAsString(jsonEncode(updatedData));
-
-      // Check if the file has been created successfully
-      if (await file.exists()) {
-        print('File successfully created at: ${file.path}');
-      } else {
-        print('File not found after writing.');
-      }
-    } else {
-      print('Storage permission not granted');
-      // Optionally, handle what happens if permission is denied
+    if (permissionStatus.isDenied) {
+      // Request storage permission if it's denied
+      permissionStatus = await Permission.storage.request();
     }
-  } catch (e) {
-    print('Error saving data: $e');
+
+    // Check if permission was granted after the request
+    if (permissionStatus.isGranted) {
+      Directory? downloadsDirectory;
+
+      if (Platform.isAndroid) {
+        downloadsDirectory = Directory('/storage/emulated/0/Download');
+      } else if (Platform.isIOS) {
+        downloadsDirectory = await getApplicationDocumentsDirectory();
+      } else {
+        downloadsDirectory = await getDownloadsDirectory();
+      }
+
+      if (downloadsDirectory != null) {
+        // Prepare file path to save the JSON
+        String filePath =
+            '${downloadsDirectory.path}/fln_observation_form_$uniqueId.txt';
+        File file = File(filePath);
+
+        // Convert images to Base64 for each image list
+        Map<String, dynamic> jsonObject = jsonDecode(jsonData);
+
+        jsonObject['base64_nurTimeTableImages'] =
+            await _convertImagesToBase64(nurTimeTableFiles);
+        jsonObject['base64_lkgTimeTableImages'] =
+            await _convertImagesToBase64(lkgTimeTableFiles);
+        jsonObject['base64_ukgTimeTableImages'] =
+            await _convertImagesToBase64(ukgTimeTableFiles);
+        jsonObject['base64_activityImages'] =
+            await _convertImagesToBase64(activityImgFiles);
+        jsonObject['base64_tlmImages'] =
+            await _convertImagesToBase64(tlmImgFiles);
+        jsonObject['base64_flnImages'] =
+            await _convertImagesToBase64(flnImgFiles);
+        jsonObject['base64_trainingImages'] =
+            await _convertImagesToBase64(trainingImgFiles);
+        jsonObject['base64_libImages'] =
+            await _convertImagesToBase64(libImgFiles);
+        jsonObject['base64_classImages'] =
+            await _convertImagesToBase64(classImgFiles);
+
+        // Write the updated JSON data to the file
+        await file.writeAsString(jsonEncode(jsonObject));
+
+        // Return the file path for further use if needed
+        return filePath;
+      } else {
+        throw Exception('Could not find the download directory');
+      }
+    } else if (permissionStatus.isPermanentlyDenied) {
+      // Handle permanently denied permission
+      openAppSettings();
+      throw Exception(
+          'Storage permission is permanently denied. Please enable it in app settings.');
+    } else {
+      throw Exception('Storage permission is required to download the file');
+    }
+  }
+
+  // Helper function to convert a list of image files to Base64 strings separated by commas
+  Future<String> _convertImagesToBase64(List<File> imageFiles) async {
+    List<String> base64Images = [];
+
+    for (File image in imageFiles) {
+      if (await image.exists()) {
+        List<int> imageBytes = await image.readAsBytes();
+        String base64Image = base64Encode(imageBytes);
+        base64Images.add(base64Image);
+      }
+    }
+
+    // Return Base64-encoded images as a comma-separated string
+    return base64Images.join(',');
   }
 }

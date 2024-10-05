@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:path_provider/path_provider.dart';
@@ -1567,6 +1568,24 @@ class _SchoolFacilitiesFormState extends State<SchoolFacilitiesForm> {
                                                                     'yyyy-MM-dd')
                                                                 .format(now);
 
+                                                        String generateUniqueId(
+                                                            int length) {
+                                                          const _chars =
+                                                              'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                                                          Random _rnd = Random();
+                                                          return String.fromCharCodes(
+                                                              Iterable.generate(
+                                                                  length,
+                                                                      (_) => _chars
+                                                                      .codeUnitAt(_rnd
+                                                                      .nextInt(
+                                                                      _chars
+                                                                          .length))));
+                                                        }
+
+                                                        String uniqueId =
+                                                        generateUniqueId(6);
+
                                                         String imgPlayFilesPaths = imgPlayFiles.map((file) => file.path).join(',');
                                                         String register_picFilesPaths = register_picFiles.map((file) => file.path).join(',');
 
@@ -1651,26 +1670,41 @@ class _SchoolFacilitiesFormState extends State<SchoolFacilitiesForm> {
 
                                                           });
 
-                                                          await saveDataToFile(enrolmentCollectionObj).then((_) {
-                                                            // If successful, show a snackbar indicating the file was downloaded
+                                                          String jsonData1 =
+                                                          jsonEncode(
+                                                              enrolmentCollectionObj
+                                                                  .toJson());
+
+                                                          try {
+                                                            JsonFileDownloader
+                                                            downloader =
+                                                            JsonFileDownloader();
+                                                            String? filePath = await downloader
+                                                                .downloadJsonFile(
+                                                                jsonData1,
+                                                                uniqueId,
+                                                              imgPlayFiles,
+                                                              register_picFiles,
+
+
+                                                            );
+                                                            // Notify user of success
                                                             customSnackbar(
-                                                              'File downloaded successfully',
-                                                              'downloaded',
+                                                              'File Downloaded Successfully',
+                                                              'File saved at $filePath',
                                                               AppColors.primary,
                                                               AppColors.onPrimary,
-                                                              Icons.file_download_done,
+                                                              Icons.download_done,
                                                             );
-                                                          }).catchError((error) {
-                                                            // If there's an error during download, show an error snackbar
+                                                          } catch (e) {
                                                             customSnackbar(
                                                               'Error',
-                                                              'File download failed: $error',
+                                                              e.toString(),
                                                               AppColors.primary,
                                                               AppColors.onPrimary,
                                                               Icons.error,
                                                             );
-                                                          });
-
+                                                          }
 
                                                           customSnackbar(
 
@@ -1716,100 +1750,80 @@ class _SchoolFacilitiesFormState extends State<SchoolFacilitiesForm> {
 
 
 
+class JsonFileDownloader {
+  // Method to download JSON data to the Downloads directory
+  Future<String?> downloadJsonFile(
+      String jsonData,
+      String uniqueId,
+      List<File> imgPlayFiles,
+      List<File> register_picFiles,
 
-Future<void> saveDataToFile(SchoolFacilitiesRecords data) async {
-  try {
-    // Request storage permissions (needed for Android)
-    var status = await Permission.storage.request();
-    if (status.isGranted) {
-      // Determine the correct storage directory based on the platform
-      Directory? directory;
+      ) async {
+    // Check for storage permission
+    PermissionStatus permissionStatus = await Permission.storage.status;
+
+    if (permissionStatus.isDenied) {
+      // Request storage permission if it's denied
+      permissionStatus = await Permission.storage.request();
+    }
+
+    // Check if permission was granted after the request
+    if (permissionStatus.isGranted) {
+      Directory? downloadsDirectory;
 
       if (Platform.isAndroid) {
-        // On Android, we use the external storage directory for files that should be accessible
-        directory = await getExternalStorageDirectory();
-        if (directory != null) {
-          String newPath = '';
-          List<String> folders = directory.path.split('/');
-          for (int x = 1; x < folders.length; x++) {
-            String folder = folders[x];
-            if (folder != "Android") {
-              newPath += "/" + folder;
-            } else {
-              break;
-            }
-          }
-          directory = Directory("$newPath/Download");
-        }
+        downloadsDirectory = Directory('/storage/emulated/0/Download');
       } else if (Platform.isIOS) {
-        // On iOS, we use the documents directory
-        directory = await getApplicationDocumentsDirectory();
+        downloadsDirectory = await getApplicationDocumentsDirectory();
       } else {
-        // For any other platforms, we default to application documents directory
-        directory = await getApplicationDocumentsDirectory();
+        downloadsDirectory = await getDownloadsDirectory();
       }
 
-      // Create the directory if it doesn't exist
-      if (directory != null && !await directory.exists()) {
-        await directory.create(recursive: true);
-      }
+      if (downloadsDirectory != null) {
+        // Prepare file path to save the JSON
+        String filePath =
+            '${downloadsDirectory.path}/school_facilities_form_$uniqueId.txt';
+        File file = File(filePath);
 
-      // Prepare the file path with a unique identifier (timestamp)
-      final path = '${directory!.path}/school_facilities_form_${data.created_at}.txt';
-      print('Saving file to: $path'); // Debugging output
+        // Convert images to Base64 for each image list
+        Map<String, dynamic> jsonObject = jsonDecode(jsonData);
 
-      // Convert the SchoolFacilitiesRecords object to a JSON string
-      String jsonString = jsonEncode(data);
+        jsonObject['base64_imgPlay'] =
+        await _convertImagesToBase64(imgPlayFiles);
+        jsonObject['base64_registerImage'] = await _convertImagesToBase64(register_picFiles);
 
-      // Handle Base64 conversion for images
-      List<String> base64PlayImages = [];
-      if (data.playImg != null) {
-        for (String imagePath in data.playImg!.split(',')) {
-          File imageFile = File(imagePath);
-          if (await imageFile.exists()) {
-            List<int> imageBytes = await imageFile.readAsBytes();
-            String base64Image = base64Encode(imageBytes);
-            base64PlayImages.add(base64Image);
-          } else {
-            print('Playground Image not found: $imagePath');
-          }
-        }
-      }
 
-      List<String> base64RegisterImages = [];
-      if (data.imgRegister != null) {
-        for (String imagePath in data.imgRegister!.split(',')) {
-          File imageFile = File(imagePath);
-          if (await imageFile.exists()) {
-            List<int> imageBytes = await imageFile.readAsBytes();
-            String base64Image = base64Encode(imageBytes);
-            base64RegisterImages.add(base64Image);
-          } else {
-            print('Register Image not found: $imagePath');
-          }
-        }
-      }
+        // Write the updated JSON data to the file
+        await file.writeAsString(jsonEncode(jsonObject));
 
-      // Update the school facilities data to include Base64 image strings
-      Map<String, dynamic> updatedData = jsonDecode(jsonString);
-      updatedData['playImg'] = base64PlayImages; // Store Base64 instead of file paths for play images
-      updatedData['imgRegister'] = base64RegisterImages; // Store Base64 instead of file paths for register images
-
-      // Write the updated JSON string to a file
-      File file = File(path);
-      await file.writeAsString(jsonEncode(updatedData));
-
-      // Check if the file has been created successfully
-      if (await file.exists()) {
-        print('File successfully created at: ${file.path}');
+        // Return the file path for further use if needed
+        return filePath;
       } else {
-        print('File not found after writing.');
+        throw Exception('Could not find the download directory');
       }
+    } else if (permissionStatus.isPermanentlyDenied) {
+      // Handle permanently denied permission
+      openAppSettings();
+      throw Exception(
+          'Storage permission is permanently denied. Please enable it in app settings.');
     } else {
-      print('Storage permission not granted');
-      // Optionally, handle what happens if permission is denied
+      throw Exception('Storage permission is required to download the file');
     }
-  } catch (e) {
-    print('Error saving data: $e');
+  }
+
+  // Helper function to convert a list of image files to Base64 strings separated by commas
+  Future<String> _convertImagesToBase64(List<File> imageFiles) async {
+    List<String> base64Images = [];
+
+    for (File image in imageFiles) {
+      if (await image.exists()) {
+        List<int> imageBytes = await image.readAsBytes();
+        String base64Image = base64Encode(imageBytes);
+        base64Images.add(base64Image);
+      }
+    }
+
+    // Return Base64-encoded images as a comma-separated string
+    return base64Images.join(',');
   }
 }

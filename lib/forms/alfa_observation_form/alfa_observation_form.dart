@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -258,8 +259,6 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
     grandTotalGirls.dispose();
     grandTotal.dispose();
 
-
-
     for (var controller in teachingStaffControllers) {
       controller.dispose();
     }
@@ -272,20 +271,10 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
     grandTotalTeachingStaff.dispose();
     grandTotalNonTeachingStaff.dispose();
     grandTotalStaff.dispose();
-
-
-
-
   }
 
-
-
-
-  TableRow tableRowMethod(
-      String classname,
-      TextEditingController boyController,
-      TextEditingController girlController,
-      ValueNotifier<int> totalNotifier) {
+  TableRow tableRowMethod(String classname, TextEditingController boyController,
+      TextEditingController girlController, ValueNotifier<int> totalNotifier) {
     return TableRow(
       children: [
         TableCell(
@@ -327,7 +316,8 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
               return Center(
                 child: Text(
                   total.toString(),
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               );
             },
@@ -336,9 +326,6 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
       ],
     );
   }
-
-
-
 
   TableRow staffTableRowMethod(
       String roleName,
@@ -392,7 +379,6 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive(context);
@@ -430,7 +416,8 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                     init: TourController(),
                                     builder: (tourController) {
                                       // Fetch tour details once, not on every rebuild.
-                                      if (tourController.getLocalTourList.isEmpty) {
+                                      if (tourController
+                                          .getLocalTourList.isEmpty) {
                                         tourController.fetchTourDetails();
                                       }
 
@@ -452,24 +439,35 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                             side: 'height',
                                           ),
                                           CustomDropdownFormField(
-                                            focusNode: alfaObservationController.tourIdFocusNode,
-                                            options: tourController.getLocalTourList
-                                                .map((e) => e.tourId!) // Ensure tourId is non-nullable
+                                            focusNode: alfaObservationController
+                                                .tourIdFocusNode,
+                                            options: tourController
+                                                .getLocalTourList
+                                                .map((e) => e
+                                                    .tourId!) // Ensure tourId is non-nullable
                                                 .toList(),
-                                            selectedOption: alfaObservationController.tourValue,
+                                            selectedOption:
+                                                alfaObservationController
+                                                    .tourValue,
                                             onChanged: (value) {
                                               // Safely handle the school list splitting by commas
                                               splitSchoolLists = tourController
                                                   .getLocalTourList
-                                                  .where((e) => e.tourId == value)
-                                                  .map((e) => e.allSchool!.split(',').map((s) => s.trim()).toList())
+                                                  .where(
+                                                      (e) => e.tourId == value)
+                                                  .map((e) => e.allSchool!
+                                                      .split(',')
+                                                      .map((s) => s.trim())
+                                                      .toList())
                                                   .expand((x) => x)
                                                   .toList();
 
                                               // Single setState call for efficiency
                                               setState(() {
-                                                alfaObservationController.setSchool(null);
-                                                alfaObservationController.setTour(value);
+                                                alfaObservationController
+                                                    .setSchool(null);
+                                                alfaObservationController
+                                                    .setTour(value);
                                               });
                                             },
                                             labelText: "Select Tour ID",
@@ -489,7 +487,8 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                           // DropdownSearch for selecting a single school
                                           DropdownSearch<String>(
                                             validator: (value) {
-                                              if (value == null || value.isEmpty) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
                                                 return "Please Select School";
                                               }
                                               return null;
@@ -497,11 +496,16 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                             popupProps: PopupProps.menu(
                                               showSelectedItems: true,
                                               showSearchBox: true,
-                                              disabledItemFn: (String s) => s.startsWith('I'), // Disable based on condition
+                                              disabledItemFn: (String s) =>
+                                                  s.startsWith(
+                                                      'I'), // Disable based on condition
                                             ),
-                                            items: splitSchoolLists, // Split school list as strings
-                                            dropdownDecoratorProps: const DropDownDecoratorProps(
-                                              dropdownSearchDecoration: InputDecoration(
+                                            items:
+                                                splitSchoolLists, // Split school list as strings
+                                            dropdownDecoratorProps:
+                                                const DropDownDecoratorProps(
+                                              dropdownSearchDecoration:
+                                                  InputDecoration(
                                                 labelText: "Select School",
                                                 hintText: "Select School",
                                               ),
@@ -509,10 +513,13 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                             onChanged: (value) {
                                               // Set the selected school
                                               setState(() {
-                                                alfaObservationController.setSchool(value);
+                                                alfaObservationController
+                                                    .setSchool(value);
                                               });
                                             },
-                                            selectedItem: alfaObservationController.schoolValue,
+                                            selectedItem:
+                                                alfaObservationController
+                                                    .schoolValue,
                                           ),
                                           CustomSizedBox(
                                             value: 20,
@@ -539,8 +546,9 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                         .setRadioValue(
                                                             'udiCode', value);
                                                     if (value == 'Yes') {
-                                                      alfaObservationController.correctUdiseCodeController.clear();
-
+                                                      alfaObservationController
+                                                          .correctUdiseCodeController
+                                                          .clear();
                                                     }
                                                   },
                                                 ),
@@ -568,7 +576,6 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                     alfaObservationController
                                                         .setRadioValue(
                                                             'udiCode', value);
-
                                                   },
                                                 ),
                                                 const Text('No'),
@@ -1206,13 +1213,21 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                             side: 'height',
                                           ),
                                           CustomTextFormField(
-                                            textController: alfaObservationController.moduleEnglishController,
+                                            textController:
+                                                alfaObservationController
+                                                    .moduleEnglishController,
                                             textInputType: TextInputType.number,
-                                            labelText: 'Enter number between 1-80',
+                                            labelText:
+                                                'Enter number between 1-80',
                                             inputFormatters: [
-                                              FilteringTextInputFormatter.digitsOnly, // Only allow digits
-                                              LengthLimitingTextInputFormatter(2), // Limit input length to 2 digits
-                                              NumericRangeTextInputFormatter(min: 1, max: 80), // Custom input formatter for range
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly, // Only allow digits
+                                              LengthLimitingTextInputFormatter(
+                                                  2), // Limit input length to 2 digits
+                                              NumericRangeTextInputFormatter(
+                                                  min: 1,
+                                                  max:
+                                                      80), // Custom input formatter for range
                                             ],
                                             showCharacterCount: true,
                                           ),
@@ -1310,9 +1325,14 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                     .alfaNumercyController,
                                             textInputType: TextInputType.number,
                                             inputFormatters: [
-                                              FilteringTextInputFormatter.digitsOnly, // Only allow digits
-                                              LengthLimitingTextInputFormatter(2), // Limit input length to 2 digits
-                                              NumericRangeTextInputFormatter(min: 1, max: 48), // Custom input formatter for range
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly, // Only allow digits
+                                              LengthLimitingTextInputFormatter(
+                                                  2), // Limit input length to 2 digits
+                                              NumericRangeTextInputFormatter(
+                                                  min: 1,
+                                                  max:
+                                                      48), // Custom input formatter for range
                                             ],
                                             labelText:
                                                 'Enter number between 1-48',
@@ -1410,20 +1430,43 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                             title: 'Next',
                                             onPressedButton: () {
                                               // Perform radio button validations
-                                              final isRadioValid1 = alfaObservationController.validateRadioSelection('udiCode');
-                                              final isRadioValid2 = alfaObservationController.validateRadioSelection('alfaEnglishBooklet');
-                                              final isRadioValid3 = alfaObservationController.validateRadioSelection('alfaNumeracy');
-                                              final isRadioValid4 = alfaObservationController.validateRadioSelection('childrenPairs');
+                                              final isRadioValid1 =
+                                                  alfaObservationController
+                                                      .validateRadioSelection(
+                                                          'udiCode');
+                                              final isRadioValid2 =
+                                                  alfaObservationController
+                                                      .validateRadioSelection(
+                                                          'alfaEnglishBooklet');
+                                              final isRadioValid3 =
+                                                  alfaObservationController
+                                                      .validateRadioSelection(
+                                                          'alfaNumeracy');
+                                              final isRadioValid4 =
+                                                  alfaObservationController
+                                                      .validateRadioSelection(
+                                                          'childrenPairs');
                                               setState(() {
-                                                validateNursery = alfaObservationController.multipleImage.isEmpty;
-                                                validateLkg = alfaObservationController.multipleImage2.isEmpty;
-                                                validateUkg = alfaObservationController.multipleImage3.isEmpty;
+                                                validateNursery =
+                                                    alfaObservationController
+                                                        .multipleImage.isEmpty;
+                                                validateLkg =
+                                                    alfaObservationController
+                                                        .multipleImage2.isEmpty;
+                                                validateUkg =
+                                                    alfaObservationController
+                                                        .multipleImage3.isEmpty;
                                               });
 
                                               if (_formKey.currentState!
-                                                      .validate()
-                                                  && isRadioValid1 && isRadioValid2 && isRadioValid3 && isRadioValid4
-                                                && !validateNursery && !validateLkg && !validateUkg  ) {
+                                                      .validate() &&
+                                                  isRadioValid1 &&
+                                                  isRadioValid2 &&
+                                                  isRadioValid3 &&
+                                                  isRadioValid4 &&
+                                                  !validateNursery &&
+                                                  !validateLkg &&
+                                                  !validateUkg) {
                                                 setState(() {
                                                   showBasicDetails = false;
                                                   showAlfamoduleActivities =
@@ -1833,37 +1876,49 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                           false;
                                                     });
                                                   }),
-
                                               const Spacer(),
                                               CustomButton(
                                                 title: 'Next',
                                                 onPressedButton: () {
-                                                  final isRadioValid5 = alfaObservationController
-                                                      .validateRadioSelection('alfaModuleActivities');
+                                                  final isRadioValid5 =
+                                                      alfaObservationController
+                                                          .validateRadioSelection(
+                                                              'alfaModuleActivities');
 
                                                   setState(() {
                                                     // Validate enrolment records only when 'refresherTrainingOnALFA' is 'Yes'
-                                                    if (alfaObservationController.getSelectedValue('alfaModuleActivities') == 'Yes') {
-                                                      validateEnrolmentRecords = jsonData.isEmpty;
+                                                    if (alfaObservationController
+                                                            .getSelectedValue(
+                                                                'alfaModuleActivities') ==
+                                                        'Yes') {
+                                                      validateEnrolmentRecords =
+                                                          jsonData.isEmpty;
                                                     } else {
-                                                      validateEnrolmentRecords = false; // Skip validation
+                                                      validateEnrolmentRecords =
+                                                          false; // Skip validation
                                                     }
 
-                                                    validateAlfamodule = alfaObservationController.multipleImage4.isEmpty;
+                                                    validateAlfamodule =
+                                                        alfaObservationController
+                                                            .multipleImage4
+                                                            .isEmpty;
                                                   });
 
-                                                  if (_formKey.currentState!.validate() &&
+                                                  if (_formKey.currentState!
+                                                          .validate() &&
                                                       isRadioValid5 &&
                                                       !validateEnrolmentRecords &&
-                                                      !validateAlfamodule) { // Include image validation here
+                                                      !validateAlfamodule) {
+                                                    // Include image validation here
                                                     setState(() {
-                                                      showAlfamoduleActivities = false;
-                                                      showReferesherTraining = true;
+                                                      showAlfamoduleActivities =
+                                                          false;
+                                                      showReferesherTraining =
+                                                          true;
                                                     });
                                                   }
                                                 },
                                               ),
-
                                             ],
                                           ),
 
@@ -1906,7 +1961,6 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                         .setRadioValue(
                                                             'refresherTrainingOnALFA',
                                                             value);
-
                                                   },
                                                 ),
                                                 const Text('Yes'),
@@ -1935,9 +1989,12 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                             'refresherTrainingOnALFA',
                                                             value);
                                                     if (value == 'No') {
-                                                      alfaObservationController.noOfTeacherTrainedController.clear();
-                                                      alfaObservationController.multipleImage5.clear();
-
+                                                      alfaObservationController
+                                                          .noOfTeacherTrainedController
+                                                          .clear();
+                                                      alfaObservationController
+                                                          .multipleImage5
+                                                          .clear();
                                                     }
                                                   },
                                                 ),
@@ -2165,28 +2222,40 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                               CustomButton(
                                                 title: 'Next',
                                                 onPressedButton: () {
-                                                  final isRadioValid6 = alfaObservationController.validateRadioSelection('refresherTrainingOnALFA');
+                                                  final isRadioValid6 =
+                                                      alfaObservationController
+                                                          .validateRadioSelection(
+                                                              'refresherTrainingOnALFA');
 
                                                   setState(() {
-                                                    if (isRadioValid6 && alfaObservationController.getSelectedValue('refresherTrainingOnALFA') == 'Yes') {
-                                                      validateTeacherTraining = alfaObservationController.multipleImage5.isEmpty;
+                                                    if (isRadioValid6 &&
+                                                        alfaObservationController
+                                                                .getSelectedValue(
+                                                                    'refresherTrainingOnALFA') ==
+                                                            'Yes') {
+                                                      validateTeacherTraining =
+                                                          alfaObservationController
+                                                              .multipleImage5
+                                                              .isEmpty;
                                                     } else {
-                                                      validateTeacherTraining = false; // Skip validation
+                                                      validateTeacherTraining =
+                                                          false; // Skip validation
                                                     }
                                                   });
 
                                                   // Proceed only if form is valid, radio selection is valid, and (if needed) teacher training validation passes
-                                                  if (_formKey.currentState!.validate() &&
+                                                  if (_formKey.currentState!
+                                                          .validate() &&
                                                       isRadioValid6 &&
                                                       !validateTeacherTraining) {
                                                     setState(() {
-                                                      showReferesherTraining = false;
+                                                      showReferesherTraining =
+                                                          false;
                                                       showLibraryReading = true;
                                                     });
                                                   }
                                                 },
                                               ),
-
                                             ],
                                           ),
 
@@ -2256,9 +2325,9 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                             'readingActivities',
                                                             value);
                                                     if (value == 'No') {
-
-                                                      alfaObservationController.multipleImage6.clear();
-
+                                                      alfaObservationController
+                                                          .multipleImage6
+                                                          .clear();
                                                     }
                                                   },
                                                 ),
@@ -2599,31 +2668,46 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                               CustomButton(
                                                 title: 'Next',
                                                 onPressedButton: () {
-                                                  final isRadioValid6 = alfaObservationController.validateRadioSelection('readingActivities');
+                                                  final isRadioValid6 =
+                                                      alfaObservationController
+                                                          .validateRadioSelection(
+                                                              'readingActivities');
 
                                                   setState(() {
-                                                    if (isRadioValid6 && alfaObservationController.getSelectedValue('readingActivities') == 'Yes') {
-                                                      validateStaffData = staffJsonData.isEmpty;
-                                                      validateReadingActivities = alfaObservationController.multipleImage6.isEmpty;
+                                                    if (isRadioValid6 &&
+                                                        alfaObservationController
+                                                                .getSelectedValue(
+                                                                    'readingActivities') ==
+                                                            'Yes') {
+                                                      validateStaffData =
+                                                          staffJsonData.isEmpty;
+                                                      validateReadingActivities =
+                                                          alfaObservationController
+                                                              .multipleImage6
+                                                              .isEmpty;
                                                     } else {
-                                                      validateStaffData = false; // Skip validation
-                                                      validateReadingActivities = false; // Skip validation
+                                                      validateStaffData =
+                                                          false; // Skip validation
+                                                      validateReadingActivities =
+                                                          false; // Skip validation
                                                     }
                                                   });
 
                                                   // Proceed only if form is valid, radio selection is valid, and conditional validations pass
-                                                  if (_formKey.currentState!.validate() &&
+                                                  if (_formKey.currentState!
+                                                          .validate() &&
                                                       isRadioValid6 &&
                                                       !validateStaffData &&
                                                       !validateReadingActivities) {
                                                     setState(() {
-                                                      showLibraryReading = false;
-                                                      showClassroomObservation = true;
+                                                      showLibraryReading =
+                                                          false;
+                                                      showClassroomObservation =
+                                                          true;
                                                     });
                                                   }
                                                 },
                                               ),
-
                                             ],
                                           ),
 
@@ -2937,41 +3021,72 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
 
                                                     if (_formKey.currentState!
                                                             .validate() &&
-                                                        isRadioValid7 && !validateTlmKit) {
-
-                                                      List<File> nurTimeTableFiles = [];
-                                                      for (var imagePath in alfaObservationController.imagePaths) {
-                                                        nurTimeTableFiles.add(File(imagePath)); // Convert image path to File
+                                                        isRadioValid7 &&
+                                                        !validateTlmKit) {
+                                                      List<File>
+                                                          nurTimeTableFiles =
+                                                          [];
+                                                      for (var imagePath
+                                                          in alfaObservationController
+                                                              .imagePaths) {
+                                                        nurTimeTableFiles.add(File(
+                                                            imagePath)); // Convert image path to File
                                                       }
 
-                                                      List<File> lkgTimeTableFiles = [];
-                                                      for (var imagePath2 in alfaObservationController.imagePaths2) {
-                                                        lkgTimeTableFiles.add(File(imagePath2)); // Convert image path to File
+                                                      List<File>
+                                                          lkgTimeTableFiles =
+                                                          [];
+                                                      for (var imagePath2
+                                                          in alfaObservationController
+                                                              .imagePaths2) {
+                                                        lkgTimeTableFiles.add(File(
+                                                            imagePath2)); // Convert image path to File
                                                       }
 
-                                                      List<File> ukgTimeTableFiles = [];
-                                                      for (var imagePath3 in alfaObservationController.imagePaths3) {
-                                                        ukgTimeTableFiles.add(File(imagePath3)); // Convert image path to File
+                                                      List<File>
+                                                          ukgTimeTableFiles =
+                                                          [];
+                                                      for (var imagePath3
+                                                          in alfaObservationController
+                                                              .imagePaths3) {
+                                                        ukgTimeTableFiles.add(File(
+                                                            imagePath3)); // Convert image path to File
                                                       }
 
-                                                      List<File> alfaImgFiles = [];
-                                                      for (var imagePath4 in alfaObservationController.imagePaths4) {
-                                                        alfaImgFiles.add(File(imagePath4)); // Convert image path to File
+                                                      List<File> alfaImgFiles =
+                                                          [];
+                                                      for (var imagePath4
+                                                          in alfaObservationController
+                                                              .imagePaths4) {
+                                                        alfaImgFiles.add(File(
+                                                            imagePath4)); // Convert image path to File
                                                       }
 
-                                                      List<File> trainingImgFiles = [];
-                                                      for (var imagePath5 in alfaObservationController.imagePaths5) {
-                                                        trainingImgFiles.add(File(imagePath5)); // Convert image path to File
+                                                      List<File>
+                                                          trainingImgFiles = [];
+                                                      for (var imagePath5
+                                                          in alfaObservationController
+                                                              .imagePaths5) {
+                                                        trainingImgFiles.add(File(
+                                                            imagePath5)); // Convert image path to File
                                                       }
 
-                                                      List<File> libImgFiles = [];
-                                                      for (var imagePath6 in alfaObservationController.imagePaths6) {
-                                                        libImgFiles.add(File(imagePath6)); // Convert image path to File
+                                                      List<File> libImgFiles =
+                                                          [];
+                                                      for (var imagePath6
+                                                          in alfaObservationController
+                                                              .imagePaths6) {
+                                                        libImgFiles.add(File(
+                                                            imagePath6)); // Convert image path to File
                                                       }
 
-                                                      List<File> tlmImgFiles = [];
-                                                      for (var imagePath7 in alfaObservationController.imagePaths7) {
-                                                        tlmImgFiles.add(File(imagePath7)); // Convert image path to File
+                                                      List<File> tlmImgFiles =
+                                                          [];
+                                                      for (var imagePath7
+                                                          in alfaObservationController
+                                                              .imagePaths7) {
+                                                        tlmImgFiles.add(File(
+                                                            imagePath7)); // Convert image path to File
                                                       }
 
                                                       DateTime now =
@@ -2981,59 +3096,129 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                                   'yyyy-MM-dd')
                                                               .format(now);
 
-
-                                                      String nurTimeTableFilePaths = nurTimeTableFiles.map((file) => file.path).join(',');
-                                                      String lkgTimeTableFilePaths = lkgTimeTableFiles.map((file) => file.path).join(',');
-                                                      String ukgTimeTableFilePaths = ukgTimeTableFiles.map((file) => file.path).join(',');
-                                                      String alfaImgFilesPaths = alfaImgFiles.map((file) => file.path).join(',');
-                                                      String trainingImgFilesPaths = trainingImgFiles.map((file) => file.path).join(',');
-                                                      String libImgFilesPaths = libImgFiles.map((file) => file.path).join(',');
-                                                      String tlmImgFilesPaths = tlmImgFiles.map((file) => file.path).join(',');
+                                                      String
+                                                          nurTimeTableFilePaths =
+                                                          nurTimeTableFiles
+                                                              .map((file) =>
+                                                                  file.path)
+                                                              .join(',');
+                                                      String
+                                                          lkgTimeTableFilePaths =
+                                                          lkgTimeTableFiles
+                                                              .map((file) =>
+                                                                  file.path)
+                                                              .join(',');
+                                                      String
+                                                          ukgTimeTableFilePaths =
+                                                          ukgTimeTableFiles
+                                                              .map((file) =>
+                                                                  file.path)
+                                                              .join(',');
+                                                      String alfaImgFilesPaths =
+                                                          alfaImgFiles
+                                                              .map((file) =>
+                                                                  file.path)
+                                                              .join(',');
+                                                      String
+                                                          trainingImgFilesPaths =
+                                                          trainingImgFiles
+                                                              .map((file) =>
+                                                                  file.path)
+                                                              .join(',');
+                                                      String libImgFilesPaths =
+                                                          libImgFiles
+                                                              .map((file) =>
+                                                                  file.path)
+                                                              .join(',');
+                                                      String tlmImgFilesPaths =
+                                                          tlmImgFiles
+                                                              .map((file) =>
+                                                                  file.path)
+                                                              .join(',');
 
                                                       // Convert `jsonData` to a JSON string
-                                                      String alfaGradeReport = jsonEncode(jsonData); // Ensure the JSON data is properly encoded
-                                                      String libGradeReport = jsonEncode(staffJsonData); // Ensure the JSON data is properly encoded
+                                                      String alfaGradeReport =
+                                                          jsonEncode(
+                                                              jsonData); // Ensure the JSON data is properly encoded
+                                                      String libGradeReport =
+                                                          jsonEncode(
+                                                              staffJsonData); // Ensure the JSON data is properly encoded
+
+                                                      String generateUniqueId(
+                                                          int length) {
+                                                        const _chars =
+                                                            'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                                                        Random _rnd = Random();
+                                                        return String.fromCharCodes(
+                                                            Iterable.generate(
+                                                                length,
+                                                                    (_) => _chars
+                                                                    .codeUnitAt(_rnd
+                                                                    .nextInt(
+                                                                    _chars
+                                                                        .length))));
+                                                      }
+
+                                                      String uniqueId =
+                                                      generateUniqueId(6);
 
                                                       // Create the enrolment collection object
-                                                      AlfaObservationModel alfaObservationObj = AlfaObservationModel(
-                                                          tourId: alfaObservationController.tourValue ??
-                                                              '',
-                                                          school: alfaObservationController.schoolValue ??
-                                                              '',
-                                                          udiseValue:
-                                                              alfaObservationController.getSelectedValue('udiCode') ??
+                                                      AlfaObservationModel
+                                                          alfaObservationObj =
+                                                          AlfaObservationModel(
+                                                              tourId: alfaObservationController.tourValue ??
                                                                   '',
-                                                          correctUdise:
-                                                              alfaObservationController
+                                                              school: alfaObservationController.schoolValue ??
+                                                                  '',
+                                                              udiseValue:
+                                                                  alfaObservationController.getSelectedValue('udiCode') ??
+                                                                      '',
+                                                              correctUdise: alfaObservationController
                                                                   .correctUdiseCodeController
                                                                   .text,
-                                                          noStaffTrained:
-                                                              alfaObservationController
-                                                                  .noOfStaffTrainedController
+                                                              noStaffTrained:
+                                                                  alfaObservationController
+                                                                      .noOfStaffTrainedController
+                                                                      .text,
+                                                              imgNurTimeTable:
+                                                                  nurTimeTableFilePaths, // Convert list to a single string
+                                                              imgLKGTimeTable:
+                                                                  lkgTimeTableFilePaths, // Convert list to a single string
+                                                              imgUKGTimeTable:
+                                                                  ukgTimeTableFilePaths, // Convert list to a single string
+                                                              bookletValue:
+                                                                  alfaObservationController.getSelectedValue('alfaEnglishBooklet') ??
+                                                                      '',
+                                                              moduleValue: alfaObservationController
+                                                                  .moduleEnglishController
                                                                   .text,
-                                                          imgNurTimeTable: nurTimeTableFilePaths, // Convert list to a single string
-                                                          imgLKGTimeTable: lkgTimeTableFilePaths, // Convert list to a single string
-                                                          imgUKGTimeTable: ukgTimeTableFilePaths, // Convert list to a single string
-                                                          bookletValue: alfaObservationController.getSelectedValue('alfaEnglishBooklet') ?? '',
-                                                          moduleValue: alfaObservationController.moduleEnglishController.text,
-                                                          numeracyBooklet: alfaObservationController.getSelectedValue('alfaNumeracy') ?? '',
-                                                          numeracyValue: alfaObservationController.alfaNumercyController.text,
-                                                          pairValue: alfaObservationController.getSelectedValue('childrenPairs') ?? '',
-                                                          alfaActivityValue: alfaObservationController.getSelectedValue('alfaModuleActivities') ?? '',
-                                                          alfaGradeReport:alfaGradeReport,
-                                                          imgAlfa: alfaImgFilesPaths, // Convert list to a single string
-                                                          refresherTrainingValue: alfaObservationController.getSelectedValue('refresherTrainingOnALFA') ?? '',
-                                                          noTrainedTeacher: alfaObservationController.noOfTeacherTrainedController.text,
-                                                          imgTraining: trainingImgFilesPaths, // Convert list to a single string
-                                                          readingValue: alfaObservationController.getSelectedValue('readingActivities') ?? '',
-                                                          libGradeReport: libGradeReport,
-                                                          imgLibrary: libImgFilesPaths, // Convert list to a single string
-                                                          tlmKitValue: alfaObservationController.getSelectedValue('tlmKit') ?? '',
-                                                          imgTlm: tlmImgFilesPaths, // Convert list to a single string
-                                                          classObservation: alfaObservationController.remarksController.text,
-                                                          createdAt: formattedDate.toString(),
-                                                          submittedAt: formattedDate.toString(),
-                                                          createdBy: widget.userid.toString());
+                                                              numeracyBooklet:
+                                                                  alfaObservationController.getSelectedValue('alfaNumeracy') ??
+                                                                      '',
+                                                              numeracyValue: alfaObservationController
+                                                                  .alfaNumercyController
+                                                                  .text,
+                                                              pairValue:
+                                                                  alfaObservationController.getSelectedValue('childrenPairs') ??
+                                                                      '',
+                                                              alfaActivityValue:
+                                                                  alfaObservationController.getSelectedValue('alfaModuleActivities') ??
+                                                                      '',
+                                                              alfaGradeReport:
+                                                                  alfaGradeReport,
+                                                              imgAlfa: alfaImgFilesPaths, // Convert list to a single string
+                                                              refresherTrainingValue: alfaObservationController.getSelectedValue('refresherTrainingOnALFA') ?? '',
+                                                              noTrainedTeacher: alfaObservationController.noOfTeacherTrainedController.text,
+                                                              imgTraining: trainingImgFilesPaths, // Convert list to a single string
+                                                              readingValue: alfaObservationController.getSelectedValue('readingActivities') ?? '',
+                                                              libGradeReport: libGradeReport,
+                                                              imgLibrary: libImgFilesPaths, // Convert list to a single string
+                                                              tlmKitValue: alfaObservationController.getSelectedValue('tlmKit') ?? '',
+                                                              imgTlm: tlmImgFilesPaths, // Convert list to a single string
+                                                              classObservation: alfaObservationController.remarksController.text,
+                                                              createdAt: formattedDate.toString(),
+                                                              submittedAt: formattedDate.toString(),
+                                                              createdBy: widget.userid.toString());
                                                       int result =
                                                           await LocalDbController()
                                                               .addData(
@@ -3046,27 +3231,45 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                           jsonData = {};
                                                           staffJsonData = {};
                                                         });
+                                                        String jsonData1 =
+                                                        jsonEncode(
+                                                            alfaObservationObj
+                                                                .toJson());
 
-                                                        // Save the data to a file as JSON
-                                                        await saveDataToFile(alfaObservationObj).then((_) {
-                                                          // If successful, show a snackbar indicating the file was downloaded
+                                                        try {
+                                                          JsonFileDownloader
+                                                          downloader =
+                                                          JsonFileDownloader();
+                                                          String? filePath = await downloader
+                                                              .downloadJsonFile(
+                                                              jsonData1,
+                                                              uniqueId,
+                                                              nurTimeTableFiles,
+                                                              lkgTimeTableFiles,
+                                                              ukgTimeTableFiles,
+
+                                                              tlmImgFiles,
+
+                                                              trainingImgFiles,libImgFiles,alfaImgFiles
+
+                                                             );
+                                                          // Notify user of success
                                                           customSnackbar(
-                                                            'File downloaded successfully',
-                                                            'downloaded',
+                                                            'File Downloaded Successfully',
+                                                            'File saved at $filePath',
                                                             AppColors.primary,
                                                             AppColors.onPrimary,
-                                                            Icons.file_download_done,
+                                                            Icons.download_done,
                                                           );
-                                                        }).catchError((error) {
-                                                          // If there's an error during download, show an error snackbar
+                                                        } catch (e) {
                                                           customSnackbar(
                                                             'Error',
-                                                            'File download failed: $error',
+                                                            e.toString(),
                                                             AppColors.primary,
                                                             AppColors.onPrimary,
                                                             Icons.error,
                                                           );
-                                                        });
+                                                        }
 
                                                         customSnackbar(
                                                             'Submitted Successfully',
@@ -3076,7 +3279,8 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                             Icons.verified);
 
                                                         // Navigate to HomeScreen
-                                                        Navigator.pushReplacement(
+                                                        Navigator
+                                                            .pushReplacement(
                                                           context,
                                                           MaterialPageRoute(
                                                               builder: (context) =>
@@ -3106,108 +3310,98 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
   }
 }
 
+class JsonFileDownloader {
+  // Method to download JSON data to the Downloads directory
+  Future<String?> downloadJsonFile(
+    String jsonData,
+    String uniqueId,
+    List<File> nurTimeTableFiles,
+    List<File> lkgTimeTableFiles,
+    List<File> ukgTimeTableFiles,
+    List<File> alfaImgFiles,
+    List<File> trainingImgFiles,
+    List<File> libImgFiles,
+    List<File> tlmImgFiles,
+  ) async {
+    // Check for storage permission
+    PermissionStatus permissionStatus = await Permission.storage.status;
 
-
-
-
-
-Future<void> saveDataToFile(AlfaObservationModel data) async {
-  try {
-    // Request storage permissions
-    var status = await Permission.storage.request();
-    if (status.isGranted) {
-      // Use path_provider to get a valid directory
-      Directory? directory;
-      if (Platform.isAndroid) {
-        directory = await getExternalStorageDirectory();
-        if (directory != null) {
-          String newPath = '';
-          List<String> folders = directory.path.split('/');
-          for (int x = 1; x < folders.length; x++) {
-            String folder = folders[x];
-            if (folder != "Android") {
-              newPath += "/" + folder;
-            } else {
-              break;
-            }
-          }
-          directory = Directory("$newPath/Download");
-        }
-      } else if (Platform.isIOS) {
-        // For iOS, use the application documents directory
-        directory = await getApplicationDocumentsDirectory();
-      }
-
-      // Ensure the directory exists
-      if (directory != null && !await directory.exists()) {
-        await directory.create(recursive: true); // Create the directory if it doesn't exist
-      }
-
-      final path = '${directory!.path}/alfa_observation_form_${data.createdBy}.txt';
-      print('Saving file to: $path'); // Debugging output
-
-      // Convert the AlfaObservationModel object to a JSON string
-      String jsonString = jsonEncode(data);
-
-      // Handle Base64 conversion for images
-      List<String> base64Images = [];
-
-      // Create a list of image properties to iterate over
-      List<String?> imageProperties = [
-        data.imgNurTimeTable,
-        data.imgLKGTimeTable,
-        data.imgUKGTimeTable,
-        data.imgTraining,
-        data.imgLibrary,
-        data.imgAlfa,
-        data.imgTlm
-      ];
-
-      // Process each image property
-      for (var imageProperty in imageProperties) {
-        if (imageProperty != null) {
-          for (String imagePath in imageProperty.split(',')) {
-            File imageFile = File(imagePath);
-            if (await imageFile.exists()) {
-              List<int> imageBytes = await imageFile.readAsBytes();
-              String base64Image = base64Encode(imageBytes);
-              base64Images.add(base64Image);
-            } else {
-              print('Image not found: $imagePath');
-            }
-          }
-        }
-      }
-
-      // Update the observation data to include Base64 image strings
-      Map<String, dynamic> updatedData = jsonDecode(jsonString);
-      updatedData['imgNurTimeTable'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgLKGTimeTable'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgUKGTimeTable'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgTraining'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgLibrary'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgAlfa'] = base64Images; // Store Base64 instead of file paths
-      updatedData['imgTlm'] = base64Images; // Store Base64 instead of file paths
-
-      // Write the updated JSON string to a file
-      File file = File(path);
-      await file.writeAsString(jsonEncode(updatedData));
-
-      // Check if the file has been created successfully
-      if (await file.exists()) {
-        print('File successfully created at: ${file.path}');
-      } else {
-        print('File not found after writing.');
-      }
-    } else {
-      print('Storage permission not granted');
-      // Optionally, handle what happens if permission is denied
+    if (permissionStatus.isDenied) {
+      // Request storage permission if it's denied
+      permissionStatus = await Permission.storage.request();
     }
-  } catch (e) {
-    print('Error saving data: $e');
+
+    // Check if permission was granted after the request
+    if (permissionStatus.isGranted) {
+      Directory? downloadsDirectory;
+
+      if (Platform.isAndroid) {
+        downloadsDirectory = Directory('/storage/emulated/0/Download');
+      } else if (Platform.isIOS) {
+        downloadsDirectory = await getApplicationDocumentsDirectory();
+      } else {
+        downloadsDirectory = await getDownloadsDirectory();
+      }
+
+      if (downloadsDirectory != null) {
+        // Prepare file path to save the JSON
+        String filePath =
+            '${downloadsDirectory.path}/alfa_observation_form_$uniqueId.txt';
+        File file = File(filePath);
+
+        // Convert images to Base64 for each image list
+        Map<String, dynamic> jsonObject = jsonDecode(jsonData);
+
+        jsonObject['base64_nurTimeTableImages'] =
+            await _convertImagesToBase64(nurTimeTableFiles);
+        jsonObject['base64_lkgTimeTableImages'] =
+            await _convertImagesToBase64(lkgTimeTableFiles);
+        jsonObject['base64_ukgTimeTableImages'] =
+            await _convertImagesToBase64(ukgTimeTableFiles);
+        jsonObject['base64_alfaImages'] =
+            await _convertImagesToBase64(alfaImgFiles);
+        jsonObject['base64_tlmImages'] =
+            await _convertImagesToBase64(tlmImgFiles);
+        jsonObject['base64_trainingImages'] =
+            await _convertImagesToBase64(trainingImgFiles);
+
+        jsonObject['base64_libImages'] =
+            await _convertImagesToBase64(libImgFiles);
+
+        // Write the updated JSON data to the file
+        await file.writeAsString(jsonEncode(jsonObject));
+
+        // Return the file path for further use if needed
+        return filePath;
+      } else {
+        throw Exception('Could not find the download directory');
+      }
+    } else if (permissionStatus.isPermanentlyDenied) {
+      // Handle permanently denied permission
+      openAppSettings();
+      throw Exception(
+          'Storage permission is permanently denied. Please enable it in app settings.');
+    } else {
+      throw Exception('Storage permission is required to download the file');
+    }
+  }
+
+  // Helper function to convert a list of image files to Base64 strings separated by commas
+  Future<String> _convertImagesToBase64(List<File> imageFiles) async {
+    List<String> base64Images = [];
+
+    for (File image in imageFiles) {
+      if (await image.exists()) {
+        List<int> imageBytes = await image.readAsBytes();
+        String base64Image = base64Encode(imageBytes);
+        base64Images.add(base64Image);
+      }
+    }
+
+    // Return Base64-encoded images as a comma-separated string
+    return base64Images.join(',');
   }
 }
-
 
 class NumericRangeTextInputFormatter extends TextInputFormatter {
   final int min;
@@ -3216,7 +3410,8 @@ class NumericRangeTextInputFormatter extends TextInputFormatter {
   NumericRangeTextInputFormatter({required this.min, required this.max});
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.text.isEmpty) {
       return newValue; // Allow empty input
     }
