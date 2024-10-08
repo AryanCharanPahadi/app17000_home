@@ -1,23 +1,15 @@
-
-import 'dart:convert';
 import 'dart:io';
 import 'package:image/image.dart' as img;
 import 'package:app17000ft_new/constants/color_const.dart';
-import 'package:app17000ft_new/forms/alfa_observation_form/alfa_obervation_modal.dart';
-import 'package:app17000ft_new/forms/fln_observation_form/fln_observation_modal.dart';
 import 'package:app17000ft_new/forms/inPerson_qualitative_form/inPerson_qualitative_modal.dart';
-import 'package:app17000ft_new/forms/school_enrolment/school_enrolment_model.dart';
-import 'package:app17000ft_new/forms/school_enrolment/school_enrolment_sync.dart';
 import 'package:app17000ft_new/helper/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-
 import '../../base_client/baseClient_controller.dart';
-class InpersonQualitativeController extends GetxController with BaseController{
-
+class InpersonQualitativeController extends GetxController with BaseController {
   String? _tourValue;
   String? get tourValue => _tourValue;
 
@@ -28,55 +20,81 @@ class InpersonQualitativeController extends GetxController with BaseController{
   bool isLoading = false;
 
   final TextEditingController remarksController = TextEditingController();
-  final TextEditingController correctUdiseCodeController = TextEditingController();
+  final TextEditingController correctUdiseCodeController =
+      TextEditingController();
   final TextEditingController schoolRoutineController = TextEditingController();
   final TextEditingController componentsController = TextEditingController();
-  final TextEditingController programInitiatedController = TextEditingController();
-  final TextEditingController digiLabSessionController = TextEditingController();
+  final TextEditingController programInitiatedController =
+      TextEditingController();
+  final TextEditingController digiLabSessionController =
+      TextEditingController();
   final TextEditingController alexaEchoController = TextEditingController();
   final TextEditingController servicesController = TextEditingController();
   final TextEditingController suggestionsController = TextEditingController();
-  final TextEditingController allowingTabletsController = TextEditingController();
+  final TextEditingController allowingTabletsController =
+      TextEditingController();
   final TextEditingController alexaSessionsController = TextEditingController();
-  final TextEditingController improveProgramController = TextEditingController();
+  final TextEditingController improveProgramController =
+      TextEditingController();
   final TextEditingController notAbleController = TextEditingController();
-  final TextEditingController operatingDigiLabController = TextEditingController();
+  final TextEditingController operatingDigiLabController =
+      TextEditingController();
   final TextEditingController difficultiesController = TextEditingController();
   final TextEditingController improvementController = TextEditingController();
-  final TextEditingController studentLearningController = TextEditingController();
-  final TextEditingController negativeImpactController = TextEditingController();
-  final TextEditingController teacherFeelsLessController = TextEditingController();
-  final TextEditingController factorsPreventingController = TextEditingController();
-  final TextEditingController additionalSubjectsController = TextEditingController();
+  final TextEditingController studentLearningController =
+      TextEditingController();
+  final TextEditingController negativeImpactController =
+      TextEditingController();
+  final TextEditingController teacherFeelsLessController =
+      TextEditingController();
+  final TextEditingController factorsPreventingController =
+      TextEditingController();
+  final TextEditingController additionalSubjectsController =
+      TextEditingController();
   final TextEditingController feedbackController = TextEditingController();
-  final TextEditingController notAbleTeacherInterviewController = TextEditingController();
-  final TextEditingController navigatingDigiLabController = TextEditingController();
-  final TextEditingController componentsDigiLabController = TextEditingController();
+  final TextEditingController notAbleTeacherInterviewController =
+      TextEditingController();
+  final TextEditingController navigatingDigiLabController =
+      TextEditingController();
+  final TextEditingController componentsDigiLabController =
+      TextEditingController();
   final TextEditingController timeDigiLabController = TextEditingController();
   final TextEditingController booksReadingController = TextEditingController();
   final TextEditingController LibraryController = TextEditingController();
-  final TextEditingController playingplaygroundController = TextEditingController();
-  final TextEditingController questionsAlexaController = TextEditingController();
-  final TextEditingController questionsAlexaNotAbleController = TextEditingController();
-  final TextEditingController additionalTypeController = TextEditingController();
-  final TextEditingController interviewStudentsNotController = TextEditingController();
-  final TextEditingController administrationSchoolController = TextEditingController();
+  final TextEditingController playingplaygroundController =
+      TextEditingController();
+  final TextEditingController questionsAlexaController =
+      TextEditingController();
+  final TextEditingController questionsAlexaNotAbleController =
+      TextEditingController();
+  final TextEditingController additionalTypeController =
+      TextEditingController();
+  final TextEditingController interviewStudentsNotController =
+      TextEditingController();
+  final TextEditingController administrationSchoolController =
+      TextEditingController();
   final TextEditingController issuesResolveController = TextEditingController();
   final TextEditingController fearsController = TextEditingController();
   final TextEditingController easeController = TextEditingController();
   final TextEditingController guidanceController = TextEditingController();
-  final TextEditingController feedbackDigiLabController = TextEditingController();
-  final TextEditingController effectiveDigiLabController = TextEditingController();
-  final TextEditingController suggestionsProgramController = TextEditingController();
-  final TextEditingController playgroundAllowedController = TextEditingController();
+  final TextEditingController feedbackDigiLabController =
+      TextEditingController();
+  final TextEditingController effectiveDigiLabController =
+      TextEditingController();
+  final TextEditingController suggestionsProgramController =
+      TextEditingController();
+  final TextEditingController playgroundAllowedController =
+      TextEditingController();
 
-
-
-
-
-
-
-
+  // Start of Showing
+  bool showBasicDetails = true; // For show Basic Details
+  bool showInputs = false; // For show Inputs Details
+  bool showSchoolTeacher = false; // For show showSchoolTeacher
+  bool showInputStudents = false; // For show showInputStudents
+  bool showSmcMember = false; // For show showSmcMember
+  // End of Showing
+  bool isImageUploadedSchoolBoard = false;
+  bool validateSchoolBoard = false;
 
   // Map to store selected values for radio buttons
   final Map<String, String?> _selectedValues = {};
@@ -111,22 +129,20 @@ class InpersonQualitativeController extends GetxController with BaseController{
     update(); // Update the UI
   }
 
-
-
   //Focus nodes
   final FocusNode _tourIdFocusNode = FocusNode();
-  FocusNode get  tourIdFocusNode => _tourIdFocusNode;
+  FocusNode get tourIdFocusNode => _tourIdFocusNode;
   final FocusNode _schoolFocusNode = FocusNode();
-  FocusNode get  schoolFocusNode => _schoolFocusNode;
+  FocusNode get schoolFocusNode => _schoolFocusNode;
 
-  List<InPersonQualitativeRecords> _inPersonQualitativeList =[];
-  List<InPersonQualitativeRecords> get inPersonQualitativeList => _inPersonQualitativeList;
+  List<InPersonQualitativeRecords> _inPersonQualitativeList = [];
+  List<InPersonQualitativeRecords> get inPersonQualitativeList =>
+      _inPersonQualitativeList;
 
   List<XFile> _multipleImage = [];
   List<XFile> get multipleImage => _multipleImage;
   List<String> _imagePaths = [];
   List<String> get imagePaths => _imagePaths;
-
 
   Future<String> takePhoto(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
@@ -159,39 +175,38 @@ class InpersonQualitativeController extends GetxController with BaseController{
   Future<String> compressImage(String imagePath) async {
     // Load the image
     final File imageFile = File(imagePath);
-    final img.Image? originalImage = img.decodeImage(imageFile.readAsBytesSync());
+    final img.Image? originalImage =
+        img.decodeImage(imageFile.readAsBytesSync());
 
-    if (originalImage == null) return imagePath; // Return original path if decoding fails
+    if (originalImage == null)
+      return imagePath; // Return original path if decoding fails
 
     // Resize the image (optional) and compress
-    final img.Image resizedImage = img.copyResize(originalImage, width: 768); // Change the width as needed
-    final List<int> compressedImage = img.encodeJpg(resizedImage, quality: 12); // Adjust quality (0-100)
+    final img.Image resizedImage =
+        img.copyResize(originalImage, width: 768); // Change the width as needed
+    final List<int> compressedImage =
+        img.encodeJpg(resizedImage, quality: 12); // Adjust quality (0-100)
 
     // Save the compressed image to a new file
     final Directory appDir = await getTemporaryDirectory();
-    final String compressedImagePath = '${appDir.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final String compressedImagePath =
+        '${appDir.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.jpg';
     final File compressedFile = File(compressedImagePath);
     await compressedFile.writeAsBytes(compressedImage);
 
     return compressedImagePath; // Return the path of the compressed image
   }
 
-
-
-
-
-
-  setSchool(value)
-  {
+  setSchool(value) {
     _schoolValue = value;
     // update();
   }
 
-  setTour(value){
+  setTour(value) {
     _tourValue = value;
     // update();
-
   }
+
   Widget bottomSheet(BuildContext context) {
     String? imagePicked;
     PickedFile? imageFile;
@@ -229,22 +244,18 @@ class InpersonQualitativeController extends GetxController with BaseController{
                 },
                 child: const Text(
                   'Camera',
-                  style: TextStyle(
-                      fontSize: 20.0, color: AppColors.primary),
+                  style: TextStyle(fontSize: 20.0, color: AppColors.primary),
                 ),
               ),
               const SizedBox(
                 width: 30,
               ),
-
             ],
           )
         ],
       ),
     );
   }
-
-
 
   void showImagePreview(String imagePath, BuildContext context) {
     showDialog(
@@ -273,11 +284,8 @@ class InpersonQualitativeController extends GetxController with BaseController{
     );
   }
 
-
-
   //Clear fields
   void clearFields() {
-
     update();
   }
 
@@ -285,7 +293,8 @@ class InpersonQualitativeController extends GetxController with BaseController{
     isLoading = true;
 
     _inPersonQualitativeList = [];
-    _inPersonQualitativeList = await LocalDbController().fetchLocalInPersonQualitativeRecords();
+    _inPersonQualitativeList =
+        await LocalDbController().fetchLocalInPersonQualitativeRecords();
 
     update();
   }
@@ -293,6 +302,4 @@ class InpersonQualitativeController extends GetxController with BaseController{
 //
 
 //Update the UI
-
-
 }

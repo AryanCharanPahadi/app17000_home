@@ -1,3 +1,4 @@
+import 'package:app17000ft_new/components/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,7 @@ import '../helper/shared_prefernce.dart';
 import '../home/home_screen.dart';
 import '../home/tour_data.dart';
 import '../login/login_screen.dart';
+
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
 
@@ -25,59 +27,8 @@ class CustomDrawer extends StatefulWidget {
   State<CustomDrawer> createState() => _CustomDrawerState();
 }
 
-class _CustomDrawerState extends State<CustomDrawer> with WidgetsBindingObserver {
-  String _username = '';
-  String _officeName = '';
-  String _version = '';
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this); // Add observer to listen for app lifecycle changes
-    _loadUserData(); // Load user data on initialization
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this); // Remove observer when not needed
-    super.dispose();
-  }
-
-  // Listen for app lifecycle changes (optional)
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _loadUserData(); // Reload data when app comes back to focus
-    }
-  }
-
-  // This method loads user data from shared preferences
-  Future<void> _loadUserData() async {
-    var userData = await SharedPreferencesHelper.getUserData();
-    if (userData != null && userData['user'] != null) {
-      setState(() {
-        _username = userData['user']['username'] ?? '';
-        _officeName = userData['user']['office_name'] ?? '';
-        _version = userData['user']['offline_version'] ?? '';
-      });
-    }
-  }
-
-  // Call this method whenever you want to refresh user data
-  Future<void> _refreshUserData() async {
-    await _loadUserData(); // Load user data again
-  }
-
-  // This method logs out the user and clears the state
-  Future<void> _logout() async {
-    await SharedPreferencesHelper.logout();
-    setState(() {
-      _username = '';
-      _officeName = '';
-      _version = '';
-    });
-    Get.offAll(() => const LoginScreen());
-  }
+class _CustomDrawerState extends State<CustomDrawer> {
+  final UserController _userController = Get.put(UserController());
 
   @override
   Widget build(BuildContext context) {
@@ -88,15 +39,12 @@ class _CustomDrawerState extends State<CustomDrawer> with WidgetsBindingObserver
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          // Drawer header with user info
-          GestureDetector( // Wrap the header with a GestureDetector to refresh when clicked
-            onTap: _refreshUserData, // Refresh user data on click
+          GestureDetector(
+            onTap: _userController.loadUserData, // Refresh user data on tap
             child: Container(
               color: AppColors.primary,
               height: responsive.responsiveValue(
-                  small: 250.0, // Increased height for smaller screens
-                  medium: 260.0,
-                  large: 280.0), // Increased height for larger screens
+                  small: 250.0, medium: 260.0, large: 280.0),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
@@ -114,56 +62,50 @@ class _CustomDrawerState extends State<CustomDrawer> with WidgetsBindingObserver
                     const SizedBox(height: 15),
 
                     // Username Text
-                    Text(
-                      _username.toUpperCase(),
+                    Obx(() => Text(
+                      _userController.username.value.toUpperCase(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: responsive.responsiveValue(
-                            small: 18, // Adjusted font sizes
-                            medium: 20,
-                            large: 22),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1, // Prevent wrapping
-                      softWrap: false,
-                      overflow: TextOverflow.ellipsis, // Add ellipsis if text overflows
-                    ),
-                    const SizedBox(height: 8), // Add spacing between elements
-
-                    // Office Name Text
-                    Text(
-                      _officeName.toUpperCase(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: responsive.responsiveValue(
-                            small: 16,
-                            medium: 18,
-                            large: 20),
+                            small: 18, medium: 20, large: 22),
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 8), // Add spacing between elements
+                    )),
+                    const SizedBox(height: 8),
+
+                    // Office Name Text
+                    Obx(() => Text(
+                      _userController.officeName.value.toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: responsive.responsiveValue(
+                            small: 16, medium: 18, large: 20),
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
+                    )),
+                    const SizedBox(height: 8),
 
                     // Version Text
-                    Text(
-                      _version.toUpperCase(),
+                    Obx(() => Text(
+                      _userController.version.value.toUpperCase(),
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.9),
                         fontSize: responsive.responsiveValue(
-                            small: 14,
-                            medium: 16,
-                            large: 18),
+                            small: 14, medium: 16, large: 18),
                       ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.ellipsis,
-                    ),
+                    )),
                   ],
                 ),
               ),
@@ -177,7 +119,6 @@ class _CustomDrawerState extends State<CustomDrawer> with WidgetsBindingObserver
             onPressed: () {
               Navigator.pop(context);
               Get.to(() => const HomeScreen());
-              _refreshUserData(); // Optionally refresh data on navigation
             },
           ),
           DrawerMenu(
@@ -288,12 +229,12 @@ class _CustomDrawerState extends State<CustomDrawer> with WidgetsBindingObserver
           ),
 
           DrawerMenu(
-            title: 'Logout',
-            icons: const FaIcon(FontAwesomeIcons.arrowRightFromBracket),
-            onPressed: () async {
-              await _logout(); // Logout and clear user data
-            },
-          ),
+              title: 'Logout',
+              icons: const FaIcon(FontAwesomeIcons.signOut),
+              onPressed: () async {
+                await SharedPreferencesHelper.logout();
+                await Get.to(() => const LoginScreen());
+              }),
         ],
       ),
     );
@@ -318,7 +259,9 @@ class DrawerMenu extends StatelessWidget {
       leading: icons,
       title: Text(title ?? '',
           style: TextStyle(
-              color: AppColors.onBackground, fontSize: 14, fontWeight: FontWeight.w600)),
+              color: AppColors.onBackground,
+              fontSize: 14,
+              fontWeight: FontWeight.w600)),
       onTap: () {
         if (onPressed != null) {
           onPressed!(); // Call the function using parentheses

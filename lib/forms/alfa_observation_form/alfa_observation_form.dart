@@ -392,7 +392,7 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                   title: 'Exit Confirmation',
                   yes: 'Yes',
                   no: 'no',
-                  desc: 'Are you sure you want to leave this screen?',
+                  desc: 'Are you sure you want to leave exit?',
                   onPressed: () async {
                     Navigator.of(context).pop(true);
                   }));
@@ -724,7 +724,7 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                                       builder: ((builder) =>
                                                           alfaObservationController
                                                               .bottomSheet(
-                                                                  context)));
+                                                                  context,1)));
                                                 }),
                                           ),
                                           ErrorText(
@@ -841,139 +841,100 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: _isImageUploadedLkg ==
-                                                          false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: _isImageUploadedLkg == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title:
-                                                    _isImageUploadedLkg == false
-                                                        ? const Text(
-                                                            'Click or Upload Image',
-                                                          )
-                                                        : const Text(
-                                                            'Click or Upload Image',
-                                                            style: TextStyle(
-                                                                color: AppColors
-                                                                    .error),
-                                                          ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                        AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          alfaObservationController
-                                                              .bottomSheet2(
-                                                                  context)));
-                                                }),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: _isImageUploadedLkg == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
+                                                ),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => alfaObservationController.bottomSheet(context, 2),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: validateLkg,
-                                            message:
-                                                'library Register Image Required',
+                                            message: 'Library Register Image Required',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          alfaObservationController
-                                                  .multipleImage2.isNotEmpty
+                                          alfaObservationController.multipleImage2.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
+                                            ),
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: alfaObservationController.multipleImage2.length,
+                                              itemBuilder: (context, index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              alfaObservationController.multipleImage2[index].path,
+                                                              context,
+                                                            );
+                                                          },
+                                                          child: Image.file(
+                                                            File(alfaObservationController.multipleImage2[index].path),
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            alfaObservationController.multipleImage2.removeAt(index);
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      alfaObservationController
-                                                              .multipleImage2
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  alfaObservationController
-                                                                      .multipleImage2
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview2.showImagePreview2(alfaObservationController.multipleImage2[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(alfaObservationController.multipleImage2[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            alfaObservationController.multipleImage2.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -991,139 +952,100 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: _isImageUploadedUkg ==
-                                                          false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: _isImageUploadedUkg == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title:
-                                                    _isImageUploadedUkg == false
-                                                        ? const Text(
-                                                            'Click or Upload Image',
-                                                          )
-                                                        : const Text(
-                                                            'Click or Upload Image',
-                                                            style: TextStyle(
-                                                                color: AppColors
-                                                                    .error),
-                                                          ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                        AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          alfaObservationController
-                                                              .bottomSheet3(
-                                                                  context)));
-                                                }),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: _isImageUploadedUkg == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
+                                                ),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => alfaObservationController.bottomSheet(context, 3),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: validateUkg,
-                                            message:
-                                                'library Register Image Required',
+                                            message: 'Library Register Image Required',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          alfaObservationController
-                                                  .multipleImage3.isNotEmpty
+                                          alfaObservationController.multipleImage3.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
+                                            ),
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: alfaObservationController.multipleImage3.length,
+                                              itemBuilder: (context, index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              alfaObservationController.multipleImage3[index].path,
+                                                              context,
+                                                            );
+                                                          },
+                                                          child: Image.file(
+                                                            File(alfaObservationController.multipleImage3[index].path),
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            alfaObservationController.multipleImage3.removeAt(index);
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      alfaObservationController
-                                                              .multipleImage3
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  alfaObservationController
-                                                                      .multipleImage3
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview3.showImagePreview3(alfaObservationController.multipleImage3[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(alfaObservationController.multipleImage3[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            alfaObservationController.multipleImage3.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -1725,142 +1647,101 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color:
-                                                      _isImageUploadedAlfaModule ==
-                                                              false
-                                                          ? AppColors.primary
-                                                          : AppColors.error),
+                                                width: 2,
+                                                color: _isImageUploadedAlfaModule == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title:
-                                                    _isImageUploadedAlfaModule ==
-                                                            false
-                                                        ? const Text(
-                                                            'Click or Upload Image',
-                                                          )
-                                                        : const Text(
-                                                            'Click or Upload Image',
-                                                            style: TextStyle(
-                                                                color: AppColors
-                                                                    .error),
-                                                          ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                        AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          alfaObservationController
-                                                              .bottomSheet4(
-                                                                  context)));
-                                                }),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: _isImageUploadedAlfaModule == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
+                                                ),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => alfaObservationController.bottomSheet(context, 4),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: validateAlfamodule,
-                                            message: 'Image Required',
+                                            message: 'Library Register Image Required',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          alfaObservationController
-                                                  .multipleImage4.isNotEmpty
+                                          alfaObservationController.multipleImage4.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
+                                            ),
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: alfaObservationController.multipleImage4.length,
+                                              itemBuilder: (context, index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              alfaObservationController.multipleImage4[index].path,
+                                                              context,
+                                                            );
+                                                          },
+                                                          child: Image.file(
+                                                            File(alfaObservationController.multipleImage4[index].path),
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            alfaObservationController.multipleImage4.removeAt(index);
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      alfaObservationController
-                                                              .multipleImage4
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  alfaObservationController
-                                                                      .multipleImage4
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview4.showImagePreview4(alfaObservationController.multipleImage4[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(alfaObservationController.multipleImage4[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            alfaObservationController.multipleImage4.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
-
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
@@ -2069,136 +1950,100 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                             Container(
                                               height: 60,
                                               decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(10.0),
                                                 border: Border.all(
-                                                    width: 2,
-                                                    color:
-                                                        _isImageUploadedTeacherTraining ==
-                                                                false
-                                                            ? AppColors.primary
-                                                            : AppColors.error),
+                                                  width: 2,
+                                                  color: _isImageUploadedTeacherTraining == false
+                                                      ? AppColors.primary
+                                                      : AppColors.error,
+                                                ),
                                               ),
                                               child: ListTile(
-                                                  title:
-                                                      _isImageUploadedTeacherTraining ==
-                                                              false
-                                                          ? const Text(
-                                                              'Click or Upload Image',
-                                                            )
-                                                          : const Text(
-                                                              'Click or Upload Image',
-                                                              style: TextStyle(
-                                                                  color: AppColors
-                                                                      .error),
-                                                            ),
-                                                  trailing: const Icon(
-                                                      Icons.camera_alt,
-                                                      color: AppColors
-                                                          .onBackground),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                            AppColors.primary,
-                                                        context: context,
-                                                        builder: ((builder) =>
-                                                            alfaObservationController
-                                                                .bottomSheet5(
-                                                                    context)));
-                                                  }),
+                                                title: Text(
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                    color: _isImageUploadedTeacherTraining == false
+                                                        ? Colors.black
+                                                        : AppColors.error,
+                                                  ),
+                                                ),
+                                                trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    backgroundColor: AppColors.primary,
+                                                    context: context,
+                                                    builder: (builder) => alfaObservationController.bottomSheet(context, 5),
+                                                  );
+                                                },
+                                              ),
                                             ),
                                             ErrorText(
-                                              isVisible:
-                                                  validateTeacherTraining,
-                                              message: 'Image Required',
+                                              isVisible: validateTeacherTraining,
+                                              message: 'Library Register Image Required',
                                             ),
                                             CustomSizedBox(
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            alfaObservationController
-                                                    .multipleImage5.isNotEmpty
+                                            alfaObservationController.multipleImage5.isNotEmpty
                                                 ? Container(
-                                                    width: responsive
-                                                        .responsiveValue(
-                                                            small: 600.0,
-                                                            medium: 900.0,
-                                                            large: 1400.0),
-                                                    height: responsive
-                                                        .responsiveValue(
-                                                            small: 170.0,
-                                                            medium: 170.0,
-                                                            large: 170.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
+                                              width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
+                                              ),
+                                              height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: alfaObservationController.multipleImage5.length,
+                                                itemBuilder: (context, index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview.showImagePreview(
+                                                                alfaObservationController.multipleImage5[index].path,
+                                                                context,
+                                                              );
+                                                            },
+                                                            child: Image.file(
+                                                              File(alfaObservationController.multipleImage5[index].path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              alfaObservationController.multipleImage5.removeAt(index);
+                                                            });
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.delete,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    child:
-                                                        alfaObservationController
-                                                                .multipleImage5
-                                                                .isEmpty
-                                                            ? const Center(
-                                                                child: Text(
-                                                                    'No images selected.'),
-                                                              )
-                                                            : ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemCount:
-                                                                    alfaObservationController
-                                                                        .multipleImage5
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return SizedBox(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              CustomImagePreview5.showImagePreview5(alfaObservationController.multipleImage5[index].path, context);
-                                                                            },
-                                                                            child:
-                                                                                Image.file(
-                                                                              File(alfaObservationController.multipleImage5[index].path),
-                                                                              width: 190,
-                                                                              height: 120,
-                                                                              fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              alfaObservationController.multipleImage5.removeAt(index);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              const Icon(
-                                                                            Icons.delete,
-                                                                            color:
-                                                                                Colors.red,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                  )
+                                                  );
+                                                },
+                                              ),
+                                            )
                                                 : const SizedBox(),
                                             CustomSizedBox(
                                               value: 20,
@@ -2515,136 +2360,100 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                             Container(
                                               height: 60,
                                               decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(10.0),
                                                 border: Border.all(
-                                                    width: 2,
-                                                    color:
-                                                        _isImageUploadedReadingActivities ==
-                                                                false
-                                                            ? AppColors.primary
-                                                            : AppColors.error),
+                                                  width: 2,
+                                                  color: _isImageUploadedReadingActivities == false
+                                                      ? AppColors.primary
+                                                      : AppColors.error,
+                                                ),
                                               ),
                                               child: ListTile(
-                                                  title:
-                                                      _isImageUploadedReadingActivities ==
-                                                              false
-                                                          ? const Text(
-                                                              'Click or Upload Image',
-                                                            )
-                                                          : const Text(
-                                                              'Click or Upload Image',
-                                                              style: TextStyle(
-                                                                  color: AppColors
-                                                                      .error),
-                                                            ),
-                                                  trailing: const Icon(
-                                                      Icons.camera_alt,
-                                                      color: AppColors
-                                                          .onBackground),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                            AppColors.primary,
-                                                        context: context,
-                                                        builder: ((builder) =>
-                                                            alfaObservationController
-                                                                .bottomSheet6(
-                                                                    context)));
-                                                  }),
+                                                title: Text(
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                    color: _isImageUploadedReadingActivities == false
+                                                        ? Colors.black
+                                                        : AppColors.error,
+                                                  ),
+                                                ),
+                                                trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    backgroundColor: AppColors.primary,
+                                                    context: context,
+                                                    builder: (builder) => alfaObservationController.bottomSheet(context, 6),
+                                                  );
+                                                },
+                                              ),
                                             ),
                                             ErrorText(
-                                              isVisible:
-                                                  validateReadingActivities,
-                                              message: 'Image Required',
+                                              isVisible: validateReadingActivities,
+                                              message: 'Library Register Image Required',
                                             ),
                                             CustomSizedBox(
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            alfaObservationController
-                                                    .multipleImage6.isNotEmpty
+                                            alfaObservationController.multipleImage6.isNotEmpty
                                                 ? Container(
-                                                    width: responsive
-                                                        .responsiveValue(
-                                                            small: 600.0,
-                                                            medium: 900.0,
-                                                            large: 1400.0),
-                                                    height: responsive
-                                                        .responsiveValue(
-                                                            small: 170.0,
-                                                            medium: 170.0,
-                                                            large: 170.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
+                                              width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
+                                              ),
+                                              height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: alfaObservationController.multipleImage6.length,
+                                                itemBuilder: (context, index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview.showImagePreview(
+                                                                alfaObservationController.multipleImage6[index].path,
+                                                                context,
+                                                              );
+                                                            },
+                                                            child: Image.file(
+                                                              File(alfaObservationController.multipleImage6[index].path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              alfaObservationController.multipleImage6.removeAt(index);
+                                                            });
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.delete,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    child:
-                                                        alfaObservationController
-                                                                .multipleImage6
-                                                                .isEmpty
-                                                            ? const Center(
-                                                                child: Text(
-                                                                    'No images selected.'),
-                                                              )
-                                                            : ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemCount:
-                                                                    alfaObservationController
-                                                                        .multipleImage6
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return SizedBox(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              CustomImagePreview6.showImagePreview6(alfaObservationController.multipleImage6[index].path, context);
-                                                                            },
-                                                                            child:
-                                                                                Image.file(
-                                                                              File(alfaObservationController.multipleImage6[index].path),
-                                                                              width: 190,
-                                                                              height: 120,
-                                                                              fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              alfaObservationController.multipleImage6.removeAt(index);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              const Icon(
-                                                                            Icons.delete,
-                                                                            color:
-                                                                                Colors.red,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                  )
+                                                  );
+                                                },
+                                              ),
+                                            )
                                                 : const SizedBox(),
                                             CustomSizedBox(
                                               value: 20,
@@ -2821,139 +2630,100 @@ class _AlfaObservationFormState extends State<AlfaObservationForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color:
-                                                      _isImageUploadedTlmKit ==
-                                                              false
-                                                          ? AppColors.primary
-                                                          : AppColors.error),
+                                                width: 2,
+                                                color: _isImageUploadedTlmKit == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title: _isImageUploadedTlmKit ==
-                                                        false
-                                                    ? const Text(
-                                                        'Click or Upload Image',
-                                                      )
-                                                    : const Text(
-                                                        'Click or Upload Image',
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .error),
-                                                      ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                        AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          alfaObservationController
-                                                              .bottomSheet7(
-                                                                  context)));
-                                                }),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: _isImageUploadedTlmKit == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
+                                                ),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => alfaObservationController.bottomSheet(context, 7),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: validateTlmKit,
-                                            message: 'Image Required',
+                                            message: 'Library Register Image Required',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          alfaObservationController
-                                                  .multipleImage7.isNotEmpty
+                                          alfaObservationController.multipleImage7.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
+                                            ),
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: alfaObservationController.multipleImage7.length,
+                                              itemBuilder: (context, index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              alfaObservationController.multipleImage7[index].path,
+                                                              context,
+                                                            );
+                                                          },
+                                                          child: Image.file(
+                                                            File(alfaObservationController.multipleImage7[index].path),
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            alfaObservationController.multipleImage7.removeAt(index);
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      alfaObservationController
-                                                              .multipleImage7
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  alfaObservationController
-                                                                      .multipleImage7
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview7.showImagePreview7(alfaObservationController.multipleImage7[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(alfaObservationController.multipleImage7[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            alfaObservationController.multipleImage7.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
 
                                           CustomSizedBox(

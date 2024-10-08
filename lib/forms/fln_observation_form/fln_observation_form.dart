@@ -546,7 +546,7 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                   title: 'Exit Confirmation',
                   yes: 'Yes',
                   no: 'no',
-                  desc: 'Are you sure you want to leave this screen?',
+                  desc: 'Are you sure you want to leave exit?',
                   onPressed: () async {
                     Navigator.of(context).pop(true);
                   }));
@@ -878,7 +878,7 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                                       builder: ((builder) =>
                                                           flnObservationController
                                                               .bottomSheet(
-                                                                  context)));
+                                                                  context,1)));
                                                 }),
                                           ),
                                           ErrorText(
@@ -995,139 +995,100 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: _isImageUploadedLkg ==
-                                                          false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: _isImageUploadedLkg == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title:
-                                                    _isImageUploadedLkg == false
-                                                        ? const Text(
-                                                            'Click or Upload Image',
-                                                          )
-                                                        : const Text(
-                                                            'Click or Upload Image',
-                                                            style: TextStyle(
-                                                                color: AppColors
-                                                                    .error),
-                                                          ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                        AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          flnObservationController
-                                                              .bottomSheet2(
-                                                                  context)));
-                                                }),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: _isImageUploadedLkg == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
+                                                ),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => flnObservationController.bottomSheet(context, 2),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: validateLkg,
-                                            message:
-                                                'library Register Image Required',
+                                            message: 'Library Register Image Required',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          flnObservationController
-                                                  .multipleImage2.isNotEmpty
+                                          flnObservationController.multipleImage2.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
+                                            ),
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: flnObservationController.multipleImage2.length,
+                                              itemBuilder: (context, index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              flnObservationController.multipleImage2[index].path,
+                                                              context,
+                                                            );
+                                                          },
+                                                          child: Image.file(
+                                                            File(flnObservationController.multipleImage2[index].path),
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            flnObservationController.multipleImage2.removeAt(index);
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      flnObservationController
-                                                              .multipleImage2
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  flnObservationController
-                                                                      .multipleImage2
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview2.showImagePreview2(flnObservationController.multipleImage2[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(flnObservationController.multipleImage2[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            flnObservationController.multipleImage2.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -1145,139 +1106,100 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: _isImageUploadedUkg ==
-                                                          false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: _isImageUploadedUkg == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title:
-                                                    _isImageUploadedUkg == false
-                                                        ? const Text(
-                                                            'Click or Upload Image',
-                                                          )
-                                                        : const Text(
-                                                            'Click or Upload Image',
-                                                            style: TextStyle(
-                                                                color: AppColors
-                                                                    .error),
-                                                          ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                        AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          flnObservationController
-                                                              .bottomSheet3(
-                                                                  context)));
-                                                }),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: _isImageUploadedUkg == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
+                                                ),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => flnObservationController.bottomSheet(context, 3),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: validateUkg,
-                                            message:
-                                                'library Register Image Required',
+                                            message: 'Library Register Image Required',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          flnObservationController
-                                                  .multipleImage3.isNotEmpty
+                                          flnObservationController.multipleImage3.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
+                                            ),
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: flnObservationController.multipleImage3.length,
+                                              itemBuilder: (context, index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              flnObservationController.multipleImage3[index].path,
+                                                              context,
+                                                            );
+                                                          },
+                                                          child: Image.file(
+                                                            File(flnObservationController.multipleImage3[index].path),
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            flnObservationController.multipleImage3.removeAt(index);
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      flnObservationController
-                                                              .multipleImage3
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  flnObservationController
-                                                                      .multipleImage3
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview3.showImagePreview3(flnObservationController.multipleImage3[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(flnObservationController.multipleImage3[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            flnObservationController.multipleImage3.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -1445,138 +1367,112 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            Container(
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                                border: Border.all(
-                                                    width: 2,
-                                                    color:
-                                                        _isImageUploadedActivityCorner ==
-                                                                false
-                                                            ? AppColors.primary
-                                                            : AppColors.error),
-                                              ),
-                                              child: ListTile(
-                                                  title:
-                                                      _isImageUploadedActivityCorner ==
-                                                              false
-                                                          ? const Text(
-                                                              'Click or Upload Image',
-                                                            )
-                                                          : const Text(
-                                                              'Click or Upload Image',
-                                                              style: TextStyle(
-                                                                  color: AppColors
-                                                                      .error),
-                                                            ),
-                                                  trailing: const Icon(
-                                                      Icons.camera_alt,
-                                                      color: AppColors
-                                                          .onBackground),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                            AppColors.primary,
-                                                        context: context,
-                                                        builder: ((builder) =>
-                                                            flnObservationController
-                                                                .bottomSheet4(
-                                                                    context)));
-                                                  }),
-                                            ),
-                                            ErrorText(
-                                              isVisible: validateActivityCorner,
-                                              message: 'Image Required',
+                                            LabelText(
+                                              label:
+                                              'upload photo of UKG timetable',
+                                              astrick: true,
                                             ),
                                             CustomSizedBox(
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            flnObservationController
-                                                    .multipleImage4.isNotEmpty
+                                            Container(
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10.0),
+                                                border: Border.all(
+                                                  width: 2,
+                                                  color: _isImageUploadedActivityCorner == false
+                                                      ? AppColors.primary
+                                                      : AppColors.error,
+                                                ),
+                                              ),
+                                              child: ListTile(
+                                                title: Text(
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                    color: _isImageUploadedActivityCorner == false
+                                                        ? Colors.black
+                                                        : AppColors.error,
+                                                  ),
+                                                ),
+                                                trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    backgroundColor: AppColors.primary,
+                                                    context: context,
+                                                    builder: (builder) => flnObservationController.bottomSheet(context, 4),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            ErrorText(
+                                              isVisible: validateActivityCorner,
+                                              message: 'Library Register Image Required',
+                                            ),
+                                            CustomSizedBox(
+                                              value: 20,
+                                              side: 'height',
+                                            ),
+                                            flnObservationController.multipleImage4.isNotEmpty
                                                 ? Container(
-                                                    width: responsive
-                                                        .responsiveValue(
-                                                            small: 600.0,
-                                                            medium: 900.0,
-                                                            large: 1400.0),
-                                                    height: responsive
-                                                        .responsiveValue(
-                                                            small: 170.0,
-                                                            medium: 170.0,
-                                                            large: 170.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
+                                              width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
+                                              ),
+                                              height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: flnObservationController.multipleImage4.length,
+                                                itemBuilder: (context, index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview.showImagePreview(
+                                                                flnObservationController.multipleImage4[index].path,
+                                                                context,
+                                                              );
+                                                            },
+                                                            child: Image.file(
+                                                              File(flnObservationController.multipleImage4[index].path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              flnObservationController.multipleImage4.removeAt(index);
+                                                            });
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.delete,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    child:
-                                                        flnObservationController
-                                                                .multipleImage4
-                                                                .isEmpty
-                                                            ? const Center(
-                                                                child: Text(
-                                                                    'No images selected.'),
-                                                              )
-                                                            : ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemCount:
-                                                                    flnObservationController
-                                                                        .multipleImage4
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return SizedBox(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              CustomImagePreview4.showImagePreview4(flnObservationController.multipleImage4[index].path, context);
-                                                                            },
-                                                                            child:
-                                                                                Image.file(
-                                                                              File(flnObservationController.multipleImage4[index].path),
-                                                                              width: 190,
-                                                                              height: 120,
-                                                                              fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              flnObservationController.multipleImage4.removeAt(index);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              const Icon(
-                                                                            Icons.delete,
-                                                                            color:
-                                                                                Colors.red,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                  )
+                                                  );
+                                                },
+                                              ),
+                                            )
                                                 : const SizedBox(),
                                             CustomSizedBox(
                                               value: 20,
@@ -1595,138 +1491,100 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: _isImageUploadedTlm ==
-                                                          false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: _isImageUploadedTlm == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title:
-                                                    _isImageUploadedTlm == false
-                                                        ? const Text(
-                                                            'Click or Upload Image',
-                                                          )
-                                                        : const Text(
-                                                            'Click or Upload Image',
-                                                            style: TextStyle(
-                                                                color: AppColors
-                                                                    .error),
-                                                          ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                        AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          flnObservationController
-                                                              .bottomSheet5(
-                                                                  context)));
-                                                }),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: _isImageUploadedTlm == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
+                                                ),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => flnObservationController.bottomSheet(context, 5),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: validateTlm,
-                                            message: 'Image Required',
+                                            message: 'Library Register Image Required',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          flnObservationController
-                                                  .multipleImage5.isNotEmpty
+                                          flnObservationController.multipleImage5.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
+                                            ),
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: flnObservationController.multipleImage5.length,
+                                              itemBuilder: (context, index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              flnObservationController.multipleImage5[index].path,
+                                                              context,
+                                                            );
+                                                          },
+                                                          child: Image.file(
+                                                            File(flnObservationController.multipleImage5[index].path),
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            flnObservationController.multipleImage5.removeAt(index);
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      flnObservationController
-                                                              .multipleImage5
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  flnObservationController
-                                                                      .multipleImage5
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview5.showImagePreview5(flnObservationController.multipleImage5[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(flnObservationController.multipleImage5[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            flnObservationController.multipleImage5.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,
@@ -2342,135 +2200,100 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                             Container(
                                               height: 60,
                                               decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(10.0),
                                                 border: Border.all(
-                                                    width: 2,
-                                                    color:
-                                                        _isImageUploadedFlnActivities ==
-                                                                false
-                                                            ? AppColors.primary
-                                                            : AppColors.error),
+                                                  width: 2,
+                                                  color: _isImageUploadedFlnActivities == false
+                                                      ? AppColors.primary
+                                                      : AppColors.error,
+                                                ),
                                               ),
                                               child: ListTile(
-                                                  title:
-                                                      _isImageUploadedFlnActivities ==
-                                                              false
-                                                          ? const Text(
-                                                              'Click or Upload Image',
-                                                            )
-                                                          : const Text(
-                                                              'Click or Upload Image',
-                                                              style: TextStyle(
-                                                                  color: AppColors
-                                                                      .error),
-                                                            ),
-                                                  trailing: const Icon(
-                                                      Icons.camera_alt,
-                                                      color: AppColors
-                                                          .onBackground),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                            AppColors.primary,
-                                                        context: context,
-                                                        builder: ((builder) =>
-                                                            flnObservationController
-                                                                .bottomSheet6(
-                                                                    context)));
-                                                  }),
+                                                title: Text(
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                    color: _isImageUploadedFlnActivities == false
+                                                        ? Colors.black
+                                                        : AppColors.error,
+                                                  ),
+                                                ),
+                                                trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    backgroundColor: AppColors.primary,
+                                                    context: context,
+                                                    builder: (builder) => flnObservationController.bottomSheet(context, 6),
+                                                  );
+                                                },
+                                              ),
                                             ),
                                             ErrorText(
                                               isVisible: validateFlnActivities,
-                                              message: 'Image Required',
+                                              message: 'Library Register Image Required',
                                             ),
                                             CustomSizedBox(
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            flnObservationController
-                                                    .multipleImage6.isNotEmpty
+                                            flnObservationController.multipleImage6.isNotEmpty
                                                 ? Container(
-                                                    width: responsive
-                                                        .responsiveValue(
-                                                            small: 600.0,
-                                                            medium: 900.0,
-                                                            large: 1400.0),
-                                                    height: responsive
-                                                        .responsiveValue(
-                                                            small: 170.0,
-                                                            medium: 170.0,
-                                                            large: 170.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
+                                              width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
+                                              ),
+                                              height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: flnObservationController.multipleImage6.length,
+                                                itemBuilder: (context, index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview.showImagePreview(
+                                                                flnObservationController.multipleImage6[index].path,
+                                                                context,
+                                                              );
+                                                            },
+                                                            child: Image.file(
+                                                              File(flnObservationController.multipleImage6[index].path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              flnObservationController.multipleImage6.removeAt(index);
+                                                            });
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.delete,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    child:
-                                                        flnObservationController
-                                                                .multipleImage6
-                                                                .isEmpty
-                                                            ? const Center(
-                                                                child: Text(
-                                                                    'No images selected.'),
-                                                              )
-                                                            : ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemCount:
-                                                                    flnObservationController
-                                                                        .multipleImage6
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return SizedBox(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              CustomImagePreview6.showImagePreview6(flnObservationController.multipleImage6[index].path, context);
-                                                                            },
-                                                                            child:
-                                                                                Image.file(
-                                                                              File(flnObservationController.multipleImage6[index].path),
-                                                                              width: 190,
-                                                                              height: 120,
-                                                                              fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              flnObservationController.multipleImage6.removeAt(index);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              const Icon(
-                                                                            Icons.delete,
-                                                                            color:
-                                                                                Colors.red,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                  )
+                                                  );
+                                                },
+                                              ),
+                                            )
                                                 : const SizedBox(),
                                             CustomSizedBox(
                                               value: 20,
@@ -2684,136 +2507,100 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                             Container(
                                               height: 60,
                                               decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(10.0),
                                                 border: Border.all(
-                                                    width: 2,
-                                                    color:
-                                                        _isImageUploadedRefresherTraining ==
-                                                                false
-                                                            ? AppColors.primary
-                                                            : AppColors.error),
+                                                  width: 2,
+                                                  color: _isImageUploadedRefresherTraining == false
+                                                      ? AppColors.primary
+                                                      : AppColors.error,
+                                                ),
                                               ),
                                               child: ListTile(
-                                                  title:
-                                                      _isImageUploadedRefresherTraining ==
-                                                              false
-                                                          ? const Text(
-                                                              'Click or Upload Image',
-                                                            )
-                                                          : const Text(
-                                                              'Click or Upload Image',
-                                                              style: TextStyle(
-                                                                  color: AppColors
-                                                                      .error),
-                                                            ),
-                                                  trailing: const Icon(
-                                                      Icons.camera_alt,
-                                                      color: AppColors
-                                                          .onBackground),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                            AppColors.primary,
-                                                        context: context,
-                                                        builder: ((builder) =>
-                                                            flnObservationController
-                                                                .bottomSheet7(
-                                                                    context)));
-                                                  }),
+                                                title: Text(
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                    color: _isImageUploadedRefresherTraining == false
+                                                        ? Colors.black
+                                                        : AppColors.error,
+                                                  ),
+                                                ),
+                                                trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    backgroundColor: AppColors.primary,
+                                                    context: context,
+                                                    builder: (builder) => flnObservationController.bottomSheet(context, 7),
+                                                  );
+                                                },
+                                              ),
                                             ),
                                             ErrorText(
-                                              isVisible:
-                                                  validateRefresherTraining,
-                                              message: 'Image Required',
+                                              isVisible: validateRefresherTraining,
+                                              message: 'Library Register Image Required',
                                             ),
                                             CustomSizedBox(
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            flnObservationController
-                                                    .multipleImage7.isNotEmpty
+                                            flnObservationController.multipleImage7.isNotEmpty
                                                 ? Container(
-                                                    width: responsive
-                                                        .responsiveValue(
-                                                            small: 600.0,
-                                                            medium: 900.0,
-                                                            large: 1400.0),
-                                                    height: responsive
-                                                        .responsiveValue(
-                                                            small: 170.0,
-                                                            medium: 170.0,
-                                                            large: 170.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
+                                              width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
+                                              ),
+                                              height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: flnObservationController.multipleImage7.length,
+                                                itemBuilder: (context, index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview.showImagePreview(
+                                                                flnObservationController.multipleImage7[index].path,
+                                                                context,
+                                                              );
+                                                            },
+                                                            child: Image.file(
+                                                              File(flnObservationController.multipleImage7[index].path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              flnObservationController.multipleImage7.removeAt(index);
+                                                            });
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.delete,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    child:
-                                                        flnObservationController
-                                                                .multipleImage7
-                                                                .isEmpty
-                                                            ? const Center(
-                                                                child: Text(
-                                                                    'No images selected.'),
-                                                              )
-                                                            : ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemCount:
-                                                                    flnObservationController
-                                                                        .multipleImage7
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return SizedBox(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              CustomImagePreview7.showImagePreview7(flnObservationController.multipleImage7[index].path, context);
-                                                                            },
-                                                                            child:
-                                                                                Image.file(
-                                                                              File(flnObservationController.multipleImage7[index].path),
-                                                                              width: 190,
-                                                                              height: 120,
-                                                                              fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              flnObservationController.multipleImage7.removeAt(index);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              const Icon(
-                                                                            Icons.delete,
-                                                                            color:
-                                                                                Colors.red,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                  )
+                                                  );
+                                                },
+                                              ),
+                                            )
                                                 : const SizedBox(),
                                             CustomSizedBox(
                                               value: 20,
@@ -3116,135 +2903,100 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                             Container(
                                               height: 60,
                                               decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(10.0),
                                                 border: Border.all(
-                                                    width: 2,
-                                                    color:
-                                                        _isImageUploadedLibrary ==
-                                                                false
-                                                            ? AppColors.primary
-                                                            : AppColors.error),
+                                                  width: 2,
+                                                  color: _isImageUploadedLibrary == false
+                                                      ? AppColors.primary
+                                                      : AppColors.error,
+                                                ),
                                               ),
                                               child: ListTile(
-                                                  title:
-                                                      _isImageUploadedLibrary ==
-                                                              false
-                                                          ? const Text(
-                                                              'Click or Upload Image',
-                                                            )
-                                                          : const Text(
-                                                              'Click or Upload Image',
-                                                              style: TextStyle(
-                                                                  color: AppColors
-                                                                      .error),
-                                                            ),
-                                                  trailing: const Icon(
-                                                      Icons.camera_alt,
-                                                      color: AppColors
-                                                          .onBackground),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                            AppColors.primary,
-                                                        context: context,
-                                                        builder: ((builder) =>
-                                                            flnObservationController
-                                                                .bottomSheet8(
-                                                                    context)));
-                                                  }),
+                                                title: Text(
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                    color: _isImageUploadedLibrary == false
+                                                        ? Colors.black
+                                                        : AppColors.error,
+                                                  ),
+                                                ),
+                                                trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    backgroundColor: AppColors.primary,
+                                                    context: context,
+                                                    builder: (builder) => flnObservationController.bottomSheet(context, 8),
+                                                  );
+                                                },
+                                              ),
                                             ),
                                             ErrorText(
                                               isVisible: validateLibrary,
-                                              message: 'Image Required',
+                                              message: 'Library Register Image Required',
                                             ),
                                             CustomSizedBox(
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            flnObservationController
-                                                    .multipleImage8.isNotEmpty
+                                            flnObservationController.multipleImage8.isNotEmpty
                                                 ? Container(
-                                                    width: responsive
-                                                        .responsiveValue(
-                                                            small: 600.0,
-                                                            medium: 900.0,
-                                                            large: 1400.0),
-                                                    height: responsive
-                                                        .responsiveValue(
-                                                            small: 170.0,
-                                                            medium: 170.0,
-                                                            large: 170.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
+                                              width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
+                                              ),
+                                              height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: flnObservationController.multipleImage8.length,
+                                                itemBuilder: (context, index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview.showImagePreview(
+                                                                flnObservationController.multipleImage8[index].path,
+                                                                context,
+                                                              );
+                                                            },
+                                                            child: Image.file(
+                                                              File(flnObservationController.multipleImage8[index].path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              flnObservationController.multipleImage8.removeAt(index);
+                                                            });
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.delete,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    child:
-                                                        flnObservationController
-                                                                .multipleImage8
-                                                                .isEmpty
-                                                            ? const Center(
-                                                                child: Text(
-                                                                    'No images selected.'),
-                                                              )
-                                                            : ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.horizontal,
-                                                                itemCount:
-                                                                    flnObservationController
-                                                                        .multipleImage8
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return SizedBox(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              CustomImagePreview8.showImagePreview8(flnObservationController.multipleImage8[index].path, context);
-                                                                            },
-                                                                            child:
-                                                                                Image.file(
-                                                                              File(flnObservationController.multipleImage8[index].path),
-                                                                              width: 190,
-                                                                              height: 120,
-                                                                              fit: BoxFit.fill,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              flnObservationController.multipleImage8.removeAt(index);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              const Icon(
-                                                                            Icons.delete,
-                                                                            color:
-                                                                                Colors.red,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ),
-                                                  )
+                                                  );
+                                                },
+                                              ),
+                                            )
                                                 : const SizedBox(),
                                             CustomSizedBox(
                                               value: 20,
@@ -3407,140 +3159,100 @@ class _FlnObservationFormState extends State<FlnObservationForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color:
-                                                      _isImageUploadedClassroom ==
-                                                              false
-                                                          ? AppColors.primary
-                                                          : AppColors.error),
+                                                width: 2,
+                                                color: _isImageUploadedClassroom == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title:
-                                                    _isImageUploadedClassroom ==
-                                                            false
-                                                        ? const Text(
-                                                            'Click or Upload Image',
-                                                          )
-                                                        : const Text(
-                                                            'Click or Upload Image',
-                                                            style: TextStyle(
-                                                                color: AppColors
-                                                                    .error),
-                                                          ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                        AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          flnObservationController
-                                                              .bottomSheet9(
-                                                                  context)));
-                                                }),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: _isImageUploadedClassroom == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
+                                                ),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => flnObservationController.bottomSheet(context, 9),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: validateClassroom,
-                                            message: 'Image Required',
+                                            message: 'Library Register Image Required',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          flnObservationController
-                                                  .multipleImage9.isNotEmpty
+                                          flnObservationController.multipleImage9.isNotEmpty
                                               ? Container(
-                                                  width: responsive
-                                                      .responsiveValue(
-                                                          small: 600.0,
-                                                          medium: 900.0,
-                                                          large: 1400.0),
-                                                  height: responsive
-                                                      .responsiveValue(
-                                                          small: 170.0,
-                                                          medium: 170.0,
-                                                          large: 170.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
+                                            ),
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: flnObservationController.multipleImage9.length,
+                                              itemBuilder: (context, index) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              flnObservationController.multipleImage9[index].path,
+                                                              context,
+                                                            );
+                                                          },
+                                                          child: Image.file(
+                                                            File(flnObservationController.multipleImage9[index].path),
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            flnObservationController.multipleImage9.removeAt(index);
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child:
-                                                      flnObservationController
-                                                              .multipleImage9
-                                                              .isEmpty
-                                                          ? const Center(
-                                                              child: Text(
-                                                                  'No images selected.'),
-                                                            )
-                                                          : ListView.builder(
-                                                              scrollDirection:
-                                                                  Axis.horizontal,
-                                                              itemCount:
-                                                                  flnObservationController
-                                                                      .multipleImage9
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                return SizedBox(
-                                                                  height: 200,
-                                                                  width: 200,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            CustomImagePreview9.showImagePreview9(flnObservationController.multipleImage9[index].path,
-                                                                                context);
-                                                                          },
-                                                                          child:
-                                                                              Image.file(
-                                                                            File(flnObservationController.multipleImage9[index].path),
-                                                                            width:
-                                                                                190,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          setState(
-                                                                              () {
-                                                                            flnObservationController.multipleImage9.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                )
+                                                );
+                                              },
+                                            ),
+                                          )
                                               : const SizedBox(),
                                           CustomSizedBox(
                                             value: 20,

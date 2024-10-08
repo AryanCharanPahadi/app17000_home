@@ -101,9 +101,11 @@ class _EnrolmentSyncState extends State<EnrolmentSync> {
                       return ListTile(
                         title: Text(
                           "${index + 1}. Tour ID: ${item.tourId!}\nSchool: ${item.school!}",
-                          style: TextStyle(
+                          style:TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size based on screen width
+                            // Alternatively, use a combination of width and height for a better responsive size
+                            // fontSize: MediaQuery.of(context).size.width * 0.04 + MediaQuery.of(context).size.height * 0.01,
                           ),
                         ),
 

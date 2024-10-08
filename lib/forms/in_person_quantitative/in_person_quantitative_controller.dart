@@ -167,19 +167,35 @@ class InPersonQuantitativeController extends GetxController with BaseController 
   List<String> _imagePaths2 = [];
   List<String> get imagePaths2 => _imagePaths2;
 
-
-  Future<String> takePhoto(ImageSource source) async {
+  Future<String> takePhoto(ImageSource source, int index) async {
     final ImagePicker picker = ImagePicker();
     List<XFile> selectedImages = [];
     XFile? pickedImage;
+
+    // Determine which list to use based on the index parameter
+    List<XFile> multipleImages;
+    List<String> imagePaths;
+
+    switch (index) {
+      case 1:
+        multipleImages = _multipleImage;
+        imagePaths = _imagePaths;
+        break;
+      case 2:
+        multipleImages = _multipleImage2;
+        imagePaths = _imagePaths2;
+        break;
+      default:
+        throw ArgumentError('Invalid index: $index');
+    }
 
     if (source == ImageSource.gallery) {
       selectedImages = await picker.pickMultiImage();
       for (var selectedImage in selectedImages) {
         // Compress each selected image
         String compressedPath = await compressImage(selectedImage.path);
-        _multipleImage.add(XFile(compressedPath));
-        _imagePaths.add(compressedPath);
+        multipleImages.add(XFile(compressedPath));
+        imagePaths.add(compressedPath);
       }
       update();
     } else if (source == ImageSource.camera) {
@@ -187,44 +203,14 @@ class InPersonQuantitativeController extends GetxController with BaseController 
       if (pickedImage != null) {
         // Compress the picked image
         String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage.add(XFile(compressedPath));
-        _imagePaths.add(compressedPath);
+        multipleImages.add(XFile(compressedPath));
+        imagePaths.add(compressedPath);
       }
       update();
     }
 
-    return _imagePaths.toString();
+    return imagePaths.toString();
   }
-
-
-  Future<String> takePhoto2(ImageSource source) async {
-    final ImagePicker picker2 = ImagePicker();
-    List<XFile> selectedImages2 = [];
-    XFile? pickedImage;
-
-    if (source == ImageSource.gallery) {
-      selectedImages2 = await picker2.pickMultiImage();
-      for (var selectedImage2 in selectedImages2) {
-        // Compress each selected image
-        String compressedPath = await compressImage(selectedImage2.path);
-        _multipleImage2.add(XFile(compressedPath));
-        _imagePaths2.add(compressedPath);
-      }
-      update();
-    } else if (source == ImageSource.camera) {
-      pickedImage = await picker2.pickImage(source: source);
-      if (pickedImage != null) {
-        // Compress the picked image
-        String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage2.add(XFile(compressedPath));
-        _imagePaths2.add(compressedPath);
-      }
-      update();
-    }
-
-    return _imagePaths2.toString();
-  }
-
   Future<String> compressImage(String imagePath) async {
     // Load the image
     final File imageFile = File(imagePath);
@@ -256,50 +242,8 @@ class InPersonQuantitativeController extends GetxController with BaseController 
 
   }
 
-  Widget bottomSheet(BuildContext context) {
-    return Container(
-      color: AppColors.primary,
-      height: 100,
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 20,
-      ),
-      child: Column(
-        children: <Widget>[
-          const Text(
-            "Select Image",
-            style: TextStyle(fontSize: 20.0, color: Colors.white),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto(ImageSource.camera);
-                  Get.back();
-                },
-                child: const Text(
-                  'Camera',
-                  style: TextStyle(fontSize: 20.0, color: AppColors.primary),
-                ),
-              ),
-              const SizedBox(
-                width: 30,
-              ),
 
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget bottomSheet2(BuildContext context) {
+  Widget bottomSheet(BuildContext context, int index) {
     return Container(
       color: AppColors.primary,
       height: 100,
@@ -307,7 +251,8 @@ class InPersonQuantitativeController extends GetxController with BaseController 
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: <Widget>[
-          const Text("Select Image", style: TextStyle(fontSize: 20.0, color: Colors.white)),
+          const Text("Select Image",
+              style: TextStyle(fontSize: 20.0, color: Colors.white)),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -315,10 +260,11 @@ class InPersonQuantitativeController extends GetxController with BaseController 
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
                 onPressed: () async {
-                  await takePhoto2(ImageSource.camera);
+                  await takePhoto(ImageSource.camera, index);
                   Get.back();
                 },
-                child: const Text('Camera', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
+                child: const Text('Camera',
+                    style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
               ),
               const SizedBox(width: 30),
 

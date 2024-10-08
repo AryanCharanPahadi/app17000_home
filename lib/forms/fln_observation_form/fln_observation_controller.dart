@@ -154,18 +154,63 @@ class FlnObservationController extends GetxController with BaseController{
     return compressedImagePath; // Return the path of the compressed image
   }
 
-  Future<String> takePhoto(ImageSource source) async {
+  Future<String> takePhoto(ImageSource source, int index) async {
     final ImagePicker picker = ImagePicker();
     List<XFile> selectedImages = [];
     XFile? pickedImage;
+
+    // Determine which list to use based on the index parameter
+    List<XFile> multipleImages;
+    List<String> imagePaths;
+
+    switch (index) {
+      case 1:
+        multipleImages = _multipleImage;
+        imagePaths = _imagePaths;
+        break;
+      case 2:
+        multipleImages = _multipleImage2;
+        imagePaths = _imagePaths2;
+        break;
+      case 3:
+        multipleImages = _multipleImage3;
+        imagePaths = _imagePaths3;
+        break;
+      case 4:
+        multipleImages = _multipleImage4;
+        imagePaths = _imagePaths4;
+        break;
+      case 5:
+        multipleImages = _multipleImage5;
+        imagePaths = _imagePaths5;
+        break;
+      case 6:
+        multipleImages = _multipleImage6;
+        imagePaths = _imagePaths6;
+        break;
+      case 7:
+        multipleImages = _multipleImage7;
+        imagePaths = _imagePaths7;
+        break;
+      case 8:
+        multipleImages = _multipleImage8;
+        imagePaths = _imagePaths8;
+        break;
+      case 9:
+        multipleImages = _multipleImage9;
+        imagePaths = _imagePaths9;
+        break;
+      default:
+        throw ArgumentError('Invalid index: $index');
+    }
 
     if (source == ImageSource.gallery) {
       selectedImages = await picker.pickMultiImage();
       for (var selectedImage in selectedImages) {
         // Compress each selected image
         String compressedPath = await compressImage(selectedImage.path);
-        _multipleImage.add(XFile(compressedPath));
-        _imagePaths.add(compressedPath);
+        multipleImages.add(XFile(compressedPath));
+        imagePaths.add(compressedPath);
       }
       update();
     } else if (source == ImageSource.camera) {
@@ -173,242 +218,13 @@ class FlnObservationController extends GetxController with BaseController{
       if (pickedImage != null) {
         // Compress the picked image
         String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage.add(XFile(compressedPath));
-        _imagePaths.add(compressedPath);
+        multipleImages.add(XFile(compressedPath));
+        imagePaths.add(compressedPath);
       }
       update();
     }
 
-    return _imagePaths.toString();
-  }
-
-
-  Future<String> takePhoto2(ImageSource source) async {
-    final ImagePicker picker2 = ImagePicker();
-    List<XFile> selectedImages2 = [];
-    XFile? pickedImage;
-
-    if (source == ImageSource.gallery) {
-      selectedImages2 = await picker2.pickMultiImage();
-      for (var selectedImage2 in selectedImages2) {
-        // Compress each selected image
-        String compressedPath = await compressImage(selectedImage2.path);
-        _multipleImage2.add(XFile(compressedPath));
-        _imagePaths2.add(compressedPath);
-      }
-      update();
-    } else if (source == ImageSource.camera) {
-      pickedImage = await picker2.pickImage(source: source);
-      if (pickedImage != null) {
-        // Compress the picked image
-        String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage2.add(XFile(compressedPath));
-        _imagePaths2.add(compressedPath);
-      }
-      update();
-    }
-
-    return _imagePaths2.toString();
-  }
-
-  Future<String> takePhoto3(ImageSource source) async {
-    final ImagePicker picker3 = ImagePicker();
-    List<XFile> selectedImages3 = [];
-    XFile? pickedImage;
-
-    if (source == ImageSource.gallery) {
-      selectedImages3 = await picker3.pickMultiImage();
-      for (var selectedImage3 in selectedImages3) {
-        // Compress each selected image
-        String compressedPath = await compressImage(selectedImage3.path);
-        _multipleImage3.add(XFile(compressedPath));
-        _imagePaths3.add(compressedPath);
-      }
-      update();
-    } else if (source == ImageSource.camera) {
-      pickedImage = await picker3.pickImage(source: source);
-      if (pickedImage != null) {
-        // Compress the picked image
-        String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage3.add(XFile(compressedPath));
-        _imagePaths3.add(compressedPath);
-      }
-      update();
-    }
-
-    return _imagePaths3.toString();
-  }
-
-  Future<String> takePhoto4(ImageSource source) async {
-    final ImagePicker picker4 = ImagePicker();
-    List<XFile> selectedImages4 = [];
-    XFile? pickedImage;
-
-    if (source == ImageSource.gallery) {
-      selectedImages4 = await picker4.pickMultiImage();
-      for (var selectedImage4 in selectedImages4) {
-        // Compress each selected image
-        String compressedPath = await compressImage(selectedImage4.path);
-        _multipleImage4.add(XFile(compressedPath));
-        _imagePaths4.add(compressedPath);
-      }
-      update();
-    } else if (source == ImageSource.camera) {
-      pickedImage = await picker4.pickImage(source: source);
-      if (pickedImage != null) {
-        // Compress the picked image
-        String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage4.add(XFile(compressedPath));
-        _imagePaths4.add(compressedPath);
-      }
-      update();
-    }
-
-    return _imagePaths4.toString();
-  }
-
-
-  Future<String> takePhoto5(ImageSource source) async {
-    final ImagePicker picker5 = ImagePicker();
-    List<XFile> selectedImages5 = [];
-    XFile? pickedImage;
-
-    if (source == ImageSource.gallery) {
-      selectedImages5 = await picker5.pickMultiImage();
-      for (var selectedImage5 in selectedImages5) {
-        // Compress each selected image
-        String compressedPath = await compressImage(selectedImage5.path);
-        _multipleImage5.add(XFile(compressedPath));
-        _imagePaths5.add(compressedPath);
-      }
-      update();
-    } else if (source == ImageSource.camera) {
-      pickedImage = await picker5.pickImage(source: source);
-      if (pickedImage != null) {
-        // Compress the picked image
-        String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage5.add(XFile(compressedPath));
-        _imagePaths5.add(compressedPath);
-      }
-      update();
-    }
-
-    return _imagePaths5.toString();
-  }
-
-
-  Future<String> takePhoto6(ImageSource source) async {
-    final ImagePicker picker6 = ImagePicker();
-    List<XFile> selectedImages6 = [];
-    XFile? pickedImage;
-
-    if (source == ImageSource.gallery) {
-      selectedImages6 = await picker6.pickMultiImage();
-      for (var selectedImage6 in selectedImages6) {
-        // Compress each selected image
-        String compressedPath = await compressImage(selectedImage6.path);
-        _multipleImage6.add(XFile(compressedPath));
-        _imagePaths6.add(compressedPath);
-      }
-      update();
-    } else if (source == ImageSource.camera) {
-      pickedImage = await picker6.pickImage(source: source);
-      if (pickedImage != null) {
-        // Compress the picked image
-        String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage6.add(XFile(compressedPath));
-        _imagePaths6.add(compressedPath);
-      }
-      update();
-    }
-
-    return _imagePaths6.toString();
-  }
-
-  Future<String> takePhoto7(ImageSource source) async {
-    final ImagePicker picker7 = ImagePicker();
-    List<XFile> selectedImages7 = [];
-    XFile? pickedImage;
-
-    if (source == ImageSource.gallery) {
-      selectedImages7 = await picker7.pickMultiImage();
-      for (var selectedImage7 in selectedImages7) {
-        // Compress each selected image
-        String compressedPath = await compressImage(selectedImage7.path);
-        _multipleImage7.add(XFile(compressedPath));
-        _imagePaths7.add(compressedPath);
-      }
-      update();
-    } else if (source == ImageSource.camera) {
-      pickedImage = await picker7.pickImage(source: source);
-      if (pickedImage != null) {
-        // Compress the picked image
-        String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage7.add(XFile(compressedPath));
-        _imagePaths7.add(compressedPath);
-      }
-      update();
-    }
-
-    return _imagePaths7.toString();
-  }
-
-
-  Future<String> takePhoto8(ImageSource source) async {
-    final ImagePicker picker8 = ImagePicker();
-    List<XFile> selectedImages8 = [];
-    XFile? pickedImage;
-
-    if (source == ImageSource.gallery) {
-      selectedImages8 = await picker8.pickMultiImage();
-      for (var selectedImage8 in selectedImages8) {
-        // Compress each selected image
-        String compressedPath = await compressImage(selectedImage8.path);
-        _multipleImage8.add(XFile(compressedPath));
-        _imagePaths8.add(compressedPath);
-      }
-      update();
-    } else if (source == ImageSource.camera) {
-      pickedImage = await picker8.pickImage(source: source);
-      if (pickedImage != null) {
-        // Compress the picked image
-        String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage8.add(XFile(compressedPath));
-        _imagePaths8.add(compressedPath);
-      }
-      update();
-    }
-
-    return _imagePaths8.toString();
-  }
-
-
-  Future<String> takePhoto9(ImageSource source) async {
-    final ImagePicker picker9 = ImagePicker();
-    List<XFile> selectedImages9 = [];
-    XFile? pickedImage;
-
-    if (source == ImageSource.gallery) {
-      selectedImages9 = await picker9.pickMultiImage();
-      for (var selectedImage9 in selectedImages9) {
-        // Compress each selected image
-        String compressedPath = await compressImage(selectedImage9.path);
-        _multipleImage9.add(XFile(compressedPath));
-        _imagePaths9.add(compressedPath);
-      }
-      update();
-    } else if (source == ImageSource.camera) {
-      pickedImage = await picker9.pickImage(source: source);
-      if (pickedImage != null) {
-        // Compress the picked image
-        String compressedPath = await compressImage(pickedImage.path);
-        _multipleImage9.add(XFile(compressedPath));
-        _imagePaths9.add(compressedPath);
-      }
-      update();
-    }
-
-    return _imagePaths9.toString();
+    return imagePaths.toString();
   }
 
   setSchool(value)
@@ -423,77 +239,7 @@ class FlnObservationController extends GetxController with BaseController{
 
   }
 
-
-
-  Widget bottomSheet(BuildContext context) {
-    String? imagePicked;
-    PickedFile? imageFile;
-    final ImagePicker picker = ImagePicker();
-    XFile? image;
-    return Container(
-      color: AppColors.primary,
-      height: 100,
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 20,
-      ),
-      child: Column(
-        children: <Widget>[
-          const Text(
-            "Select Image",
-            style: TextStyle(fontSize: 20.0, color: Colors.white),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // ignore: deprecated_member_use
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  imagePicked = await takePhoto(ImageSource.camera);
-
-                  // uploadFile(userdata.read('customerID'));
-                  Get.back();
-                  //  update();
-                },
-                child: const Text(
-                  'Camera',
-                  style: TextStyle(
-                      fontSize: 20.0, color: AppColors.primary),
-                ),
-              ),
-              const SizedBox(
-                width: 30,
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  imagePicked = await takePhoto(
-                    ImageSource.gallery,
-                  );
-
-                  Get.back();
-                  //  update();
-                },
-                child: const Text(
-                  'Gallery',
-                  style: TextStyle(
-                      fontSize: 20.0, color: AppColors.primary),
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-
-  Widget bottomSheet2(BuildContext context) {
+  Widget bottomSheet(BuildContext context, int index) {
     return Container(
       color: AppColors.primary,
       height: 100,
@@ -501,7 +247,8 @@ class FlnObservationController extends GetxController with BaseController{
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: <Widget>[
-          const Text("Select Image", style: TextStyle(fontSize: 20.0, color: Colors.white)),
+          const Text("Select Image",
+              style: TextStyle(fontSize: 20.0, color: Colors.white)),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -509,19 +256,21 @@ class FlnObservationController extends GetxController with BaseController{
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
                 onPressed: () async {
-                  await takePhoto2(ImageSource.camera);
+                  await takePhoto(ImageSource.camera, index);
                   Get.back();
                 },
-                child: const Text('Camera', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
+                child: const Text('Camera',
+                    style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
               ),
               const SizedBox(width: 30),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
                 onPressed: () async {
-                  await takePhoto2(ImageSource.gallery);
+                  await takePhoto(ImageSource.gallery, index);
                   Get.back();
                 },
-                child: const Text('Gallery', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
+                child: const Text('Gallery',
+                    style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
               ),
             ],
           ),
@@ -529,269 +278,6 @@ class FlnObservationController extends GetxController with BaseController{
       ),
     );
   }
-
-  Widget bottomSheet3(BuildContext context) {
-    return Container(
-      color: AppColors.primary,
-      height: 100,
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Column(
-        children: <Widget>[
-          const Text("Select Image", style: TextStyle(fontSize: 20.0, color: Colors.white)),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto3(ImageSource.camera);
-                  Get.back();
-                },
-                child: const Text('Camera', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-              const SizedBox(width: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto3(ImageSource.gallery);
-                  Get.back();
-                },
-                child: const Text('Gallery', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget bottomSheet4(BuildContext context) {
-    return Container(
-      color: AppColors.primary,
-      height: 100,
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Column(
-        children: <Widget>[
-          const Text("Select Image", style: TextStyle(fontSize: 20.0, color: Colors.white)),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto4(ImageSource.camera);
-                  Get.back();
-                },
-                child: const Text('Camera', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-              const SizedBox(width: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto4(ImageSource.gallery);
-                  Get.back();
-                },
-                child: const Text('Gallery', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget bottomSheet5(BuildContext context) {
-    return Container(
-      color: AppColors.primary,
-      height: 100,
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Column(
-        children: <Widget>[
-          const Text("Select Image", style: TextStyle(fontSize: 20.0, color: Colors.white)),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto5(ImageSource.camera);
-                  Get.back();
-                },
-                child: const Text('Camera', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-              const SizedBox(width: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto5(ImageSource.gallery);
-                  Get.back();
-                },
-                child: const Text('Gallery', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  Widget bottomSheet6(BuildContext context) {
-    return Container(
-      color: AppColors.primary,
-      height: 100,
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Column(
-        children: <Widget>[
-          const Text("Select Image", style: TextStyle(fontSize: 20.0, color: Colors.white)),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto6(ImageSource.camera);
-                  Get.back();
-                },
-                child: const Text('Camera', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-              const SizedBox(width: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto6(ImageSource.gallery);
-                  Get.back();
-                },
-                child: const Text('Gallery', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  Widget bottomSheet7(BuildContext context) {
-    return Container(
-      color: AppColors.primary,
-      height: 100,
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Column(
-        children: <Widget>[
-          const Text("Select Image", style: TextStyle(fontSize: 20.0, color: Colors.white)),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto7(ImageSource.camera);
-                  Get.back();
-                },
-                child: const Text('Camera', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-              const SizedBox(width: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto7(ImageSource.gallery);
-                  Get.back();
-                },
-                child: const Text('Gallery', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  Widget bottomSheet8(BuildContext context) {
-    return Container(
-      color: AppColors.primary,
-      height: 100,
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Column(
-        children: <Widget>[
-          const Text("Select Image", style: TextStyle(fontSize: 20.0, color: Colors.white)),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto8(ImageSource.camera);
-                  Get.back();
-                },
-                child: const Text('Camera', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-              const SizedBox(width: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto8(ImageSource.gallery);
-                  Get.back();
-                },
-                child: const Text('Gallery', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget bottomSheet9(BuildContext context) {
-    return Container(
-      color: AppColors.primary,
-      height: 100,
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Column(
-        children: <Widget>[
-          const Text("Select Image", style: TextStyle(fontSize: 20.0, color: Colors.white)),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto9(ImageSource.camera);
-                  Get.back();
-                },
-                child: const Text('Camera', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-              const SizedBox(width: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () async {
-                  await takePhoto9(ImageSource.gallery);
-                  Get.back();
-                },
-                child: const Text('Gallery', style: TextStyle(fontSize: 20.0, color: AppColors.primary)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
 
   void showImagePreview(String imagePath, BuildContext context) {
     showDialog(
@@ -809,208 +295,7 @@ class FlnObservationController extends GetxController with BaseController{
               onTap: () {
                 Navigator.pop(context);
               },
-              child: Image.file(
-                File(imagePath),
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-
-  void showImagePreview2(String imagePath2, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.file(File(imagePath2), fit: BoxFit.contain),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void showImagePreview3(String imagePath3, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.file(File(imagePath3), fit: BoxFit.contain),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-
-  void showImagePreview4(String imagePath4, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.file(File(imagePath4), fit: BoxFit.contain),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-
-  void showImagePreview5(String imagePath5, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.file(File(imagePath5), fit: BoxFit.contain),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-
-  void showImagePreview6(String imagePath6, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.file(File(imagePath6), fit: BoxFit.contain),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void showImagePreview7(String imagePath7, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.file(File(imagePath7), fit: BoxFit.contain),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-
-  void showImagePreview8(String imagePath8, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.file(File(imagePath8), fit: BoxFit.contain),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-
-  void showImagePreview9(String imagePath9, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.file(File(imagePath9), fit: BoxFit.contain),
+              child: Image.file(File(imagePath), fit: BoxFit.contain),
             ),
           ),
         );

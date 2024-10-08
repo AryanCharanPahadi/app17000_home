@@ -27,7 +27,6 @@ import 'package:app17000ft_new/components/custom_labeltext.dart';
 import 'package:app17000ft_new/components/custom_sizedBox.dart';
 
 import 'package:app17000ft_new/home/home_screen.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../components/custom_confirmation.dart';
 import 'in_person_quantitative_controller.dart';
@@ -58,10 +57,12 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
   void _addIssue() async {
     final result = await showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Allows BottomSheet to resize when the keyboard pops up
+      isScrollControlled:
+          true, // Allows BottomSheet to resize when the keyboard pops up
       builder: (context) => Padding(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+          bottom:
+              MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
         ),
         child: SingleChildScrollView(
           child: AddIssueBottomSheet(),
@@ -69,10 +70,7 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
       ),
     );
 
-
-
-
-  if (result != null && result is Issue) {
+    if (result != null && result is Issue) {
       setState(() {
         issues.add(result);
       });
@@ -85,7 +83,8 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
     });
   }
 
-  final InPersonQuantitativeController inPersonQuantitativeController = Get.put(InPersonQuantitativeController());
+  final InPersonQuantitativeController inPersonQuantitativeController =
+      Get.put(InPersonQuantitativeController());
 
   List<Participants> participants = [];
   bool showError = false;
@@ -93,7 +92,8 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
 
   void _addParticipants() async {
     int staffAttended = int.tryParse(inPersonQuantitativeController
-        .staafAttendedTrainingController.text) ?? 0;
+            .staafAttendedTrainingController.text) ??
+        0;
 
     if (staffAttended <= 0) {
       setState(() {
@@ -103,14 +103,14 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
       return;
     }
 
-
-
     final result = await showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Allows BottomSheet to resize when the keyboard pops up
+      isScrollControlled:
+          true, // Allows BottomSheet to resize when the keyboard pops up
       builder: (context) => Padding(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+          bottom:
+              MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
         ),
         child: SingleChildScrollView(
           child: AddParticipantsBottomSheet(
@@ -152,7 +152,8 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                           SizedBox(height: 10),
                           Text(
                             'Invalid',
-                            style: const TextStyle(color: Colors.white, fontSize: 20),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 20),
                           ),
                           SizedBox(height: 10),
                         ],
@@ -164,7 +165,8 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                         children: <Widget>[
                           Text(
                             message,
-                            style: const TextStyle(color: Colors.black, fontSize: 16),
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 16),
                           ),
                         ],
                       ),
@@ -207,13 +209,12 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
       );
     }
 
-
     if (result != null && result is Participants) {
       setState(() {
         if (result.designation == 'DigiLab Admin') {
           // Check if "DigiLab Admin" already exists
           int existingIndex =
-          participants.indexWhere((p) => p.designation == 'DigiLab Admin');
+              participants.indexWhere((p) => p.designation == 'DigiLab Admin');
           if (existingIndex >= 0) {
             // Show error dialog if trying to add another "DigiLab Admin"
             _showErrorDialog(
@@ -254,7 +255,8 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
 
   void _onNextPressed() {
     int staffAttended = int.tryParse(inPersonQuantitativeController
-        .staafAttendedTrainingController.text) ?? 0;
+            .staafAttendedTrainingController.text) ??
+        0;
 
     // Check if staff attended is greater than 0
     if (staffAttended <= 0) {
@@ -266,7 +268,6 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
     }
     // Check if the number of participants matches the number of staff attended
 
-
     // Reset error and proceed to the next step if checks are passed
     setState(() {
       showError = false;
@@ -276,24 +277,9 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
     });
   }
 
-
-
 // make this code that if user fill 0 in the staff attendend in the training then show error
   bool _isImageUploaded = false;
   bool validateRegister = false;
-  final ImagePicker _picker = ImagePicker();
-  List<File> _imageFiles = [];
-
-  Future<void> _pickImageFromCamera() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFiles.add(File(pickedFile.path));
-        _isImageUploaded = true;
-        validateRegister = false; // Reset error state
-      });
-    }
-  }
 
   bool _isImageUploaded2 = false;
   bool validateRegister2 = false;
@@ -327,7 +313,7 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                   title: 'Exit Confirmation',
                   yes: 'Yes',
                   no: 'no',
-                  desc: 'Are you sure you want to leave this screen?',
+                  desc: 'Are you sure you want to leave exit?',
                   onPressed: () async {
                     Navigator.of(context).pop(true);
                   }));
@@ -357,7 +343,8 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                   }
 
                                   return Column(children: [
-                                    if (inPersonQuantitativeController.showBasicDetails) ...[
+                                    if (inPersonQuantitativeController
+                                        .showBasicDetails) ...[
                                       LabelText(
                                         label: 'Basic Details',
                                       ),
@@ -374,24 +361,36 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                         side: 'height',
                                       ),
                                       CustomDropdownFormField(
-                                        focusNode: inPersonQuantitativeController.tourIdFocusNode,
+                                        focusNode:
+                                            inPersonQuantitativeController
+                                                .tourIdFocusNode,
                                         options: tourController.getLocalTourList
-                                            .map((e) => e.tourId!) // Ensure tourId is non-nullable
+                                            .map((e) => e
+                                                .tourId!) // Ensure tourId is non-nullable
                                             .toList(),
-                                        selectedOption: inPersonQuantitativeController.tourValue,
+                                        selectedOption:
+                                            inPersonQuantitativeController
+                                                .tourValue,
                                         onChanged: (value) {
                                           // Safely handle the school list splitting by commas
-                                          inPersonQuantitativeController.splitSchoolLists = tourController
-                                              .getLocalTourList
-                                              .where((e) => e.tourId == value)
-                                              .map((e) => e.allSchool!.split(',').map((s) => s.trim()).toList())
-                                              .expand((x) => x)
-                                              .toList();
+                                          inPersonQuantitativeController
+                                                  .splitSchoolLists =
+                                              tourController.getLocalTourList
+                                                  .where(
+                                                      (e) => e.tourId == value)
+                                                  .map((e) => e.allSchool!
+                                                      .split(',')
+                                                      .map((s) => s.trim())
+                                                      .toList())
+                                                  .expand((x) => x)
+                                                  .toList();
 
                                           // Single setState call for efficiency
                                           setState(() {
-                                            inPersonQuantitativeController.setSchool(null);
-                                            inPersonQuantitativeController.setTour(value);
+                                            inPersonQuantitativeController
+                                                .setSchool(null);
+                                            inPersonQuantitativeController
+                                                .setTour(value);
                                           });
                                         },
                                         labelText: "Select Tour ID",
@@ -419,11 +418,16 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                         popupProps: PopupProps.menu(
                                           showSelectedItems: true,
                                           showSearchBox: true,
-                                          disabledItemFn: (String s) => s.startsWith('I'), // Disable based on condition
+                                          disabledItemFn: (String s) =>
+                                              s.startsWith(
+                                                  'I'), // Disable based on condition
                                         ),
-                                        items: inPersonQuantitativeController.splitSchoolLists, // Split school list as strings
-                                        dropdownDecoratorProps: const DropDownDecoratorProps(
-                                          dropdownSearchDecoration: InputDecoration(
+                                        items: inPersonQuantitativeController
+                                            .splitSchoolLists, // Split school list as strings
+                                        dropdownDecoratorProps:
+                                            const DropDownDecoratorProps(
+                                          dropdownSearchDecoration:
+                                              InputDecoration(
                                             labelText: "Select School",
                                             hintText: "Select School",
                                           ),
@@ -431,10 +435,13 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                         onChanged: (value) {
                                           // Set the selected school
                                           setState(() {
-                                            inPersonQuantitativeController.setSchool(value);
+                                            inPersonQuantitativeController
+                                                .setSchool(value);
                                           });
                                         },
-                                        selectedItem: inPersonQuantitativeController.schoolValue,
+                                        selectedItem:
+                                            inPersonQuantitativeController
+                                                .schoolValue,
                                       ),
                                       CustomSizedBox(
                                         value: 20,
@@ -592,7 +599,7 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                                   builder: ((builder) =>
                                                       inPersonQuantitativeController
                                                           .bottomSheet(
-                                                              context)));
+                                                              context, 1)));
                                             }),
                                       ),
                                       ErrorText(
@@ -1598,15 +1605,22 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                       ),
                                       CustomSizedBox(value: 20, side: 'height'),
 
-                                      LabelText(label: '1. How many staff attended the training?', astrick: true),
+                                      LabelText(
+                                          label:
+                                              '1. How many staff attended the training?',
+                                          astrick: true),
                                       CustomSizedBox(value: 20, side: 'height'),
                                       CustomTextFormField(
-                                        textController: inPersonQuantitativeController.staafAttendedTrainingController,
+                                        textController:
+                                            inPersonQuantitativeController
+                                                .staafAttendedTrainingController,
                                         labelText: 'Number of Staffs',
                                         textInputType: TextInputType.number,
                                         inputFormatters: [
-                                          LengthLimitingTextInputFormatter(3), // Limit to 3 digits
-                                          FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                                          LengthLimitingTextInputFormatter(
+                                              3), // Limit to 3 digits
+                                          FilteringTextInputFormatter
+                                              .digitsOnly, // Allow only digits
                                         ],
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
@@ -1617,51 +1631,70 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                           }
                                           return null; // No error
                                         },
-                                        onChanged: _handleStaffAttendedChange, // Update state on change
+                                        onChanged:
+                                            _handleStaffAttendedChange, // Update state on change
                                         showCharacterCount: true,
                                       ),
                                       CustomSizedBox(value: 20, side: 'height'),
-                                      if (int.tryParse(inPersonQuantitativeController.staafAttendedTrainingController.text) != null &&
-                                          int.tryParse(inPersonQuantitativeController.staafAttendedTrainingController.text)! > 0)
-                                        ...[
-                                          Row(
-                                            children: [
-                                              LabelText(label: '1.1 Add Participants Details'),
-                                              CustomSizedBox(value: 10, side: 'width'),
-                                              IconButton(
-                                                icon: const Icon(Icons.add),
-                                                iconSize: 40,
-                                                color: Color.fromARGB(255, 141, 13, 21),
-                                                onPressed: _addParticipants, // Trigger add participants function
+                                      if (int.tryParse(
+                                                  inPersonQuantitativeController
+                                                      .staafAttendedTrainingController
+                                                      .text) !=
+                                              null &&
+                                          int.tryParse(
+                                                  inPersonQuantitativeController
+                                                      .staafAttendedTrainingController
+                                                      .text)! >
+                                              0) ...[
+                                        Row(
+                                          children: [
+                                            LabelText(
+                                                label:
+                                                    '1.1 Add Participants Details'),
+                                            CustomSizedBox(
+                                                value: 10, side: 'width'),
+                                            IconButton(
+                                              icon: const Icon(Icons.add),
+                                              iconSize: 40,
+                                              color: Color.fromARGB(
+                                                  255, 141, 13, 21),
+                                              onPressed:
+                                                  _addParticipants, // Trigger add participants function
+                                            ),
+                                          ],
+                                        ),
+                                        CustomSizedBox(
+                                            value: 20, side: 'height'),
+                                        participants.isEmpty
+                                            ? const Center(
+                                                child: Text('No records'))
+                                            : ListView.builder(
+                                                shrinkWrap:
+                                                    true, // Use space efficiently
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(), // Disable scrolling
+                                                itemCount: participants.length,
+                                                itemBuilder: (context, index) {
+                                                  return ListTile(
+                                                    title: Text(
+                                                      '${index + 1}. Name: ${participants[index].nameOfParticipants}\n    Designation: ${participants[index].designation}',
+                                                    ),
+                                                    trailing: IconButton(
+                                                      icon: const Icon(
+                                                          Icons.delete),
+                                                      color: Colors
+                                                          .red, // Set the icon color to red
+                                                      onPressed: () =>
+                                                          _deleteParticipants(
+                                                              index), // Delete participant
+                                                    ),
+                                                  );
+                                                },
                                               ),
-                                            ],
-                                          ),
-                                          CustomSizedBox(value: 20, side: 'height'),
-                                          participants.isEmpty
-                                              ? const Center(child: Text('No records'))
-                                              : ListView.builder(
-                                            shrinkWrap: true, // Use space efficiently
-                                            physics: const NeverScrollableScrollPhysics(), // Disable scrolling
-                                            itemCount: participants.length,
-                                            itemBuilder: (context, index) {
-                                              return ListTile(
-                                                title: Text(
-                                                  '${index + 1}. Name: ${participants[index].nameOfParticipants}\n    Designation: ${participants[index].designation}',
-                                                ),
-                                                trailing: IconButton(
-                                                  icon: const Icon(Icons.delete),
-                                                  color: Colors.red, // Set the icon color to red
-                                                  onPressed: () => _deleteParticipants(index), // Delete participant
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                          CustomSizedBox(value: 20, side: 'height'),
-                                          // Show error if participants count does not match staff attended
-
-
-
-                                    ],
+                                        CustomSizedBox(
+                                            value: 20, side: 'height'),
+                                        // Show error if participants count does not match staff attended
+                                      ],
                                       CustomSizedBox(
                                         value: 20,
                                         side: 'height',
@@ -1681,39 +1714,38 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                           borderRadius:
                                               BorderRadius.circular(10.0),
                                           border: Border.all(
-                                              width: 2,
-                                              color: _isImageUploaded2 == false
-                                                  ? AppColors.primary
-                                                  : AppColors.error),
+                                            width: 2,
+                                            color: _isImageUploaded2 == false
+                                                ? AppColors.primary
+                                                : AppColors.error,
+                                          ),
                                         ),
                                         child: ListTile(
-                                            title: _isImageUploaded2 == false
-                                                ? const Text(
-                                                    'Click or Upload Image',
-                                                  )
-                                                : const Text(
-                                                    'Click or Upload Image',
-                                                    style: TextStyle(
-                                                        color: AppColors.error),
-                                                  ),
-                                            trailing: const Icon(
-                                                Icons.camera_alt,
-                                                color: AppColors.onBackground),
-                                            onTap: () {
-                                              showModalBottomSheet(
-                                                  backgroundColor:
-                                                      AppColors.primary,
-                                                  context: context,
-                                                  builder: ((builder) =>
-                                                      inPersonQuantitativeController
-                                                          .bottomSheet2(
-                                                              context)));
-                                            }),
+                                          title: Text(
+                                            'Click or Upload Image',
+                                            style: TextStyle(
+                                              color: _isImageUploaded2 == false
+                                                  ? Colors.black
+                                                  : AppColors.error,
+                                            ),
+                                          ),
+                                          trailing: const Icon(Icons.camera_alt,
+                                              color: AppColors.onBackground),
+                                          onTap: () {
+                                            showModalBottomSheet(
+                                              backgroundColor:
+                                                  AppColors.primary,
+                                              context: context,
+                                              builder: (builder) =>
+                                                  inPersonQuantitativeController
+                                                      .bottomSheet(context, 2),
+                                            );
+                                          },
+                                        ),
                                       ),
                                       ErrorText(
                                         isVisible: validateRegister2,
-                                        message:
-                                            'library Register Image Required',
+                                        message: 'Image Required',
                                       ),
                                       CustomSizedBox(
                                         value: 20,
@@ -1723,91 +1755,80 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                               .multipleImage2.isNotEmpty
                                           ? Container(
                                               width: responsive.responsiveValue(
-                                                  small: 600.0,
-                                                  medium: 900.0,
-                                                  large: 1400.0),
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
+                                              ),
                                               height:
                                                   responsive.responsiveValue(
-                                                      small: 170.0,
-                                                      medium: 170.0,
-                                                      large: 170.0),
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
                                               decoration: BoxDecoration(
                                                 border: Border.all(
                                                     color: Colors.grey),
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                               ),
-                                              child:
-                                                  inPersonQuantitativeController
-                                                          .multipleImage2
-                                                          .isEmpty
-                                                      ? const Center(
-                                                          child: Text(
-                                                              'No images selected.'),
-                                                        )
-                                                      : ListView.builder(
-                                                          scrollDirection:
-                                                              Axis.horizontal,
-                                                          itemCount:
+                                              child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount:
+                                                    inPersonQuantitativeController
+                                                        .multipleImage2.length,
+                                                itemBuilder: (context, index) {
+                                                  return SizedBox(
+                                                    height: 200,
+                                                    width: 200,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview
+                                                                  .showImagePreview(
+                                                                inPersonQuantitativeController
+                                                                    .multipleImage2[
+                                                                        index]
+                                                                    .path,
+                                                                context,
+                                                              );
+                                                            },
+                                                            child: Image.file(
+                                                              File(inPersonQuantitativeController
+                                                                  .multipleImage2[
+                                                                      index]
+                                                                  .path),
+                                                              width: 190,
+                                                              height: 120,
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            setState(() {
                                                               inPersonQuantitativeController
                                                                   .multipleImage2
-                                                                  .length,
-                                                          itemBuilder:
-                                                              (context, index) {
-                                                            return SizedBox(
-                                                              height: 200,
-                                                              width: 200,
-                                                              child: Column(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                    child:
-                                                                        GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        CustomImagePreview2.showImagePreview2(
-                                                                            inPersonQuantitativeController.multipleImage2[index].path,
-                                                                            context);
-                                                                      },
-                                                                      child: Image
-                                                                          .file(
-                                                                        File(inPersonQuantitativeController
-                                                                            .multipleImage2[index]
-                                                                            .path),
-                                                                        width:
-                                                                            190,
-                                                                        height:
-                                                                            120,
-                                                                        fit: BoxFit
-                                                                            .fill,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  GestureDetector(
-                                                                    onTap: () {
-                                                                      setState(
-                                                                          () {
-                                                                        inPersonQuantitativeController
-                                                                            .multipleImage2
-                                                                            .removeAt(index);
-                                                                      });
-                                                                    },
-                                                                    child:
-                                                                        const Icon(
-                                                                      Icons
-                                                                          .delete,
-                                                                      color: Colors
-                                                                          .red,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            );
+                                                                  .removeAt(
+                                                                      index);
+                                                            });
                                                           },
+                                                          child: const Icon(
+                                                            Icons.delete,
+                                                            color: Colors.red,
+                                                          ),
                                                         ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
                                             )
                                           : const SizedBox(),
 
@@ -1967,7 +1988,6 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                           maxlines: 2,
                                           labelText:
                                               'Please Specify what the other topics',
-
                                           validator: (value) {
                                             if (value!.isEmpty) {
                                               return 'Please fill this field';
@@ -2034,8 +2054,8 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                                         'practicalDemo', value);
                                                 if (value == 'No') {
                                                   inPersonQuantitativeController
-                                                      .reasonForNotGivenpracticalDemoController.clear();
-
+                                                      .reasonForNotGivenpracticalDemoController
+                                                      .clear();
                                                 }
                                               },
                                             ),
@@ -2133,8 +2153,9 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                                       '${index + 1}. Issue: ${issues[index].issue}\n    Resolution: ${issues[index].resolution}'),
                                                   trailing: IconButton(
                                                     icon: const Icon(
-                                                        Icons.delete,
-                                                      color: Colors.red, // Set the icon color to red
+                                                      Icons.delete,
+                                                      color: Colors
+                                                          .red, // Set the icon color to red
                                                     ),
                                                     onPressed: () =>
                                                         _deleteIssue(index),
@@ -2185,16 +2206,23 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                             title: 'Next',
                                             onPressedButton: () {
                                               _onNextPressed;
-                                              final totalStaff = int.tryParse(inPersonQuantitativeController.staafAttendedTrainingController.text) ?? 0;
+                                              final totalStaff = int.tryParse(
+                                                      inPersonQuantitativeController
+                                                          .staafAttendedTrainingController
+                                                          .text) ??
+                                                  0;
 
                                               // Check if the number of participants is equal to the total staff attended
-                                              if (participants.length != totalStaff) {
+                                              if (participants.length !=
+                                                  totalStaff) {
                                                 // Show an error message if they do not match
                                                 customSnackbar(
                                                   'Error', // Title
                                                   'The number of participants must equal the number of staff attended.', // Subtitle
-                                                  AppColors.error, // Background color, you can replace it with your preferred color
-                                                  AppColors.onPrimary, // Text color
+                                                  AppColors
+                                                      .error, // Background color, you can replace it with your preferred color
+                                                  AppColors
+                                                      .onPrimary, // Text color
                                                   Icons.error, // Icon
                                                 );
                                                 return; // Exit the function if the counts do not match
@@ -2232,7 +2260,6 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                                   inPersonQuantitativeController
                                                       .validateRadioSelection(
                                                           'practicalDemo');
-
 
                                               // Validate the form and other conditions
                                               if (_formKey.currentState!
@@ -2608,8 +2635,9 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                                     .setRadioValue(
                                                         'digiLabLog', value);
                                                 if (value == 'No') {
-                                                  inPersonQuantitativeController.clearRadioValue('logFilled');
-
+                                                  inPersonQuantitativeController
+                                                      .clearRadioValue(
+                                                          'logFilled');
                                                 }
                                               },
                                             ),
@@ -2832,11 +2860,12 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                                     .setRadioValue(
                                                         'facilatorApp', value);
                                                 if (value == 'No') {
-                                                  inPersonQuantitativeController.howOftenDataBeingSyncedController.clear();
                                                   inPersonQuantitativeController
-                                                      .dateController.clear();
-
-
+                                                      .howOftenDataBeingSyncedController
+                                                      .clear();
+                                                  inPersonQuantitativeController
+                                                      .dateController
+                                                      .clear();
                                                 }
                                               },
                                             ),
@@ -3111,8 +3140,9 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                                     .setRadioValue(
                                                         'libTmeTable', value);
                                                 if (value == 'No') {
-                                                  inPersonQuantitativeController.clearRadioValue('followedTimeTable');
-
+                                                  inPersonQuantitativeController
+                                                      .clearRadioValue(
+                                                          'followedTimeTable');
                                                 }
                                               },
                                             ),
@@ -3300,7 +3330,6 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                                 .additionalObservationOnLibraryController,
                                         maxlines: 2,
                                         labelText: 'Write Comments if any',
-
                                         showCharacterCount: true,
                                       ),
                                       CustomSizedBox(
@@ -3700,28 +3729,22 @@ class _InPersonQuantitativeState extends State<InPersonQuantitative> {
                                                   if (result > 0) {
                                                     inPersonQuantitativeController
                                                         .clearFields();
-                                                    setState(() {
-                                                      _imageFiles =
-                                                          []; // Clear the image list
-                                                    });
 
-                                                    String jsonData1 =
-                                                    jsonEncode(
+                                                    String jsonData1 = jsonEncode(
                                                         enrolmentCollectionObj
                                                             .toJson());
 
                                                     try {
                                                       JsonFileDownloader
-                                                      downloader =
-                                                      JsonFileDownloader();
-                                                      String? filePath = await downloader
-                                                          .downloadJsonFile(
+                                                          downloader =
+                                                          JsonFileDownloader();
+                                                      String? filePath =
+                                                          await downloader
+                                                              .downloadJsonFile(
                                                         jsonData1,
                                                         uniqueId,
                                                         imgPathFiles,
                                                         training_picFiles,
-
-
                                                       );
                                                       // Notify user of success
                                                       customSnackbar(
@@ -3969,6 +3992,7 @@ class _AddIssueBottomSheetState extends State<AddIssueBottomSheet> {
     );
   }
 }
+
 class Participants {
   String nameOfParticipants;
   String designation;
@@ -3990,7 +4014,7 @@ class _AddParticipantsBottomSheetState
     extends State<AddParticipantsBottomSheet> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final InPersonQuantitativeController inPersonQuantitativeController =
-  Get.put(InPersonQuantitativeController());
+      Get.put(InPersonQuantitativeController());
   String? _selectedDesignation;
 
   @override
@@ -4000,7 +4024,6 @@ class _AddParticipantsBottomSheetState
       _selectedDesignation =
           widget.existingRoles.first; // Default to the first role for editing
       _selectedDesignation = null;
-
     }
   }
 
@@ -4018,7 +4041,7 @@ class _AddParticipantsBottomSheetState
               CustomSizedBox(value: 20, side: 'height'),
               CustomTextFormField(
                 textController:
-                inPersonQuantitativeController.participantsNameController,
+                    inPersonQuantitativeController.participantsNameController,
                 labelText: 'Participants Name',
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -4080,7 +4103,8 @@ class _AddParticipantsBottomSheetState
                     );
 
                     // Clear the text field and reset designation
-                    inPersonQuantitativeController.participantsNameController.clear();
+                    inPersonQuantitativeController.participantsNameController
+                        .clear();
                     setState(() {
                       _selectedDesignation = null; // Clear selected designation
                     });
@@ -4099,17 +4123,14 @@ class _AddParticipantsBottomSheetState
 
 // Function to save JSON data to a file
 
-
 class JsonFileDownloader {
   // Method to download JSON data to the Downloads directory
   Future<String?> downloadJsonFile(
-      String jsonData,
-      String uniqueId,
-      List<File> imgPathFiles,
-      List<File> training_picFiles,
-
-
-      ) async {
+    String jsonData,
+    String uniqueId,
+    List<File> imgPathFiles,
+    List<File> training_picFiles,
+  ) async {
     // Check for storage permission
     PermissionStatus permissionStatus = await Permission.storage.status;
 
@@ -4139,10 +4160,10 @@ class JsonFileDownloader {
         // Convert images to Base64 for each image list
         Map<String, dynamic> jsonObject = jsonDecode(jsonData);
 
-        jsonObject['base64_imagePathFiles'] = await _convertImagesToBase64(imgPathFiles);
-        jsonObject['base64_training_picFiles'] = await _convertImagesToBase64(training_picFiles);
-
-
+        jsonObject['base64_imagePathFiles'] =
+            await _convertImagesToBase64(imgPathFiles);
+        jsonObject['base64_training_picFiles'] =
+            await _convertImagesToBase64(training_picFiles);
 
         // Write the updated JSON data to the file
         await file.writeAsString(jsonEncode(jsonObject));

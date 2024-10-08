@@ -994,7 +994,7 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                   title: 'Exit Confirmation',
                   yes: 'Yes',
                   no: 'no',
-                  desc: 'Are you sure you want to leave this screen?',
+                  desc: 'Are you sure you want to leave exit?',
                   onPressed: () async {
                     Navigator.of(context).pop(true);
                   }));
@@ -1272,8 +1272,8 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                       context: context,
                                                       builder: ((builder) =>
                                                           schoolRecceController
-                                                              .bottomSheet(
-                                                              context)));
+                                                              .bottomSheet2(
+                                                              context,1)));
                                                 }),
                                           ),
                                           ErrorText(
@@ -1391,133 +1391,95 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: schoolRecceController
-                                                      .isImageUploadedSchoolBuilding ==
-                                                      false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: schoolRecceController
+                                                    .isImageUploadedSchoolBuilding  == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title: schoolRecceController
-                                                    .isImageUploadedSchoolBuilding ==
-                                                    false
-                                                    ? const Text(
-                                                  'Click or Upload Image',
-                                                )
-                                                    : const Text(
-                                                  'Click or Upload Image',
-                                                  style: TextStyle(
-                                                      color: AppColors
-                                                          .error),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color:  schoolRecceController
+                                                      .isImageUploadedSchoolBuilding  == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
                                                 ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                    AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                      AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          schoolRecceController
-                                                              .bottomSheet2(
-                                                              context)));
-                                                }),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => schoolRecceController.bottomSheet(context, 2),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: schoolRecceController
                                                 .validateSchoolBuilding,
-                                            message: 'Building Image Required',
+                                            message: 'Image Required',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          schoolRecceController
-                                              .multipleImage2.isNotEmpty
+                                          schoolRecceController.multipleImage2.isNotEmpty
                                               ? Container(
-                                            width: responsive
-                                                .responsiveValue(
-                                                small: 600.0,
-                                                medium: 900.0,
-                                                large: 1400.0),
-                                            height: responsive
-                                                .responsiveValue(
-                                                small: 170.0,
-                                                medium: 170.0,
-                                                large: 170.0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey),
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
                                             ),
-                                            child:
-                                            schoolRecceController
-                                                .multipleImage2
-                                                .isEmpty
-                                                ? const Center(
-                                              child: Text(
-                                                  'No images selected.'),
-                                            )
-                                                : ListView.builder(
-                                              scrollDirection:
-                                              Axis.horizontal,
-                                              itemCount:
-                                              schoolRecceController
-                                                  .multipleImage2
-                                                  .length,
-                                              itemBuilder:
-                                                  (context,
-                                                  index) {
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: schoolRecceController.multipleImage2.length,
+                                              itemBuilder: (context, index) {
                                                 return SizedBox(
                                                   height: 200,
                                                   width: 200,
                                                   child: Column(
                                                     children: [
                                                       Padding(
-                                                        padding: const EdgeInsets
-                                                            .all(
-                                                            8.0),
-                                                        child:
-                                                        GestureDetector(
-                                                          onTap:
-                                                              () {
-                                                            CustomImagePreview2.showImagePreview2(schoolRecceController.multipleImage2[index].path,
-                                                                context);
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              schoolRecceController.multipleImage2[index].path,
+                                                              context,
+                                                            );
                                                           },
-                                                          child:
-                                                          Image.file(
+                                                          child: Image.file(
                                                             File(schoolRecceController.multipleImage2[index].path),
-                                                            width:
-                                                            190,
-                                                            height:
-                                                            120,
-                                                            fit:
-                                                            BoxFit.fill,
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
                                                           ),
                                                         ),
                                                       ),
                                                       GestureDetector(
-                                                        onTap:
-                                                            () {
-                                                          setState(
-                                                                  () {
-                                                                schoolRecceController.multipleImage2.removeAt(index);
-                                                              });
+                                                        onTap: () {
+                                                          setState(() {
+                                                            schoolRecceController.multipleImage2.removeAt(index);
+                                                          });
                                                         },
-                                                        child:
-                                                        const Icon(
-                                                          Icons
-                                                              .delete,
-                                                          color:
-                                                          Colors.red,
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
                                                         ),
                                                       ),
                                                     ],
@@ -2115,133 +2077,95 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: schoolRecceController
-                                                      .isImageUploadedTeacherRegister ==
-                                                      false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: schoolRecceController
+                                                    .isImageUploadedTeacherRegister == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title: schoolRecceController
-                                                    .isImageUploadedTeacherRegister ==
-                                                    false
-                                                    ? const Text(
-                                                  'Click or Upload Image',
-                                                )
-                                                    : const Text(
-                                                  'Click or Upload Image',
-                                                  style: TextStyle(
-                                                      color: AppColors
-                                                          .error),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: schoolRecceController
+                                                      .isImageUploadedTeacherRegister == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
                                                 ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                    AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                      AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          schoolRecceController
-                                                              .bottomSheet3(
-                                                              context)));
-                                                }),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => schoolRecceController.bottomSheet(context, 3),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: schoolRecceController
                                                 .validateTeacherRegister,
-                                            message: 'Register Image Required',
+                                            message: 'Image Required',
                                           ),
                                           CustomSizedBox(
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          schoolRecceController
-                                              .multipleImage3.isNotEmpty
+                                          schoolRecceController.multipleImage3.isNotEmpty
                                               ? Container(
-                                            width: responsive
-                                                .responsiveValue(
-                                                small: 600.0,
-                                                medium: 900.0,
-                                                large: 1400.0),
-                                            height: responsive
-                                                .responsiveValue(
-                                                small: 170.0,
-                                                medium: 170.0,
-                                                large: 170.0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey),
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
                                             ),
-                                            child:
-                                            schoolRecceController
-                                                .multipleImage3
-                                                .isEmpty
-                                                ? const Center(
-                                              child: Text(
-                                                  'No images selected.'),
-                                            )
-                                                : ListView.builder(
-                                              scrollDirection:
-                                              Axis.horizontal,
-                                              itemCount:
-                                              schoolRecceController
-                                                  .multipleImage3
-                                                  .length,
-                                              itemBuilder:
-                                                  (context,
-                                                  index) {
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: schoolRecceController.multipleImage3.length,
+                                              itemBuilder: (context, index) {
                                                 return SizedBox(
                                                   height: 200,
                                                   width: 200,
                                                   child: Column(
                                                     children: [
                                                       Padding(
-                                                        padding: const EdgeInsets
-                                                            .all(
-                                                            8.0),
-                                                        child:
-                                                        GestureDetector(
-                                                          onTap:
-                                                              () {
-                                                            CustomImagePreview3.showImagePreview3(schoolRecceController.multipleImage3[index].path,
-                                                                context);
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              schoolRecceController.multipleImage3[index].path,
+                                                              context,
+                                                            );
                                                           },
-                                                          child:
-                                                          Image.file(
+                                                          child: Image.file(
                                                             File(schoolRecceController.multipleImage3[index].path),
-                                                            width:
-                                                            190,
-                                                            height:
-                                                            120,
-                                                            fit:
-                                                            BoxFit.fill,
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
                                                           ),
                                                         ),
                                                       ),
                                                       GestureDetector(
-                                                        onTap:
-                                                            () {
-                                                          setState(
-                                                                  () {
-                                                                schoolRecceController.multipleImage3.removeAt(index);
-                                                              });
+                                                        onTap: () {
+                                                          setState(() {
+                                                            schoolRecceController.multipleImage3.removeAt(index);
+                                                          });
                                                         },
-                                                        child:
-                                                        const Icon(
-                                                          Icons
-                                                              .delete,
-                                                          color:
-                                                          Colors.red,
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
                                                         ),
                                                       ),
                                                     ],
@@ -3131,46 +3055,37 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             Container(
                                               height: 60,
                                               decoration: BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(10.0),
                                                 border: Border.all(
-                                                    width: 2,
-                                                    color: schoolRecceController
-                                                        .isImageUploadedSmartClass ==
-                                                        false
-                                                        ? AppColors.primary
-                                                        : AppColors.error),
+                                                  width: 2,
+                                                  color: schoolRecceController
+                                                      .isImageUploadedSmartClass == false
+                                                      ? AppColors.primary
+                                                      : AppColors.error,
+                                                ),
                                               ),
                                               child: ListTile(
-                                                  title: schoolRecceController
-                                                      .isImageUploadedSmartClass ==
-                                                      false
-                                                      ? const Text(
-                                                    'Click or Upload Image',
-                                                  )
-                                                      : const Text(
-                                                    'Click or Upload Image',
-                                                    style: TextStyle(
-                                                        color: AppColors
-                                                            .error),
+                                                title: Text(
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                    color: schoolRecceController
+                                                        .isImageUploadedSmartClass == false
+                                                        ? Colors.black
+                                                        : AppColors.error,
                                                   ),
-                                                  trailing: const Icon(
-                                                      Icons.camera_alt,
-                                                      color: AppColors
-                                                          .onBackground),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                        AppColors.primary,
-                                                        context: context,
-                                                        builder: ((builder) =>
-                                                            schoolRecceController
-                                                                .bottomSheet4(
-                                                                context)));
-                                                  }),
+                                                ),
+                                                trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    backgroundColor: AppColors.primary,
+                                                    context: context,
+                                                    builder: (builder) => schoolRecceController.bottomSheet(context, 4),
+                                                  );
+                                                },
+                                              ),
                                             ),
                                             ErrorText(
-                                              isVisible: schoolRecceController
+                                              isVisible:schoolRecceController
                                                   .validateSmartClass,
                                               message: 'Image Required',
                                             ),
@@ -3178,62 +3093,41 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            schoolRecceController
-                                                .multipleImage4.isNotEmpty
+                                            schoolRecceController.multipleImage4.isNotEmpty
                                                 ? Container(
-                                              width: responsive
-                                                  .responsiveValue(
-                                                  small: 600.0,
-                                                  medium: 900.0,
-                                                  large: 1400.0),
-                                              height: responsive
-                                                  .responsiveValue(
-                                                  small: 170.0,
-                                                  medium: 170.0,
-                                                  large: 170.0),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    10),
+                                              width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
                                               ),
-                                              child:
-                                              schoolRecceController
-                                                  .multipleImage4
-                                                  .isEmpty
-                                                  ? const Center(
-                                                child: Text(
-                                                    'No images selected.'),
-                                              )
-                                                  : ListView.builder(
-                                                scrollDirection:
-                                                Axis.horizontal,
-                                                itemCount:
-                                                schoolRecceController
-                                                    .multipleImage4
-                                                    .length,
-                                                itemBuilder:
-                                                    (context,
-                                                    index) {
+                                              height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: schoolRecceController.multipleImage4.length,
+                                                itemBuilder: (context, index) {
                                                   return SizedBox(
                                                     height: 200,
                                                     width: 200,
-                                                    child:
-                                                    Column(
+                                                    child: Column(
                                                       children: [
                                                         Padding(
-                                                          padding: const EdgeInsets
-                                                              .all(
-                                                              8.0),
-                                                          child:
-                                                          GestureDetector(
-                                                            onTap:
-                                                                () {
-                                                              CustomImagePreview4.showImagePreview4(schoolRecceController.multipleImage4[index].path, context);
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview.showImagePreview(
+                                                                schoolRecceController.multipleImage4[index].path,
+                                                                context,
+                                                              );
                                                             },
-                                                            child:
-                                                            Image.file(
+                                                            child: Image.file(
                                                               File(schoolRecceController.multipleImage4[index].path),
                                                               width: 190,
                                                               height: 120,
@@ -3242,17 +3136,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                           ),
                                                         ),
                                                         GestureDetector(
-                                                          onTap:
-                                                              () {
+                                                          onTap: () {
                                                             setState(() {
                                                               schoolRecceController.multipleImage4.removeAt(index);
                                                             });
                                                           },
-                                                          child:
-                                                          const Icon(
+                                                          child: const Icon(
                                                             Icons.delete,
-                                                            color:
-                                                            Colors.red,
+                                                            color: Colors.red,
                                                           ),
                                                         ),
                                                       ],
@@ -3281,109 +3172,79 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             Container(
                                               height: 60,
                                               decoration: BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(10.0),
                                                 border: Border.all(
-                                                    width: 2,
-                                                    color: schoolRecceController
-                                                        .isImageUploadedProjector ==
-                                                        false
-                                                        ? AppColors.primary
-                                                        : AppColors.error),
+                                                  width: 2,
+                                                  color:schoolRecceController
+                                                      .isImageUploadedSmartClass == false
+                                                      ? AppColors.primary
+                                                      : AppColors.error,
+                                                ),
                                               ),
                                               child: ListTile(
-                                                  title: schoolRecceController
-                                                      .isImageUploadedProjector ==
-                                                      false
-                                                      ? const Text(
-                                                    'Click or Upload Image',
-                                                  )
-                                                      : const Text(
-                                                    'Click or Upload Image',
-                                                    style: TextStyle(
-                                                        color: AppColors
-                                                            .error),
+                                                title: Text(
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                    color: schoolRecceController
+                                                        .isImageUploadedSmartClass == false
+                                                        ? Colors.black
+                                                        : AppColors.error,
                                                   ),
-                                                  trailing: const Icon(
-                                                      Icons.camera_alt,
-                                                      color: AppColors
-                                                          .onBackground),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                        AppColors.primary,
-                                                        context: context,
-                                                        builder: ((builder) =>
-                                                            schoolRecceController
-                                                                .bottomSheet5(
-                                                                context)));
-                                                  }),
+                                                ),
+                                                trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    backgroundColor: AppColors.primary,
+                                                    context: context,
+                                                    builder: (builder) => schoolRecceController.bottomSheet(context, 5),
+                                                  );
+                                                },
+                                              ),
                                             ),
                                             ErrorText(
                                               isVisible: schoolRecceController
-                                                  .validateProjector,
+                                                  .validateSmartClass,
                                               message: 'Image Required',
                                             ),
                                             CustomSizedBox(
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            schoolRecceController
-                                                .multipleImage5.isNotEmpty
+                                            schoolRecceController.multipleImage5.isNotEmpty
                                                 ? Container(
-                                              width: responsive
-                                                  .responsiveValue(
-                                                  small: 600.0,
-                                                  medium: 900.0,
-                                                  large: 1400.0),
-                                              height: responsive
-                                                  .responsiveValue(
-                                                  small: 170.0,
-                                                  medium: 170.0,
-                                                  large: 170.0),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    10),
+                                              width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
                                               ),
-                                              child:
-                                              schoolRecceController
-                                                  .multipleImage5
-                                                  .isEmpty
-                                                  ? const Center(
-                                                child: Text(
-                                                    'No images selected.'),
-                                              )
-                                                  : ListView.builder(
-                                                scrollDirection:
-                                                Axis.horizontal,
-                                                itemCount:
-                                                schoolRecceController
-                                                    .multipleImage5
-                                                    .length,
-                                                itemBuilder:
-                                                    (context,
-                                                    index) {
+                                              height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: schoolRecceController.multipleImage5.length,
+                                                itemBuilder: (context, index) {
                                                   return SizedBox(
                                                     height: 200,
                                                     width: 200,
-                                                    child:
-                                                    Column(
+                                                    child: Column(
                                                       children: [
                                                         Padding(
-                                                          padding: const EdgeInsets
-                                                              .all(
-                                                              8.0),
-                                                          child:
-                                                          GestureDetector(
-                                                            onTap:
-                                                                () {
-                                                              CustomImagePreview5.showImagePreview5(schoolRecceController.multipleImage5[index].path, context);
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview.showImagePreview(
+                                                                schoolRecceController.multipleImage5[index].path,
+                                                                context,
+                                                              );
                                                             },
-                                                            child:
-                                                            Image.file(
+                                                            child: Image.file(
                                                               File(schoolRecceController.multipleImage5[index].path),
                                                               width: 190,
                                                               height: 120,
@@ -3392,17 +3253,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                           ),
                                                         ),
                                                         GestureDetector(
-                                                          onTap:
-                                                              () {
+                                                          onTap: () {
                                                             setState(() {
                                                               schoolRecceController.multipleImage5.removeAt(index);
                                                             });
                                                           },
-                                                          child:
-                                                          const Icon(
+                                                          child: const Icon(
                                                             Icons.delete,
-                                                            color:
-                                                            Colors.red,
+                                                            color: Colors.red,
                                                           ),
                                                         ),
                                                       ],
@@ -3430,43 +3288,34 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             Container(
                                               height: 60,
                                               decoration: BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(10.0),
                                                 border: Border.all(
-                                                    width: 2,
-                                                    color: schoolRecceController
-                                                        .isImageUploadedComputer ==
-                                                        false
-                                                        ? AppColors.primary
-                                                        : AppColors.error),
+                                                  width: 2,
+                                                  color: schoolRecceController
+                                                      .isImageUploadedComputer == false
+                                                      ? AppColors.primary
+                                                      : AppColors.error,
+                                                ),
                                               ),
                                               child: ListTile(
-                                                  title: schoolRecceController
-                                                      .isImageUploadedComputer ==
-                                                      false
-                                                      ? const Text(
-                                                    'Click or Upload Image',
-                                                  )
-                                                      : const Text(
-                                                    'Click or Upload Image',
-                                                    style: TextStyle(
-                                                        color: AppColors
-                                                            .error),
+                                                title: Text(
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                    color: schoolRecceController
+                                                        .isImageUploadedComputer == false
+                                                        ? Colors.black
+                                                        : AppColors.error,
                                                   ),
-                                                  trailing: const Icon(
-                                                      Icons.camera_alt,
-                                                      color: AppColors
-                                                          .onBackground),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                        AppColors.primary,
-                                                        context: context,
-                                                        builder: ((builder) =>
-                                                            schoolRecceController
-                                                                .bottomSheet6(
-                                                                context)));
-                                                  }),
+                                                ),
+                                                trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    backgroundColor: AppColors.primary,
+                                                    context: context,
+                                                    builder: (builder) => schoolRecceController.bottomSheet(context, 6),
+                                                  );
+                                                },
+                                              ),
                                             ),
                                             ErrorText(
                                               isVisible: schoolRecceController
@@ -3477,62 +3326,41 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            schoolRecceController
-                                                .multipleImage6.isNotEmpty
+                                            schoolRecceController.multipleImage6.isNotEmpty
                                                 ? Container(
-                                              width: responsive
-                                                  .responsiveValue(
-                                                  small: 600.0,
-                                                  medium: 900.0,
-                                                  large: 1400.0),
-                                              height: responsive
-                                                  .responsiveValue(
-                                                  small: 170.0,
-                                                  medium: 170.0,
-                                                  large: 170.0),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    10),
+                                              width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
                                               ),
-                                              child:
-                                              schoolRecceController
-                                                  .multipleImage6
-                                                  .isEmpty
-                                                  ? const Center(
-                                                child: Text(
-                                                    'No images selected.'),
-                                              )
-                                                  : ListView.builder(
-                                                scrollDirection:
-                                                Axis.horizontal,
-                                                itemCount:
-                                                schoolRecceController
-                                                    .multipleImage6
-                                                    .length,
-                                                itemBuilder:
-                                                    (context,
-                                                    index) {
+                                              height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: schoolRecceController.multipleImage6.length,
+                                                itemBuilder: (context, index) {
                                                   return SizedBox(
                                                     height: 200,
                                                     width: 200,
-                                                    child:
-                                                    Column(
+                                                    child: Column(
                                                       children: [
                                                         Padding(
-                                                          padding: const EdgeInsets
-                                                              .all(
-                                                              8.0),
-                                                          child:
-                                                          GestureDetector(
-                                                            onTap:
-                                                                () {
-                                                              CustomImagePreview6.showImagePreview6(schoolRecceController.multipleImage6[index].path, context);
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview.showImagePreview(
+                                                                schoolRecceController.multipleImage6[index].path,
+                                                                context,
+                                                              );
                                                             },
-                                                            child:
-                                                            Image.file(
+                                                            child: Image.file(
                                                               File(schoolRecceController.multipleImage6[index].path),
                                                               width: 190,
                                                               height: 120,
@@ -3541,17 +3369,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                           ),
                                                         ),
                                                         GestureDetector(
-                                                          onTap:
-                                                              () {
+                                                          onTap: () {
                                                             setState(() {
                                                               schoolRecceController.multipleImage6.removeAt(index);
                                                             });
                                                           },
-                                                          child:
-                                                          const Icon(
+                                                          child: const Icon(
                                                             Icons.delete,
-                                                            color:
-                                                            Colors.red,
+                                                            color: Colors.red,
                                                           ),
                                                         ),
                                                       ],
@@ -3662,43 +3487,34 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             Container(
                                               height: 60,
                                               decoration: BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(10.0),
                                                 border: Border.all(
-                                                    width: 2,
-                                                    color: schoolRecceController
-                                                        .isImageUploadedExisitingLibrary ==
-                                                        false
-                                                        ? AppColors.primary
-                                                        : AppColors.error),
+                                                  width: 2,
+                                                  color: schoolRecceController
+                                                      .isImageUploadedExisitingLibrary == false
+                                                      ? AppColors.primary
+                                                      : AppColors.error,
+                                                ),
                                               ),
                                               child: ListTile(
-                                                  title: schoolRecceController
-                                                      .isImageUploadedExisitingLibrary ==
-                                                      false
-                                                      ? const Text(
-                                                    'Click or Upload Image',
-                                                  )
-                                                      : const Text(
-                                                    'Click or Upload Image',
-                                                    style: TextStyle(
-                                                        color: AppColors
-                                                            .error),
+                                                title: Text(
+                                                  'Click or Upload Image',
+                                                  style: TextStyle(
+                                                    color: schoolRecceController
+                                                        .isImageUploadedExisitingLibrary == false
+                                                        ? Colors.black
+                                                        : AppColors.error,
                                                   ),
-                                                  trailing: const Icon(
-                                                      Icons.camera_alt,
-                                                      color: AppColors
-                                                          .onBackground),
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                        AppColors.primary,
-                                                        context: context,
-                                                        builder: ((builder) =>
-                                                            schoolRecceController
-                                                                .bottomSheet7(
-                                                                context)));
-                                                  }),
+                                                ),
+                                                trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    backgroundColor: AppColors.primary,
+                                                    context: context,
+                                                    builder: (builder) => schoolRecceController.bottomSheet(context, 7),
+                                                  );
+                                                },
+                                              ),
                                             ),
                                             ErrorText(
                                               isVisible: schoolRecceController
@@ -3709,62 +3525,41 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                               value: 20,
                                               side: 'height',
                                             ),
-                                            schoolRecceController
-                                                .multipleImage7.isNotEmpty
+                                            schoolRecceController.multipleImage7.isNotEmpty
                                                 ? Container(
-                                              width: responsive
-                                                  .responsiveValue(
-                                                  small: 600.0,
-                                                  medium: 900.0,
-                                                  large: 1400.0),
-                                              height: responsive
-                                                  .responsiveValue(
-                                                  small: 170.0,
-                                                  medium: 170.0,
-                                                  large: 170.0),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    10),
+                                              width: responsive.responsiveValue(
+                                                small: 600.0,
+                                                medium: 900.0,
+                                                large: 1400.0,
                                               ),
-                                              child:
-                                              schoolRecceController
-                                                  .multipleImage7
-                                                  .isEmpty
-                                                  ? const Center(
-                                                child: Text(
-                                                    'No images selected.'),
-                                              )
-                                                  : ListView.builder(
-                                                scrollDirection:
-                                                Axis.horizontal,
-                                                itemCount:
-                                                schoolRecceController
-                                                    .multipleImage7
-                                                    .length,
-                                                itemBuilder:
-                                                    (context,
-                                                    index) {
+                                              height: responsive.responsiveValue(
+                                                small: 170.0,
+                                                medium: 170.0,
+                                                large: 170.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: schoolRecceController.multipleImage7.length,
+                                                itemBuilder: (context, index) {
                                                   return SizedBox(
                                                     height: 200,
                                                     width: 200,
-                                                    child:
-                                                    Column(
+                                                    child: Column(
                                                       children: [
                                                         Padding(
-                                                          padding: const EdgeInsets
-                                                              .all(
-                                                              8.0),
-                                                          child:
-                                                          GestureDetector(
-                                                            onTap:
-                                                                () {
-                                                              CustomImagePreview7.showImagePreview7(schoolRecceController.multipleImage7[index].path, context);
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              CustomImagePreview.showImagePreview(
+                                                                schoolRecceController.multipleImage7[index].path,
+                                                                context,
+                                                              );
                                                             },
-                                                            child:
-                                                            Image.file(
+                                                            child: Image.file(
                                                               File(schoolRecceController.multipleImage7[index].path),
                                                               width: 190,
                                                               height: 120,
@@ -3773,17 +3568,14 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                                           ),
                                                         ),
                                                         GestureDetector(
-                                                          onTap:
-                                                              () {
+                                                          onTap: () {
                                                             setState(() {
                                                               schoolRecceController.multipleImage7.removeAt(index);
                                                             });
                                                           },
-                                                          child:
-                                                          const Icon(
+                                                          child: const Icon(
                                                             Icons.delete,
-                                                            color:
-                                                            Colors.red,
+                                                            color: Colors.red,
                                                           ),
                                                         ),
                                                       ],
@@ -3893,43 +3685,34 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: schoolRecceController
-                                                      .isImageUploadedAvailabaleSpace ==
-                                                      false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: schoolRecceController
+                                                    .isImageUploadedAvailabaleSpace == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title: schoolRecceController
-                                                    .isImageUploadedAvailabaleSpace ==
-                                                    false
-                                                    ? const Text(
-                                                  'Click or Upload Image',
-                                                )
-                                                    : const Text(
-                                                  'Click or Upload Image',
-                                                  style: TextStyle(
-                                                      color: AppColors
-                                                          .error),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: schoolRecceController
+                                                      .isImageUploadedAvailabaleSpace == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
                                                 ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                    AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                      AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          schoolRecceController
-                                                              .bottomSheet8(
-                                                              context)));
-                                                }),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => schoolRecceController.bottomSheet(context, 8),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: schoolRecceController
@@ -3940,86 +3723,57 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          schoolRecceController
-                                              .multipleImage8.isNotEmpty
+                                          schoolRecceController.multipleImage8.isNotEmpty
                                               ? Container(
-                                            width: responsive
-                                                .responsiveValue(
-                                                small: 600.0,
-                                                medium: 900.0,
-                                                large: 1400.0),
-                                            height: responsive
-                                                .responsiveValue(
-                                                small: 170.0,
-                                                medium: 170.0,
-                                                large: 170.0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey),
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
                                             ),
-                                            child:
-                                            schoolRecceController
-                                                .multipleImage8
-                                                .isEmpty
-                                                ? const Center(
-                                              child: Text(
-                                                  'No images selected.'),
-                                            )
-                                                : ListView.builder(
-                                              scrollDirection:
-                                              Axis.horizontal,
-                                              itemCount:
-                                              schoolRecceController
-                                                  .multipleImage8
-                                                  .length,
-                                              itemBuilder:
-                                                  (context,
-                                                  index) {
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: schoolRecceController.multipleImage8.length,
+                                              itemBuilder: (context, index) {
                                                 return SizedBox(
                                                   height: 200,
                                                   width: 200,
                                                   child: Column(
                                                     children: [
                                                       Padding(
-                                                        padding: const EdgeInsets
-                                                            .all(
-                                                            8.0),
-                                                        child:
-                                                        GestureDetector(
-                                                          onTap:
-                                                              () {
-                                                            CustomImagePreview8.showImagePreview8(schoolRecceController.multipleImage8[index].path,
-                                                                context);
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              schoolRecceController.multipleImage8[index].path,
+                                                              context,
+                                                            );
                                                           },
-                                                          child:
-                                                          Image.file(
+                                                          child: Image.file(
                                                             File(schoolRecceController.multipleImage8[index].path),
-                                                            width:
-                                                            190,
-                                                            height:
-                                                            120,
-                                                            fit:
-                                                            BoxFit.fill,
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
                                                           ),
                                                         ),
                                                       ),
                                                       GestureDetector(
-                                                        onTap:
-                                                            () {
-                                                          setState(
-                                                                  () {
-                                                                schoolRecceController.multipleImage8.removeAt(index);
-                                                              });
+                                                        onTap: () {
+                                                          setState(() {
+                                                            schoolRecceController.multipleImage8.removeAt(index);
+                                                          });
                                                         },
-                                                        child:
-                                                        const Icon(
-                                                          Icons
-                                                              .delete,
-                                                          color:
-                                                          Colors.red,
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
                                                         ),
                                                       ),
                                                     ],
@@ -4397,43 +4151,34 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: schoolRecceController
-                                                      .isImageUploadedEnrollement ==
-                                                      false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: schoolRecceController
+                                                    .isImageUploadedEnrollement == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title: schoolRecceController
-                                                    .isImageUploadedEnrollement ==
-                                                    false
-                                                    ? const Text(
-                                                  'Click or Upload Image',
-                                                )
-                                                    : const Text(
-                                                  'Click or Upload Image',
-                                                  style: TextStyle(
-                                                      color: AppColors
-                                                          .error),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color: schoolRecceController
+                                                      .isImageUploadedEnrollement == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
                                                 ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                    AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                      AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          schoolRecceController
-                                                              .bottomSheet9(
-                                                              context)));
-                                                }),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => schoolRecceController.bottomSheet(context, 9),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: schoolRecceController
@@ -4444,86 +4189,57 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          schoolRecceController
-                                              .multipleImage9.isNotEmpty
+                                          schoolRecceController.multipleImage9.isNotEmpty
                                               ? Container(
-                                            width: responsive
-                                                .responsiveValue(
-                                                small: 600.0,
-                                                medium: 900.0,
-                                                large: 1400.0),
-                                            height: responsive
-                                                .responsiveValue(
-                                                small: 170.0,
-                                                medium: 170.0,
-                                                large: 170.0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey),
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
                                             ),
-                                            child:
-                                            schoolRecceController
-                                                .multipleImage9
-                                                .isEmpty
-                                                ? const Center(
-                                              child: Text(
-                                                  'No images selected.'),
-                                            )
-                                                : ListView.builder(
-                                              scrollDirection:
-                                              Axis.horizontal,
-                                              itemCount:
-                                              schoolRecceController
-                                                  .multipleImage9
-                                                  .length,
-                                              itemBuilder:
-                                                  (context,
-                                                  index) {
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: schoolRecceController.multipleImage9.length,
+                                              itemBuilder: (context, index) {
                                                 return SizedBox(
                                                   height: 200,
                                                   width: 200,
                                                   child: Column(
                                                     children: [
                                                       Padding(
-                                                        padding: const EdgeInsets
-                                                            .all(
-                                                            8.0),
-                                                        child:
-                                                        GestureDetector(
-                                                          onTap:
-                                                              () {
-                                                            CustomImagePreview9.showImagePreview9(schoolRecceController.multipleImage9[index].path,
-                                                                context);
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              schoolRecceController.multipleImage9[index].path,
+                                                              context,
+                                                            );
                                                           },
-                                                          child:
-                                                          Image.file(
+                                                          child: Image.file(
                                                             File(schoolRecceController.multipleImage9[index].path),
-                                                            width:
-                                                            190,
-                                                            height:
-                                                            120,
-                                                            fit:
-                                                            BoxFit.fill,
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
                                                           ),
                                                         ),
                                                       ),
                                                       GestureDetector(
-                                                        onTap:
-                                                            () {
-                                                          setState(
-                                                                  () {
-                                                                schoolRecceController.multipleImage9.removeAt(index);
-                                                              });
+                                                        onTap: () {
+                                                          setState(() {
+                                                            schoolRecceController.multipleImage9.removeAt(index);
+                                                          });
                                                         },
-                                                        child:
-                                                        const Icon(
-                                                          Icons
-                                                              .delete,
-                                                          color:
-                                                          Colors.red,
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
                                                         ),
                                                       ),
                                                     ],
@@ -4611,43 +4327,34 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: schoolRecceController
-                                                      .isImageUploadedDlInstallation ==
-                                                      false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: schoolRecceController
+                                                    .isImageUploadedDlInstallation == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title: schoolRecceController
-                                                    .isImageUploadedDlInstallation ==
-                                                    false
-                                                    ? const Text(
-                                                  'Click or Upload Image',
-                                                )
-                                                    : const Text(
-                                                  'Click or Upload Image',
-                                                  style: TextStyle(
-                                                      color: AppColors
-                                                          .error),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color:schoolRecceController
+                                                      .isImageUploadedDlInstallation == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
                                                 ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                    AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                      AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          schoolRecceController
-                                                              .bottomSheet10(
-                                                              context)));
-                                                }),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => schoolRecceController.bottomSheet(context, 10),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
                                             isVisible: schoolRecceController
@@ -4658,86 +4365,57 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          schoolRecceController
-                                              .multipleImage10.isNotEmpty
+                                          schoolRecceController.multipleImage10.isNotEmpty
                                               ? Container(
-                                            width: responsive
-                                                .responsiveValue(
-                                                small: 600.0,
-                                                medium: 900.0,
-                                                large: 1400.0),
-                                            height: responsive
-                                                .responsiveValue(
-                                                small: 170.0,
-                                                medium: 170.0,
-                                                large: 170.0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey),
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
                                             ),
-                                            child:
-                                            schoolRecceController
-                                                .multipleImage10
-                                                .isEmpty
-                                                ? const Center(
-                                              child: Text(
-                                                  'No images selected.'),
-                                            )
-                                                : ListView.builder(
-                                              scrollDirection:
-                                              Axis.horizontal,
-                                              itemCount:
-                                              schoolRecceController
-                                                  .multipleImage10
-                                                  .length,
-                                              itemBuilder:
-                                                  (context,
-                                                  index) {
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: schoolRecceController.multipleImage10.length,
+                                              itemBuilder: (context, index) {
                                                 return SizedBox(
                                                   height: 200,
                                                   width: 200,
                                                   child: Column(
                                                     children: [
                                                       Padding(
-                                                        padding: const EdgeInsets
-                                                            .all(
-                                                            8.0),
-                                                        child:
-                                                        GestureDetector(
-                                                          onTap:
-                                                              () {
-                                                            CustomImagePreview10.showImagePreview10(schoolRecceController.multipleImage10[index].path,
-                                                                context);
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              schoolRecceController.multipleImage10[index].path,
+                                                              context,
+                                                            );
                                                           },
-                                                          child:
-                                                          Image.file(
+                                                          child: Image.file(
                                                             File(schoolRecceController.multipleImage10[index].path),
-                                                            width:
-                                                            190,
-                                                            height:
-                                                            120,
-                                                            fit:
-                                                            BoxFit.fill,
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
                                                           ),
                                                         ),
                                                       ),
                                                       GestureDetector(
-                                                        onTap:
-                                                            () {
-                                                          setState(
-                                                                  () {
-                                                                schoolRecceController.multipleImage10.removeAt(index);
-                                                              });
+                                                        onTap: () {
+                                                          setState(() {
+                                                            schoolRecceController.multipleImage10.removeAt(index);
+                                                          });
                                                         },
-                                                        child:
-                                                        const Icon(
-                                                          Icons
-                                                              .delete,
-                                                          color:
-                                                          Colors.red,
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
                                                         ),
                                                       ),
                                                     ],
@@ -4763,46 +4441,37 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                           Container(
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(10.0),
+                                              borderRadius: BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                  width: 2,
-                                                  color: schoolRecceController
-                                                      .isImageUploadedDlInstallation ==
-                                                      false
-                                                      ? AppColors.primary
-                                                      : AppColors.error),
+                                                width: 2,
+                                                color: schoolRecceController
+                                                    .isImageUploadedLibrarySetup == false
+                                                    ? AppColors.primary
+                                                    : AppColors.error,
+                                              ),
                                             ),
                                             child: ListTile(
-                                                title: schoolRecceController
-                                                    .isImageUploadedLibrarySetup ==
-                                                    false
-                                                    ? const Text(
-                                                  'Click or Upload Image',
-                                                )
-                                                    : const Text(
-                                                  'Click or Upload Image',
-                                                  style: TextStyle(
-                                                      color: AppColors
-                                                          .error),
+                                              title: Text(
+                                                'Click or Upload Image',
+                                                style: TextStyle(
+                                                  color:schoolRecceController
+                                                      .isImageUploadedLibrarySetup == false
+                                                      ? Colors.black
+                                                      : AppColors.error,
                                                 ),
-                                                trailing: const Icon(
-                                                    Icons.camera_alt,
-                                                    color:
-                                                    AppColors.onBackground),
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                      backgroundColor:
-                                                      AppColors.primary,
-                                                      context: context,
-                                                      builder: ((builder) =>
-                                                          schoolRecceController
-                                                              .bottomSheet11(
-                                                              context)));
-                                                }),
+                                              ),
+                                              trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  backgroundColor: AppColors.primary,
+                                                  context: context,
+                                                  builder: (builder) => schoolRecceController.bottomSheet(context, 11),
+                                                );
+                                              },
+                                            ),
                                           ),
                                           ErrorText(
-                                            isVisible: schoolRecceController
+                                            isVisible:schoolRecceController
                                                 .validateLibrarySetup,
                                             message: 'Image Required',
                                           ),
@@ -4810,86 +4479,57 @@ class _SchoolRecceFormState extends State<SchoolRecceForm> {
                                             value: 20,
                                             side: 'height',
                                           ),
-                                          schoolRecceController
-                                              .multipleImage11.isNotEmpty
+                                          schoolRecceController.multipleImage11.isNotEmpty
                                               ? Container(
-                                            width: responsive
-                                                .responsiveValue(
-                                                small: 600.0,
-                                                medium: 900.0,
-                                                large: 1400.0),
-                                            height: responsive
-                                                .responsiveValue(
-                                                small: 170.0,
-                                                medium: 170.0,
-                                                large: 170.0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey),
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10),
+                                            width: responsive.responsiveValue(
+                                              small: 600.0,
+                                              medium: 900.0,
+                                              large: 1400.0,
                                             ),
-                                            child:
-                                            schoolRecceController
-                                                .multipleImage11
-                                                .isEmpty
-                                                ? const Center(
-                                              child: Text(
-                                                  'No images selected.'),
-                                            )
-                                                : ListView.builder(
-                                              scrollDirection:
-                                              Axis.horizontal,
-                                              itemCount:
-                                              schoolRecceController
-                                                  .multipleImage11
-                                                  .length,
-                                              itemBuilder:
-                                                  (context,
-                                                  index) {
+                                            height: responsive.responsiveValue(
+                                              small: 170.0,
+                                              medium: 170.0,
+                                              large: 170.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: schoolRecceController.multipleImage11.length,
+                                              itemBuilder: (context, index) {
                                                 return SizedBox(
                                                   height: 200,
                                                   width: 200,
                                                   child: Column(
                                                     children: [
                                                       Padding(
-                                                        padding: const EdgeInsets
-                                                            .all(
-                                                            8.0),
-                                                        child:
-                                                        GestureDetector(
-                                                          onTap:
-                                                              () {
-                                                            CustomImagePreview11.showImagePreview11(schoolRecceController.multipleImage11[index].path,
-                                                                context);
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            CustomImagePreview.showImagePreview(
+                                                              schoolRecceController.multipleImage11[index].path,
+                                                              context,
+                                                            );
                                                           },
-                                                          child:
-                                                          Image.file(
+                                                          child: Image.file(
                                                             File(schoolRecceController.multipleImage11[index].path),
-                                                            width:
-                                                            190,
-                                                            height:
-                                                            120,
-                                                            fit:
-                                                            BoxFit.fill,
+                                                            width: 190,
+                                                            height: 120,
+                                                            fit: BoxFit.fill,
                                                           ),
                                                         ),
                                                       ),
                                                       GestureDetector(
-                                                        onTap:
-                                                            () {
-                                                          setState(
-                                                                  () {
-                                                                schoolRecceController.multipleImage11.removeAt(index);
-                                                              });
+                                                        onTap: () {
+                                                          setState(() {
+                                                            schoolRecceController.multipleImage11.removeAt(index);
+                                                          });
                                                         },
-                                                        child:
-                                                        const Icon(
-                                                          Icons
-                                                              .delete,
-                                                          color:
-                                                          Colors.red,
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
                                                         ),
                                                       ),
                                                     ],

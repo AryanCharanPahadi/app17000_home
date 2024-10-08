@@ -110,7 +110,7 @@ class _SchoolFacilitiesFormState extends State<SchoolFacilitiesForm> {
                   title: 'Exit Confirmation',
                   yes: 'Yes',
                   no: 'no',
-                  desc: 'Are you sure you want to leave this screen?',
+                  desc: 'Are you sure you want to leave exit?',
                   onPressed: () async {
                     Navigator.of(context).pop(true);
                   }));
@@ -852,7 +852,7 @@ class _SchoolFacilitiesFormState extends State<SchoolFacilitiesForm> {
                                                           builder: ((builder) =>
                                                               schoolFacilitiesController
                                                                   .bottomSheet(
-                                                                      context)));
+                                                                      context,1)));
                                                     }),
                                               ),
                                               ErrorText(
@@ -1355,137 +1355,103 @@ class _SchoolFacilitiesFormState extends State<SchoolFacilitiesForm> {
                                                 Container(
                                                   height: 60,
                                                   decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0),
+                                                    borderRadius: BorderRadius.circular(10.0),
                                                     border: Border.all(
-                                                        width: 2,
-                                                        color:
-                                                        schoolFacilitiesController.isImageUploaded2 ==
-                                                                    false
-                                                                ? AppColors
-                                                                    .primary
-                                                                : AppColors
-                                                                    .error),
+                                                      width: 2,
+                                                      color: schoolFacilitiesController
+                                                          .isImageUploaded2  == false
+                                                          ? AppColors.primary
+                                                          : AppColors.error,
+                                                    ),
                                                   ),
                                                   child: ListTile(
-                                                      title:
-                                                      schoolFacilitiesController.isImageUploaded2 ==
-                                                                  false
-                                                              ? const Text(
-                                                                  'Click or Upload Image',
-                                                                )
-                                                              : const Text(
-                                                                  'Click or Upload Image',
-                                                                  style: TextStyle(
-                                                                      color: AppColors
-                                                                          .error),
-                                                                ),
-                                                      trailing: const Icon(
-                                                          Icons.camera_alt,
-                                                          color: AppColors
-                                                              .onBackground),
-                                                      onTap: () {
-                                                        showModalBottomSheet(
-                                                            backgroundColor:
-                                                                AppColors
-                                                                    .primary,
-                                                            context: context,
-                                                            builder: ((builder) =>
-                                                                schoolFacilitiesController
-                                                                    .bottomSheet2(
-                                                                        context)));
-                                                      }),
+                                                    title: Text(
+                                                      'Click or Upload Image',
+                                                      style: TextStyle(
+                                                        color:  schoolFacilitiesController
+                                                            .isImageUploaded2  == false
+                                                            ? Colors.black
+                                                            : AppColors.error,
+                                                      ),
+                                                    ),
+                                                    trailing: const Icon(Icons.camera_alt, color: AppColors.onBackground),
+                                                    onTap: () {
+                                                      showModalBottomSheet(
+                                                        backgroundColor: AppColors.primary,
+                                                        context: context,
+                                                        builder: (builder) => schoolFacilitiesController.bottomSheet(context, 2),
+                                                      );
+                                                    },
+                                                  ),
                                                 ),
                                                 ErrorText(
-                                                  isVisible: schoolFacilitiesController.validateRegister2,
-                                                  message:
-                                                      'library Register Image Required',
+                                                  isVisible: schoolFacilitiesController
+                                                      .validateRegister2,
+                                                  message: 'Image Required',
                                                 ),
                                                 CustomSizedBox(
                                                   value: 20,
                                                   side: 'height',
                                                 ),
-                                                schoolFacilitiesController
-                                                        .multipleImage2
-                                                        .isNotEmpty
+                                                schoolFacilitiesController.multipleImage2.isNotEmpty
                                                     ? Container(
-                                                        width: responsive
-                                                            .responsiveValue(
-                                                                small: 600.0,
-                                                                medium: 900.0,
-                                                                large: 1400.0),
-                                                        height: responsive
-                                                            .responsiveValue(
-                                                                small: 170.0,
-                                                                medium: 170.0,
-                                                                large: 170.0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          border: Border.all(
-                                                              color:
-                                                                  Colors.grey),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
+                                                  width: responsive.responsiveValue(
+                                                    small: 600.0,
+                                                    medium: 900.0,
+                                                    large: 1400.0,
+                                                  ),
+                                                  height: responsive.responsiveValue(
+                                                    small: 170.0,
+                                                    medium: 170.0,
+                                                    large: 170.0,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(color: Colors.grey),
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  child: ListView.builder(
+                                                    scrollDirection: Axis.horizontal,
+                                                    itemCount: schoolFacilitiesController.multipleImage2.length,
+                                                    itemBuilder: (context, index) {
+                                                      return SizedBox(
+                                                        height: 200,
+                                                        width: 200,
+                                                        child: Column(
+                                                          children: [
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: GestureDetector(
+                                                                onTap: () {
+                                                                  CustomImagePreview.showImagePreview(
+                                                                    schoolFacilitiesController.multipleImage2[index].path,
+                                                                    context,
+                                                                  );
+                                                                },
+                                                                child: Image.file(
+                                                                  File(schoolFacilitiesController.multipleImage2[index].path),
+                                                                  width: 190,
+                                                                  height: 120,
+                                                                  fit: BoxFit.fill,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  schoolFacilitiesController.multipleImage2.removeAt(index);
+                                                                });
+                                                              },
+                                                              child: const Icon(
+                                                                Icons.delete,
+                                                                color: Colors.red,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                        child:
-                                                            schoolFacilitiesController
-                                                                    .multipleImage2
-                                                                    .isEmpty
-                                                                ? const Center(
-                                                                    child: Text(
-                                                                        'No images selected.'),
-                                                                  )
-                                                                : ListView
-                                                                    .builder(
-                                                                    scrollDirection:
-                                                                        Axis.horizontal,
-                                                                    itemCount: schoolFacilitiesController
-                                                                        .multipleImage2
-                                                                        .length,
-                                                                    itemBuilder:
-                                                                        (context,
-                                                                            index) {
-                                                                      return SizedBox(
-                                                                        height:
-                                                                            200,
-                                                                        width:
-                                                                            200,
-                                                                        child:
-                                                                            Column(
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: GestureDetector(
-                                                                                onTap: () {
-                                                                                  CustomImagePreview2.showImagePreview2(schoolFacilitiesController.multipleImage2[index].path, context);
-                                                                                },
-                                                                                child: Image.file(
-                                                                                  File(schoolFacilitiesController.multipleImage2[index].path),
-                                                                                  width: 190,
-                                                                                  height: 120,
-                                                                                  fit: BoxFit.fill,
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                            GestureDetector(
-                                                                              onTap: () {
-                                                                                setState(() {
-                                                                                  schoolFacilitiesController.multipleImage2.removeAt(index);
-                                                                                });
-                                                                              },
-                                                                              child: const Icon(
-                                                                                Icons.delete,
-                                                                                color: Colors.red,
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                      )
+                                                      );
+                                                    },
+                                                  ),
+                                                )
                                                     : const SizedBox(),
                                                 CustomSizedBox(
                                                   value: 40,

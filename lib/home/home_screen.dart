@@ -186,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         style: AppStyles.captionText(
                                           context,
                                           AppColors.onBackground,
-                                          responsive.responsiveValue(small: 10, medium: 12, large: 14),
+                                          responsive.responsiveValue(small: 12, medium: 14, large: 16), // Use responsive sizes here
                                         ),
                                       ),
                                     ),
@@ -263,4 +263,3 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 }
-

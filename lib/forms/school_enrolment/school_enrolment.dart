@@ -313,7 +313,7 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                 title: 'Exit Confirmation',
                 yes: 'Yes',
                 no: 'no',
-                desc: 'Are you sure you want to leave this screen?',
+                desc: 'Are you sure you want to leave exit?',
                 onPressed: () async {
                   Navigator.of(context).pop(true);
                 }));
@@ -691,11 +691,11 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                         ),
                                       ],
                                     ),
-                                    ErrorText(
-                                      isVisible: validateEnrolmentRecords,
-                                      message:
-                                          'Atleast one enrolment record is required',
-                                    ),
+                                    // ErrorText(
+                                    //   isVisible: validateEnrolmentRecords,
+                                    //   message:
+                                    //       'Atleast one enrolment record is required',
+                                    // ),
                                     CustomSizedBox(
                                       value: 40,
                                       side: 'height',
@@ -726,8 +726,8 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                           validateRegister =
                                               schoolEnrolmentController
                                                   .multipleImage.isEmpty;
-                                          validateEnrolmentRecords =
-                                              jsonData.isEmpty;
+                                          // validateEnrolmentRecords =
+                                          //     jsonData.isEmpty;
                                         });
 
                                         if (schoolEnrolmentController
@@ -742,16 +742,16 @@ class _SchoolEnrollmentFormState extends State<SchoolEnrollmentForm> {
                                           return;
                                         }
 
-                                        if (validateEnrolmentRecords) {
-                                          customSnackbar(
-                                            'Error',
-                                            'At least one enrollment record is required',
-                                            AppColors.error,
-                                            Colors.white,
-                                            Icons.error,
-                                          );
-                                          return;
-                                        }
+                                        // if (validateEnrolmentRecords) {
+                                        //   customSnackbar(
+                                        //     'Error',
+                                        //     'At least one enrollment record is required',
+                                        //     AppColors.error,
+                                        //     Colors.white,
+                                        //     Icons.error,
+                                        //   );
+                                        //   return;
+                                        // }
 
                                         if (_formKey.currentState!.validate()) {
                                           DateTime now = DateTime.now();

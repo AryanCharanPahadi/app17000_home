@@ -52,15 +52,7 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<String> splitSchoolLists = [];
 
-  // Start of Showing
-  bool showBasicDetails = true; // For show Basic Details
-  bool showInputs = false; // For show Inputs Details
-  bool showSchoolTeacher = false; // For show showSchoolTeacher
-  bool showInputStudents = false; // For show showInputStudents
-  bool showSmcMember = false; // For show showSmcMember
-  // End of Showing
-  bool _isImageUploadedSchoolBoard = false;
-  bool validateSchoolBoard = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +67,7 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                   title: 'Exit Confirmation',
                   yes: 'Yes',
                   no: 'no',
-                  desc: 'Are you sure you want to leave this screen?',
+                  desc: 'Are you sure you want to leave exit?',
                   onPressed: () async {
                     Navigator.of(context).pop(true);
                   }));
@@ -104,7 +96,7 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                       }
 
                                       return Column(children: [
-                                        if (showBasicDetails) ...[
+                                        if (inpersonQualitativeController.showBasicDetails) ...[
                                           LabelText(
                                             label: 'Basic Details',
                                           ),
@@ -325,14 +317,14 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                               border: Border.all(
                                                   width: 2,
                                                   color:
-                                                      _isImageUploadedSchoolBoard ==
+                                                  inpersonQualitativeController.isImageUploadedSchoolBoard ==
                                                               false
                                                           ? AppColors.primary
                                                           : AppColors.error),
                                             ),
                                             child: ListTile(
                                                 title:
-                                                    _isImageUploadedSchoolBoard ==
+                                                inpersonQualitativeController.isImageUploadedSchoolBoard ==
                                                             false
                                                         ? const Text(
                                                             'Click or Upload Image',
@@ -359,7 +351,7 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                                 }),
                                           ),
                                           ErrorText(
-                                            isVisible: validateSchoolBoard,
+                                            isVisible: inpersonQualitativeController.validateSchoolBoard,
                                             message: 'Register Image Required',
                                           ),
                                           CustomSizedBox(
@@ -711,22 +703,22 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
 
                                               // Update the state for validateSchoolBoard based on _isImageUploadedSchoolBoard
                                               setState(() {
-                                                validateSchoolBoard =
+                                                inpersonQualitativeController.validateSchoolBoard =
                                                     inpersonQualitativeController
                                                         .multipleImage.isEmpty;
                                               });
 
                                               if (_formKey.currentState!
                                                       .validate() &&
-                                                  !validateSchoolBoard && // Ensure that at least one image is uploaded
+                                                  !inpersonQualitativeController.validateSchoolBoard && // Ensure that at least one image is uploaded
                                                   isRadioValid1 &&
                                                   isRadioValid2 &&
                                                   isRadioValid3 &&
                                                   isRadioValid4) {
                                                 setState(() {
                                                   // Proceed with the next step
-                                                  showBasicDetails = false;
-                                                  showInputs = true;
+                                                  inpersonQualitativeController.showBasicDetails = false;
+                                                  inpersonQualitativeController.showInputs = true;
                                                 });
                                               }
                                             },
@@ -740,7 +732,7 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
 
                                         // Show Inputs HM/In charge
 
-                                        if (showInputs) ...[
+                                        if (inpersonQualitativeController.showInputs) ...[
                                           LabelText(
                                             label:
                                                 'Qualitative Inputs HM/ In Charge',
@@ -1251,8 +1243,8 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                                   title: 'Back',
                                                   onPressedButton: () {
                                                     setState(() {
-                                                      showBasicDetails = true;
-                                                      showInputs = false;
+                                                      inpersonQualitativeController.showBasicDetails = true;
+                                                      inpersonQualitativeController.showInputs = false;
                                                     });
                                                   }),
                                               const Spacer(),
@@ -1269,8 +1261,8 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                                       isRadioValid5) {
                                                     // Include image validation here
                                                     setState(() {
-                                                      showInputs = false;
-                                                      showSchoolTeacher = true;
+                                                      inpersonQualitativeController.showInputs = false;
+                                                      inpersonQualitativeController.showSchoolTeacher = true;
                                                     });
                                                   }
                                                 },
@@ -1286,7 +1278,7 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
 
                                         // Start of showSchoolTeacher
 
-                                        if (showSchoolTeacher) ...[
+                                        if (inpersonQualitativeController.showSchoolTeacher) ...[
                                           LabelText(
                                             label:
                                                 'Qualitative Inputs School Teachers',
@@ -1983,8 +1975,8 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                                   title: 'Back',
                                                   onPressedButton: () {
                                                     setState(() {
-                                                      showInputs = true;
-                                                      showSchoolTeacher = false;
+                                                      inpersonQualitativeController.showInputs = true;
+                                                      inpersonQualitativeController.showSchoolTeacher = false;
                                                     });
                                                   }),
                                               const Spacer(),
@@ -2027,9 +2019,9 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                                           isAdditionalSubjectsValid) {
                                                         // All validations passed, move to the next step
                                                         setState(() {
-                                                          showSchoolTeacher =
+                                                          inpersonQualitativeController.showSchoolTeacher =
                                                               false;
-                                                          showInputStudents =
+                                                          inpersonQualitativeController.showInputStudents =
                                                               true;
                                                         });
                                                       } else {
@@ -2039,9 +2031,9 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                                     } else {
                                                       // 'No' was selected for 'schoolTeacherInterview', no need for further validation
                                                       setState(() {
-                                                        showSchoolTeacher =
+                                                        inpersonQualitativeController.showSchoolTeacher =
                                                             false;
-                                                        showInputStudents =
+                                                        inpersonQualitativeController.showInputStudents =
                                                             true;
                                                       });
                                                     }
@@ -2058,7 +2050,7 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                         ], // End of showSchoolTeacher
 
                                         // Start of showInputStudents
-                                        if (showInputStudents) ...[
+                                        if (inpersonQualitativeController.showInputStudents) ...[
                                           LabelText(
                                             label:
                                                 'Qualitative Inputs Students',
@@ -2996,8 +2988,8 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                                   title: 'Back',
                                                   onPressedButton: () {
                                                     setState(() {
-                                                      showSchoolTeacher = true;
-                                                      showInputStudents = false;
+                                                      inpersonQualitativeController.showSchoolTeacher = true;
+                                                      inpersonQualitativeController.showInputStudents = false;
                                                     });
                                                   }),
                                               const Spacer(),
@@ -3058,9 +3050,9 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                                           isAlexaEchoValid &&
                                                           isAnswersQuestionsValid) {
                                                         setState(() {
-                                                          showInputStudents =
+                                                          inpersonQualitativeController.showInputStudents =
                                                               false;
-                                                          showSmcMember = true;
+                                                          inpersonQualitativeController.showSmcMember = true;
                                                         });
                                                       } else {
                                                         // Handle error for unselected radio options
@@ -3069,9 +3061,9 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                                     } else {
                                                       // If 'No' was selected for 'schoolTeacherInterview', proceed to the next step
                                                       setState(() {
-                                                        showInputStudents =
+                                                        inpersonQualitativeController.showInputStudents =
                                                             false;
-                                                        showSmcMember = true;
+                                                        inpersonQualitativeController.showSmcMember = true;
                                                       });
                                                     }
                                                   }
@@ -3088,7 +3080,7 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
 
                                         // Start of showSmcMember
 
-                                        if (showSmcMember) ...[
+                                        if (inpersonQualitativeController.showSmcMember) ...[
                                           LabelText(
                                             label:
                                                 'Qualitative Inputs SMC Member/VEC',
@@ -3676,8 +3668,8 @@ class _InPersonQualitativeFormState extends State<InPersonQualitativeForm> {
                                                   title: 'Back',
                                                   onPressedButton: () {
                                                     setState(() {
-                                                      showInputStudents = true;
-                                                      showSmcMember = false;
+                                                      inpersonQualitativeController.showInputStudents = true;
+                                                      inpersonQualitativeController.showSmcMember = false;
                                                     });
                                                   }),
                                               const Spacer(),

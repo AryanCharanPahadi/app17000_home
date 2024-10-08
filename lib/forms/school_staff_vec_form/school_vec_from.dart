@@ -139,7 +139,7 @@ class _SchoolStaffVecFormState extends State<SchoolStaffVecForm> {
                 title: 'Exit Confirmation',
                 yes: 'Yes',
                 no: 'no',
-                desc: 'Are you sure you want to leave this screen?',
+                desc: 'Are you sure you want to leave exit?',
                 onPressed: () async {
                   Navigator.of(context).pop(true);
                 }));
